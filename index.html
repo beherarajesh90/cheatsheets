@@ -226,7 +226,8 @@ const ICONS = {
   blocks: '<rect x="4" y="4" width="16" height="16"/><path d="M4 11h16M12 11v9"/>',
   threads: '<path d="M4 8c4 0 4 8 8 8s4-8 8-8"/><path d="M4 16c4 0 4-8 8-8s4 8 8 8"/>',
   tree: '<circle cx="12" cy="4.5" r="2"/><circle cx="6" cy="14" r="2"/><circle cx="18" cy="14" r="2"/><circle cx="12" cy="19.5" r="1.6"/><path d="M12 6.5 6 12M12 6.5l6 5.5M6 16l4.5 2M18 16l-4.5 2"/>',
-  mesh: '<path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z"/><path d="M12 3v18M4 7.5l8 4.5 8-4.5"/>'
+  mesh: '<path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z"/><path d="M12 3v18M4 7.5l8 4.5 8-4.5"/>',
+  container: '<rect x="4" y="7" width="16" height="12" rx="1"/><path d="M4 11h16M9 7V4h6v3"/>'
 };
 
 const PALETTE = [
@@ -254,6 +255,9 @@ const CATEGORIES = [
   ]},
   { name:'Distributed Systems', sheets:[
     { num:'06', title:'Microservices Java Cheat Sheet', desc:'Service boundaries, resilience and Java microservice patterns.', href:'microservices-cheatsheet.html', icon:'mesh' },
+  ]},
+  { name:'Containers', sheets:[
+    { num:'07', title:'Docker for Java & AI Engineers', desc:'Dockerfiles, JVM-in-container tuning, GPU access and Compose stacks.', href:'docker-cheatsheet.html', icon:'container' },
   ]},
 ];
 

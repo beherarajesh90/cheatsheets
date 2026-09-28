@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Docker for Java &amp; AI Engineers</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#eef1f5;
+    --surface:#ffffff;
+    --surface-2:#e2e7ee;
+    --text:#151922;
+    --text-muted:#57616f;
+    --border:#ccd3dd;
+    --accent:#0d7fbf;
+    --accent-ink:#0a5686;
+    --accent-bg:#dcedf9;
+    --safe:#1c7a6e;
+    --safe-bg:#dcf0ec;
+    --danger:#b23a3a;
+    --danger-bg:#f8e0e0;
+    --info:#3a5fb2;
+    --info-bg:#e1e8f8;
+    --code-bg:#161a22;
+    --code-text:#dfe4ee;
+    --code-key:#5fb0e8;
+    --code-str:#8fbf7f;
+    --code-com:#7c8698;
+    --shadow: 0 1px 2px rgba(20,25,35,.06), 0 6px 20px rgba(20,25,35,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0e1117;
+      --surface:#161b24;
+      --surface-2:#1e2430;
+      --text:#e7ebf2;
+      --text-muted:#9aa5b5;
+      --border:#2b323f;
+      --accent:#5fb0e8;
+      --accent-ink:#bfe0fa;
+      --accent-bg:#11324a;
+      --safe:#5cc9b8;
+      --safe-bg:#123531;
+      --danger:#e07a72;
+      --danger-bg:#3a1a1a;
+      --info:#8aa8f2;
+      --info-bg:#182644;
+      --code-bg:#0a0d13;
+      --code-text:#dfe4ee;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1117;
+    --surface:#161b24;
+    --surface-2:#1e2430;
+    --text:#e7ebf2;
+    --text-muted:#9aa5b5;
+    --border:#2b323f;
+    --accent:#5fb0e8;
+    --accent-ink:#bfe0fa;
+    --accent-bg:#11324a;
+    --safe:#5cc9b8;
+    --safe-bg:#123531;
+    --danger:#e07a72;
+    --danger-bg:#3a1a1a;
+    --info:#8aa8f2;
+    --info-bg:#182644;
+    --code-bg:#0a0d13;
+    --code-text:#dfe4ee;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    padding-inline:16px;
+    padding-block:0 32px;
+    line-height:1.55;
+    margin:0;
+  }
+  .wrap{max-width:880px;margin:0 auto;}
+
+  code, pre, .mono, .tag, .kbd{font-family:'IBM Plex Mono', ui-monospace, monospace;}
+
+  header.hero{ padding-block:28px 18px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{ content:""; width:8px;height:8px;border-radius:2px; background:var(--accent); display:inline-block; }
+  h1{ font-size:clamp(28px,6vw,40px); line-height:1.08; margin:10px 0 8px; letter-spacing:-0.01em; text-wrap:balance; }
+  .hero p{color:var(--text-muted); max-width:64ch; margin:0 0 14px; font-size:15px;}
+  .hero-meta{display:flex; flex-wrap:wrap; gap:8px; font-size:12px; color:var(--text-muted);}
+  .hero-meta span{ border:1px solid var(--border); border-radius:999px; padding:3px 10px; background:var(--surface); }
+
+  nav.jump{
+    position:sticky; top:env(safe-area-inset-top, 0px); z-index:20;
+    background:var(--bg); padding-block:10px; border-bottom:1px solid var(--border); margin-bottom:8px;
+  }
+  nav.jump .row{ display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; }
+  nav.jump .row::-webkit-scrollbar{display:none;}
+  nav.jump a{
+    flex:0 0 auto; font-size:12.5px; color:var(--text-muted); text-decoration:none;
+    background:var(--surface); border:1px solid var(--border); padding:6px 11px; border-radius:999px; white-space:nowrap;
+  }
+  nav.jump a:hover{border-color:var(--accent); color:var(--accent-ink);}
+
+  section{ padding-block:26px; border-bottom:1px solid var(--border); scroll-margin-top:64px; }
+  section:last-of-type{border-bottom:none;}
+
+  .sec-head{display:flex; align-items:baseline; gap:10px; margin-bottom:6px; flex-wrap:wrap;}
+  .sec-num{font-family:'IBM Plex Mono',monospace; color:var(--accent); font-size:13px; font-weight:600;}
+  h2{font-size:22px; margin:0; letter-spacing:-0.01em;}
+  h3{font-size:16.5px; margin:22px 0 8px; color:var(--text);}
+  h4{font-size:14px; margin:16px 0 6px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.04em;}
+  .dek{color:var(--text-muted); font-size:14.5px; margin:0 0 16px; max-width:68ch;}
+  p{margin:0 0 12px; font-size:14.5px;}
+  ul, ol{margin:0 0 14px; padding-left:20px; font-size:14.5px;}
+  li{margin-bottom:5px;}
+  strong{font-weight:600;}
+
+  .callout{ border-radius:10px; padding:12px 14px; margin:14px 0; font-size:13.8px; border:1px solid var(--border); background:var(--surface); }
+  .callout.warn{background:var(--danger-bg); border-color:transparent; color:var(--text);}
+  .callout.info{background:var(--info-bg); border-color:transparent;}
+  .callout.tip{background:var(--safe-bg); border-color:transparent;}
+  .callout .lbl{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; display:block; margin-bottom:4px;}
+  .callout.warn .lbl{color:var(--danger);}
+  .callout.info .lbl{color:var(--info);}
+  .callout.tip .lbl{color:var(--safe);}
+
+  .code-wrap{ background:var(--code-bg); color:var(--code-text); border-radius:10px; margin:12px 0 16px; overflow-x:auto; box-shadow:var(--shadow); }
+  .code-wrap .file{ font-size:11px; color:#8b93a3; padding:8px 14px 0; font-family:'IBM Plex Mono',monospace; }
+  .code-wrap pre{ margin:0; padding:10px 14px 14px; font-size:12.6px; line-height:1.6; white-space:pre; tab-size:2; }
+  .k{color:var(--code-key);} .s{color:var(--code-str);} .c{color:var(--code-com); font-style:italic;}
+
+  .tbl-wrap{overflow-x:auto; margin:12px 0 18px; border:1px solid var(--border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; font-size:13.2px; background:var(--surface);}
+  th, td{ text-align:left; padding:8px 12px; border-bottom:1px solid var(--border); vertical-align:top;}
+  th{ background:var(--surface-2); font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); white-space:nowrap; }
+  tr:last-child td{border-bottom:none;}
+  td code, th code{background:var(--surface-2); padding:1px 5px; border-radius:4px; font-size:12px;}
+
+  .tag{ display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:5px; letter-spacing:.02em; }
+  .tag.safe{background:var(--safe-bg); color:var(--safe);}
+  .tag.danger{background:var(--danger-bg); color:var(--danger);}
+  .tag.info{background:var(--info-bg); color:var(--info);}
+  .tag.accent{background:var(--accent-bg); color:var(--accent-ink);}
+
+  details{ border:1px solid var(--border); border-radius:10px; margin:10px 0; background:var(--surface); overflow:hidden; }
+  details summary{ cursor:pointer; padding:10px 14px; font-size:13.5px; font-weight:600; list-style:none; display:flex; align-items:center; gap:8px; color:var(--text); }
+  details summary::-webkit-details-marker{display:none;}
+  details summary::before{ content:"▸"; color:var(--accent); transition:transform .15s ease; font-size:11px; }
+  details[open] summary::before{transform:rotate(90deg);}
+  details .inner{padding:0 14px 14px;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0;}
+  @media (max-width:560px){.grid2{grid-template-columns:1fr;}}
+  .card{ border:1px solid var(--border); border-radius:10px; padding:12px 14px; background:var(--surface); }
+  .card h5{margin:0 0 6px; font-size:13.5px; font-family:'IBM Plex Mono',monospace; color:var(--accent-ink); }
+  .card p{margin:0; font-size:13px; color:var(--text-muted);}
+
+  footer{ padding-block:28px 12px; color:var(--text-muted); font-size:12.5px; text-align:center; }
+  a{color:var(--info);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Interview Reference</div>
+  <h1>Docker for Java &amp; AI Engineers</h1>
+  <p>A dense field guide to containers through a JVM and ML-workload lens — Dockerfiles, multi-stage builds, container-aware JVM tuning, GPU access for training/inference, Compose stacks, networking, volumes, and the traps interviewers probe.</p>
+  <div class="hero-meta">
+    <span>12 sections</span>
+    <span>Docker Engine 24+</span>
+    <span>JDK 17 / 21</span>
+    <span>Compiled Sep 2026</span>
+  </div>
+</header>
+
+<nav class="jump">
+  <div class="row">
+    <a href="#fundamentals">01 Fundamentals</a>
+    <a href="#dockerfile">02 Dockerfile</a>
+    <a href="#multistage">03 Multi-Stage (JVM)</a>
+    <a href="#jvm">04 JVM in Containers</a>
+    <a href="#ai">05 AI/ML Workloads</a>
+    <a href="#compose">06 Compose</a>
+    <a href="#networking">07 Networking</a>
+    <a href="#volumes">08 Volumes</a>
+    <a href="#security">09 Image Size &amp; Security</a>
+    <a href="#commands">10 Command Reference</a>
+    <a href="#traps">11 Common Traps</a>
+    <a href="#glossary">12 Glossary</a>
+  </div>
+</nav>
+
+<!-- 01 FUNDAMENTALS -->
+<section id="fundamentals">
+  <div class="sec-head"><span class="sec-num">01</span><h2>Fundamentals</h2></div>
+  <p class="dek">The vocabulary interviewers expect precisely, not approximately.</p>
+
+  <div class="grid2">
+    <div class="card"><h5>Image</h5><p>A read-only, layered filesystem snapshot plus metadata (entrypoint, env, exposed ports). Built once from a Dockerfile, run many times.</p></div>
+    <div class="card"><h5>Container</h5><p>A running instance of an image — the image's layers plus one thin writable layer on top. Ephemeral by default; delete it and the writable layer is gone.</p></div>
+    <div class="card"><h5>Registry</h5><p>A store for images (Docker Hub, ECR, GHCR, GCR). <code>docker push</code>/<code>pull</code> move images to and from it, addressed by <code>repo:tag</code> or a content digest.</p></div>
+    <div class="card"><h5>Layer</h5><p>One filesystem diff produced by one Dockerfile instruction. Layers are content-addressed and cached — unchanged layers are reused on rebuild.</p></div>
+  </div>
+
+  <h3>Container vs virtual machine</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th></th><th>Container</th><th>VM</th></tr>
+      <tr><td>Isolation unit</td><td>Process, isolated via kernel namespaces</td><td>Full OS, isolated via a hypervisor</td></tr>
+      <tr><td>Kernel</td><td>Shared with the host</td><td>Its own kernel</td></tr>
+      <tr><td>Startup</td><td>Milliseconds</td><td>Seconds to minutes</td></tr>
+      <tr><td>Overhead</td><td>MBs, no duplicated OS</td><td>GBs, full OS per VM</td></tr>
+      <tr><td>Boundary strength</td><td>Weaker — shared kernel attack surface</td><td>Stronger — hardware-level separation</td></tr>
+    </table>
+  </div>
+
+  <h3>What actually isolates a container</h3>
+  <p>Two Linux kernel primitives, not magic:</p>
+  <ul>
+    <li><strong>Namespaces</strong> — give a process its own view of a global resource: <code>pid</code> (process tree), <code>net</code> (interfaces, ports), <code>mnt</code> (filesystem mounts), <code>uts</code> (hostname), <code>ipc</code>, <code>user</code> (UID mapping).</li>
+    <li><strong>cgroups</strong> (control groups) — limit and account for resources a process group may use: CPU shares/quota, memory ceiling, block I/O, device access.</li>
+  </ul>
+  <div class="callout info"><span class="lbl">Interview framing</span>A container is "just a Linux process with namespaces for isolation and cgroups for resource limits." No hypervisor, no separate kernel — that's precisely why it starts fast and why <code>docker run</code> memory limits are enforced by cgroups, which matters a lot once you put a JVM inside one (see §04).</div>
+</section>
+
+<!-- 02 DOCKERFILE -->
+<section id="dockerfile">
+  <div class="sec-head"><span class="sec-num">02</span><h2>Dockerfile Essentials</h2></div>
+  <p class="dek">Every instruction, and the one distinction interviewers always check.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Instruction</th><th>Purpose</th></tr>
+      <tr><td><code>FROM</code></td><td>Base image; first instruction, can appear multiple times for multi-stage builds</td></tr>
+      <tr><td><code>RUN</code></td><td>Executes a command, commits the result as a new layer (build time)</td></tr>
+      <tr><td><code>COPY</code></td><td>Copies files from build context into the image; prefer over <code>ADD</code></td></tr>
+      <tr><td><code>ADD</code></td><td>Like <code>COPY</code> but also auto-extracts tarballs and fetches URLs — the implicit behavior is why teams avoid it</td></tr>
+      <tr><td><code>WORKDIR</code></td><td>Sets the working directory for subsequent instructions and the default CMD</td></tr>
+      <tr><td><code>ENV</code></td><td>Sets an environment variable, persisted into the running container</td></tr>
+      <tr><td><code>ARG</code></td><td>Build-time-only variable, not available inside the running container</td></tr>
+      <tr><td><code>EXPOSE</code></td><td>Documents a listening port; does not publish it (that's <code>-p</code> at run time)</td></tr>
+      <tr><td><code>VOLUME</code></td><td>Marks a path as a mount point for external storage</td></tr>
+      <tr><td><code>USER</code></td><td>Switches the effective user for subsequent instructions and at runtime</td></tr>
+      <tr><td><code>HEALTHCHECK</code></td><td>Command Docker runs periodically to mark the container healthy/unhealthy</td></tr>
+      <tr><td><code>ENTRYPOINT</code></td><td>The fixed executable for the container</td></tr>
+      <tr><td><code>CMD</code></td><td>Default arguments — to <code>ENTRYPOINT</code> if set, or the command itself if not</td></tr>
+    </table>
+  </div>
+
+  <h3>ENTRYPOINT vs CMD</h3>
+  <p>The pairing interviewers use to check you've actually shipped a container, not just copied a tutorial.</p>
+  <div class="code-wrap"><div class="file">Dockerfile</div><pre><span class="k">ENTRYPOINT</span> [<span class="s">"java"</span>, <span class="s">"-jar"</span>, <span class="s">"app.jar"</span>]
+<span class="k">CMD</span> [<span class="s">"--server.port=8080"</span>]</pre></div>
+  <p><code>docker run myapp</code> runs <code>java -jar app.jar --server.port=8080</code>. <code>docker run myapp --server.port=9090</code> replaces <code>CMD</code> entirely, giving <code>java -jar app.jar --server.port=9090</code> — arguments after the image name override <code>CMD</code>, never <code>ENTRYPOINT</code>. Use exec form (JSON array) so the process becomes PID 1 directly and receives <code>SIGTERM</code>; shell form (<code>CMD java -jar app.jar</code>) wraps it in <code>/bin/sh -c</code>, which swallows the signal.</p>
+
+  <div class="callout warn"><span class="lbl">Layer caching trap</span>Order instructions from least to most frequently changing. Copying source before installing dependencies invalidates the dependency-install layer on every code change:</div>
+  <div class="code-wrap"><div class="file">Dockerfile — wrong order</div><pre><span class="c">## invalidates the mvn layer on every source change</span>
+<span class="k">COPY</span> . .
+<span class="k">RUN</span> mvn dependency:go-offline</pre></div>
+  <div class="code-wrap"><div class="file">Dockerfile — cache-friendly order</div><pre><span class="c">## dependency layer only rebuilds when pom.xml changes</span>
+<span class="k">COPY</span> pom.xml .
+<span class="k">RUN</span> mvn dependency:go-offline
+<span class="k">COPY</span> src ./src
+<span class="k">RUN</span> mvn package -DskipTests</pre></div>
+</section>
+
+<!-- 03 MULTI-STAGE -->
+<section id="multistage">
+  <div class="sec-head"><span class="sec-num">03</span><h2>Multi-Stage Builds for JVM Apps</h2></div>
+  <p class="dek">Ship the runtime, not the toolchain that built it.</p>
+
+  <p>A build stage has Maven/Gradle, the JDK, and every source file. None of that belongs in the image that runs in production — it's attack surface and dead weight. Multi-stage builds compile in one stage and copy only the artifact into a slim final stage.</p>
+
+  <div class="code-wrap"><div class="file">Dockerfile — Spring Boot, multi-stage</div><pre><span class="c">## ---- build stage ----</span>
+<span class="k">FROM</span> maven:3.9-eclipse-temurin-21 <span class="k">AS</span> build
+<span class="k">WORKDIR</span> /src
+<span class="k">COPY</span> pom.xml .
+<span class="k">RUN</span> mvn dependency:go-offline
+<span class="k">COPY</span> src ./src
+<span class="k">RUN</span> mvn package -DskipTests
+
+<span class="c">## ---- runtime stage ----</span>
+<span class="k">FROM</span> eclipse-temurin:21-jre-alpine
+<span class="k">RUN</span> addgroup -S app && adduser -S app -G app
+<span class="k">USER</span> app
+<span class="k">WORKDIR</span> /app
+<span class="k">COPY</span> --from<span class="s">=build</span> /src/target/*.jar app.jar
+<span class="k">EXPOSE</span> 8080
+<span class="k">ENTRYPOINT</span> [<span class="s">"java"</span>, <span class="s">"-jar"</span>, <span class="s">"app.jar"</span>]</pre></div>
+
+  <p>Only the <code>jre</code> tag ships to production — no compiler, no build cache, no source. The final image is typically 150–200MB instead of 500MB+.</p>
+
+  <h3>Going further: jlink and distroless</h3>
+  <div class="grid2">
+    <div class="card"><h5>jlink custom runtime</h5><p>Build a minimal JRE containing only the modules your app uses (<code>java --list-modules</code> + <code>jdeps</code> to find them). Trims tens of MBs off the runtime; worth it for high-density deployments, not usually worth it for one service.</p></div>
+    <div class="card"><h5>Distroless base</h5><p><code>gcr.io/distroless/java21-debian12</code> ships a JRE with no shell, no package manager, no coreutils. Smaller attack surface than Alpine, but you lose <code>docker exec sh</code> for debugging — trade visibility for hardening.</p></div>
+  </div>
+
+  <div class="callout tip"><span class="lbl">Interview answer</span>"Multi-stage builds separate the build environment from the runtime environment so the final image only contains what's needed to <em>run</em> the app — smaller image, smaller CVE surface, and the Dockerfile stays the single source of truth for the build instead of relying on a CI script to assemble the artifact separately."</div>
+</section>
+
+<!-- 04 JVM IN CONTAINERS -->
+<section id="jvm">
+  <div class="sec-head"><span class="sec-num">04</span><h2>JVM in Containers</h2></div>
+  <p class="dek">The gotchas that separate "it runs in Docker" from "it's tuned for Docker."</p>
+
+  <h3>Container-aware ergonomics</h3>
+  <p>Before JDK 10, the JVM read <code>/proc/meminfo</code> and saw the <strong>host's</strong> total memory, not the container's cgroup limit — a JVM in a 512MB container would size its default heap off the host's 64GB and get OOM-killed. Since JDK 10 (backported to 8u191+), <code>-XX:+UseContainerSupport</code> is on by default: the JVM reads cgroup limits directly.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Flag</th><th>Effect</th></tr>
+      <tr><td><code>-Xmx512m</code></td><td>Fixed heap cap in MB — portable across container sizes only if you set it per-environment</td></tr>
+      <tr><td><code>-XX:MaxRAMPercentage=75.0</code></td><td>Heap sized as a % of the container's memory limit — the recommended default for containers</td></tr>
+      <tr><td><code>-XX:InitialRAMPercentage</code></td><td>Initial heap as a % of the container limit</td></tr>
+      <tr><td><code>-XX:ActiveProcessorCount=N</code></td><td>Overrides the CPU count the JVM sees — pin this if cgroup CPU quota detection misbehaves on older kernels</td></tr>
+    </table>
+  </div>
+
+  <div class="callout warn"><span class="lbl">Classic trap: exit code 137</span>Container killed, exit code <code>137</code> = <code>128 + SIGKILL(9)</code>. Almost always the kernel OOM killer, triggered because the JVM's <strong>total</strong> footprint (heap + metaspace + thread stacks + code cache + direct buffers) exceeded the container's memory limit — not just the heap. Sizing <code>-Xmx</code> to 100% of the container limit leaves nothing for the rest and reliably OOM-kills under load. <code>MaxRAMPercentage=75.0</code> leaves headroom on purpose.</div>
+
+  <h3>Thread pools sized off the wrong number</h3>
+  <p><code>Runtime.availableProcessors()</code> reads the cgroup CPU quota (post-JDK 10), not the host's core count — good. But a thread pool sized as <code>availableProcessors() * N</code> inside a container throttled to <code>0.5</code> CPU still rounds up to at least <code>1</code>, and a service that assumes 8 cores because the <em>host</em> has 8 will over-provision threads relative to its actual quota, causing CPU throttling (visible as latency spikes, not errors) rather than an obvious crash.</p>
+
+  <div class="callout info"><span class="lbl">Interview framing</span>"CPU throttling under cgroups is silent — the container isn't killed, requests just queue longer. If p99 latency degrades under load but CPU% looks moderate, check <code>cpu.stat</code>'s <code>nr_throttled</code> before assuming it's a code problem."</div>
+</section>
+
+<!-- 05 AI/ML -->
+<section id="ai">
+  <div class="sec-head"><span class="sec-num">05</span><h2>Containers for AI/ML Workloads</h2></div>
+  <p class="dek">Training and inference containers fight different constraints than a stateless API.</p>
+
+  <h3>GPU access</h3>
+  <p>A container shares the host kernel but not its drivers by default — GPU access requires the <strong>NVIDIA Container Toolkit</strong>, which injects the host's driver libraries and device nodes into the container at run time.</p>
+  <div class="code-wrap"><div class="file">shell</div><pre><span class="c"># expose all GPUs to the container</span>
+docker run --gpus all nvcr.io/nvidia/pytorch:24.01-py3
+
+<span class="c"># expose a specific GPU by index</span>
+docker run --gpus <span class="s">'"device=0"'</span> my-training-image</pre></div>
+  <div class="callout warn"><span class="lbl">Common trap</span>The <em>image's</em> CUDA toolkit version and the <em>host's</em> driver version have a compatibility floor — a container built against CUDA 12.4 fails at model load, not at container start, if the host driver predates it. Match the base image's CUDA minor version to what <code>nvidia-smi</code> reports as supported on the host.</div>
+
+  <h3>Base images by role</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Role</th><th>Typical base</th><th>Why</th></tr>
+      <tr><td>Training (GPU)</td><td><code>nvcr.io/nvidia/pytorch</code>, <code>tensorflow/tensorflow:*-gpu</code></td><td>Pre-built CUDA/cuDNN stack matched to the framework version — building this from scratch is a full day lost to version skew</td></tr>
+      <tr><td>Inference (GPU)</td><td><code>nvcr.io/nvidia/tritonserver</code>, custom <code>cuda-runtime</code> slim</td><td>Runtime-only CUDA libs, no compiler — smaller and faster to schedule</td></tr>
+      <tr><td>Inference (CPU)</td><td><code>python:3.12-slim</code></td><td>No CUDA layer at all when the model runs fine on CPU (small models, batch scoring)</td></tr>
+      <tr><td>JVM inference (DJL/ONNX Runtime)</td><td><code>eclipse-temurin:21-jre-alpine</code></td><td>Same container-aware JVM rules from §04 apply — size the heap, watch native memory used by the ONNX/DJL runtime outside the heap</td></tr>
+    </table>
+  </div>
+
+  <h3>Model weights: bake in, mount, or fetch</h3>
+  <div class="grid2">
+    <div class="card"><h5>Baked into the image</h5><p>Reproducible, versioned with the code. Bad fit for multi-GB weights — every rebuild re-pushes gigabytes, and registries have layer size limits to respect.</p></div>
+    <div class="card"><h5>Volume-mounted</h5><p>Weights live on a host path or network volume, mounted at run time. Image stays small and rebuilds fast; you now own keeping the mounted weights in sync with the code that expects them.</p></div>
+    <div class="card"><h5>Fetched at startup</h5><p>Entrypoint script pulls from S3/GCS/a model registry before starting the server. Flexible and image stays tiny, at the cost of slower cold starts and a network dependency at boot.</p></div>
+    <div class="card"><h5>Init container pattern</h5><p>A separate lightweight container fetches weights into a shared volume before the main container starts — common in Kubernetes, keeps fetch logic and serving logic decoupled.</p></div>
+  </div>
+
+  <h3>.dockerignore matters more here than anywhere else</h3>
+  <p>ML repos accumulate local checkpoints, <code>__pycache__</code>, notebook outputs, and cached datasets — all of which silently balloon the build context and every layer that <code>COPY .</code> touches.</p>
+  <div class="code-wrap"><div class="file">.dockerignore</div><pre>__pycache__/
+*.ipynb_checkpoints
+*.pt
+*.ckpt
+data/
+.venv/
+.git/</pre></div>
+</section>
+
+<!-- 06 COMPOSE -->
+<section id="compose">
+  <div class="sec-head"><span class="sec-num">06</span><h2>Docker Compose</h2></div>
+  <p class="dek">Multi-container local stacks, declared once.</p>
+
+  <div class="code-wrap"><div class="file">compose.yaml — Java API + Postgres + model server</div><pre><span class="k">services</span>:
+  <span class="k">api</span>:
+    <span class="k">build</span>: .
+    <span class="k">ports</span>: [<span class="s">"8080:8080"</span>]
+    <span class="k">environment</span>:
+      <span class="k">DB_URL</span>: <span class="s">jdbc:postgresql://db:5432/app</span>
+      <span class="k">MODEL_URL</span>: <span class="s">http://model:8000/predict</span>
+    <span class="k">depends_on</span>:
+      <span class="k">db</span>:
+        <span class="k">condition</span>: service_healthy
+
+  <span class="k">db</span>:
+    <span class="k">image</span>: postgres:16-alpine
+    <span class="k">environment</span>:
+      <span class="k">POSTGRES_PASSWORD</span>: <span class="s">devpass</span>
+    <span class="k">volumes</span>: [<span class="s">"pgdata:/var/lib/postgresql/data"</span>]
+    <span class="k">healthcheck</span>:
+      <span class="k">test</span>: [<span class="s">"CMD-SHELL"</span>, <span class="s">"pg_isready -U postgres"</span>]
+      <span class="k">interval</span>: 5s
+
+  <span class="k">model</span>:
+    <span class="k">image</span>: my-inference-server:latest
+    <span class="k">deploy</span>:
+      <span class="k">resources</span>:
+        <span class="k">reservations</span>:
+          <span class="k">devices</span>:
+            - <span class="k">capabilities</span>: [<span class="s">gpu</span>]
+
+<span class="k">volumes</span>:
+  <span class="k">pgdata</span>:</pre></div>
+  <p>Services resolve each other by name over the Compose-created network — the API reaches Postgres at <code>db:5432</code>, no IP addresses, no manual network wiring. <code>depends_on</code> with a <code>condition</code> waits for an actual health check, not just "container started."</p>
+</section>
+
+<!-- 07 NETWORKING -->
+<section id="networking">
+  <div class="sec-head"><span class="sec-num">07</span><h2>Networking</h2></div>
+  <p class="dek">What's reachable from where, by default.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Driver</th><th>Use case</th></tr>
+      <tr><td><code>bridge</code></td><td>Default for standalone containers on one host; containers on the same user-defined bridge resolve each other by name</td></tr>
+      <tr><td><code>host</code></td><td>Container shares the host's network namespace directly — no port mapping, no isolation, Linux-only</td></tr>
+      <tr><td><code>none</code></td><td>No networking at all — fully isolated, used for pure compute tasks</td></tr>
+      <tr><td><code>overlay</code></td><td>Multi-host networking for Swarm/orchestrated clusters</td></tr>
+    </table>
+  </div>
+
+  <div class="callout info"><span class="lbl">Interview trap</span>The <em>default</em> (unnamed) <code>bridge</code> network does <strong>not</strong> provide DNS-based service discovery between containers — that only works on a <strong>user-defined</strong> bridge network (which Compose creates for you automatically). Two containers on the default bridge must resolve each other by IP.</div>
+
+  <div class="code-wrap"><div class="file">shell</div><pre><span class="c"># publish container port 8080 to host port 8080</span>
+docker run -p 8080:8080 myapp
+
+<span class="c"># bind only to loopback</span>
+docker run -p 127.0.0.1:8080:8080 myapp</pre></div>
+</section>
+
+<!-- 08 VOLUMES -->
+<section id="volumes">
+  <div class="sec-head"><span class="sec-num">08</span><h2>Volumes &amp; Persistence</h2></div>
+  <p class="dek">Containers are ephemeral by design — state has to live somewhere else.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Type</th><th>Managed by</th><th>Typical use</th></tr>
+      <tr><td>Named volume</td><td>Docker</td><td>Databases, anything you want Docker to own the lifecycle of</td></tr>
+      <tr><td>Bind mount</td><td>You (host path)</td><td>Local dev — live-mounting source code or model weights from the host</td></tr>
+      <tr><td><code>tmpfs</code></td><td>Docker, in-memory</td><td>Secrets or scratch data that must never touch disk</td></tr>
+    </table>
+  </div>
+
+  <div class="callout warn"><span class="lbl">Common trap</span>A bind-mounted directory keeps the <strong>host's</strong> file ownership/UID inside the container. If the image runs as a non-root <code>USER</code> with a different UID than the host directory owner, writes fail with permission denied — align UIDs explicitly (<code>--user $(id -u):$(id -g)</code> in dev, or a matching UID in the Dockerfile).</div>
+</section>
+
+<!-- 09 SECURITY -->
+<section id="security">
+  <div class="sec-head"><span class="sec-num">09</span><h2>Image Size &amp; Security</h2></div>
+  <p class="dek">Smaller and more locked-down are usually the same set of changes.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Base image</th><th>Rough size</th><th>Shell/pkg manager</th></tr>
+      <tr><td><code>eclipse-temurin:21-jdk</code></td><td>~450MB</td><td>Yes — full JDK, dev only</td></tr>
+      <tr><td><code>eclipse-temurin:21-jre-alpine</code></td><td>~180MB</td><td>Yes (musl-based, some native libs behave differently)</td></tr>
+      <tr><td><code>gcr.io/distroless/java21-debian12</code></td><td>~200MB</td><td>No shell at all</td></tr>
+      <tr><td>Custom <code>jlink</code> runtime + <code>scratch</code></td><td>~80–120MB</td><td>No — smallest, most build effort</td></tr>
+    </table>
+  </div>
+
+  <h3>Checklist</h3>
+  <ul>
+    <li>Run as a non-root <code>USER</code> — a container running as root that escapes isolation is root on the host's kernel.</li>
+    <li>Never bake secrets into image layers with <code>ARG</code>/<code>ENV</code> — they persist in the image history even if a later layer deletes them. Use BuildKit's <code>--secret</code> flag or fetch secrets at runtime.</li>
+    <li>Pin base image tags to a digest or minor version, not <code>latest</code> — reproducibility and predictable CVE scanning.</li>
+    <li>Multi-stage builds so build-only tools (compilers, package managers) never reach the runtime image.</li>
+    <li>Scan images in CI (Trivy, Grype, or the registry's built-in scanner) before deploy, not after.</li>
+  </ul>
+
+  <div class="callout warn"><span class="lbl">Trap: secrets in ARG</span>Build-time <code>ARG</code> values persist in the image's layer history, readable long after the layer that used them.</div>
+  <div class="code-wrap"><div class="file">Dockerfile — leaks the secret into image history</div><pre><span class="k">ARG</span> API_KEY
+<span class="k">RUN</span> curl -H <span class="s">"Authorization: $API_KEY"</span> https://example.com</pre></div>
+  <p><code>docker history</code> on the resulting image reveals <code>API_KEY</code>'s value — <code>ARG</code> values are recorded per layer even though they're gone from the final filesystem. Use <code>RUN --mount=type=secret</code> instead, which never persists into a layer.</p>
+</section>
+
+<!-- 10 COMMANDS -->
+<section id="commands">
+  <div class="sec-head"><span class="sec-num">10</span><h2>Command Reference</h2></div>
+  <p class="dek">The 20 commands covering nearly everything day to day.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Command</th><th>What it does</th></tr>
+      <tr><td><code>docker build -t app:tag .</code></td><td>Build an image from the Dockerfile in the current context</td></tr>
+      <tr><td><code>docker run -d -p 8080:8080 app:tag</code></td><td>Run detached, publish a port</td></tr>
+      <tr><td><code>docker ps</code> / <code>docker ps -a</code></td><td>List running / all containers</td></tr>
+      <tr><td><code>docker logs -f &lt;id&gt;</code></td><td>Stream a container's stdout/stderr</td></tr>
+      <tr><td><code>docker exec -it &lt;id&gt; sh</code></td><td>Shell into a running container</td></tr>
+      <tr><td><code>docker inspect &lt;id&gt;</code></td><td>Full JSON metadata — mounts, network, env, limits</td></tr>
+      <tr><td><code>docker stats</code></td><td>Live CPU/memory/IO per container</td></tr>
+      <tr><td><code>docker stop</code> / <code>docker kill</code></td><td>SIGTERM then SIGKILL after a grace period / immediate SIGKILL</td></tr>
+      <tr><td><code>docker rm</code> / <code>docker rmi</code></td><td>Remove a stopped container / an image</td></tr>
+      <tr><td><code>docker system prune -a</code></td><td>Remove all unused containers, networks, and images — reclaims disk fast, destroys build cache</td></tr>
+      <tr><td><code>docker network ls</code> / <code>inspect</code></td><td>List / inspect networks</td></tr>
+      <tr><td><code>docker volume ls</code> / <code>inspect</code></td><td>List / inspect volumes</td></tr>
+      <tr><td><code>docker history &lt;image&gt;</code></td><td>Show each layer and its size</td></tr>
+      <tr><td><code>docker compose up -d</code></td><td>Start every service in <code>compose.yaml</code>, detached</td></tr>
+      <tr><td><code>docker compose logs -f &lt;svc&gt;</code></td><td>Follow logs for one service in the stack</td></tr>
+      <tr><td><code>docker compose down -v</code></td><td>Stop the stack and remove its volumes</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 11 TRAPS -->
+<section id="traps">
+  <div class="sec-head"><span class="sec-num">11</span><h2>Common Traps</h2></div>
+  <p class="dek">Every one of these has cost someone a debugging afternoon.</p>
+
+  <details><summary>Container exits immediately after <code>docker run</code></summary>
+    <div class="inner"><p>A container lives only as long as its PID 1 process. If your entrypoint is a script that finishes (or a server that daemonizes/forks into the background), PID 1 exits and Docker tears the container down — even though "the app looks started." Run the server in the foreground.</p></div>
+  </details>
+
+  <details><summary>"Port is already allocated"</summary>
+    <div class="inner"><p>Another container (often a previous run you forgot to remove) already published that host port. <code>docker ps</code> to find it, or just pick a different host port with <code>-p</code> — the container-side port can stay the same.</p></div>
+  </details>
+
+  <details><summary><code>docker exec</code> fails on a stopped container</summary>
+    <div class="inner"><p><code>exec</code> runs a new process <em>inside an already-running</em> container's namespaces — a stopped container has no running namespaces to join. Start it first, or use <code>docker cp</code> to pull files out of a stopped container without starting it.</p></div>
+  </details>
+
+  <details><summary>Rebuild doesn't pick up a code change</summary>
+    <div class="inner"><p>Usually stale layer caching from a <code>COPY</code> instruction ordered before the code that changed (see §02), or the build context excludes the changed path via <code>.dockerignore</code>. <code>docker build --no-cache</code> confirms whether caching is the cause before you go looking elsewhere.</p></div>
+  </details>
+
+  <details><summary>Environment variable set with <code>ENV</code> isn't visible in a later <code>RUN</code> in a different stage</summary>
+    <div class="inner"><p><code>ENV</code>/<code>ARG</code> scope is per build stage in a multi-stage Dockerfile — nothing from stage one crosses into stage two except what an explicit <code>COPY --from=</code> brings across as files.</p></div>
+  </details>
+
+  <details><summary>Alpine image breaks on a native dependency that works on Debian</summary>
+    <div class="inner"><p>Alpine uses <code>musl</code> libc, not <code>glibc</code>. Native libraries built against glibc (common in some Python/ML wheels and JNI bindings) can fail to load or behave subtly differently on musl. If a native dependency is misbehaving only in the Alpine image, that's the first thing to check — switch to a <code>-slim</code> (Debian-based) variant if it's not worth patching around.</p></div>
+  </details>
+</section>
+
+<!-- 12 GLOSSARY -->
+<section id="glossary">
+  <div class="sec-head"><span class="sec-num">12</span><h2>Glossary</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Term</th><th>Meaning</th></tr>
+      <tr><td>Build context</td><td>The set of files sent to the Docker daemon for a build — everything under the path passed to <code>docker build</code>, minus <code>.dockerignore</code> entries</td></tr>
+      <tr><td>BuildKit</td><td>Docker's modern build engine — parallel stage execution, build secrets, better cache mounts</td></tr>
+      <tr><td>OCI</td><td>Open Container Initiative — the spec Docker images and runtimes conform to, enabling portability across engines (containerd, Podman, etc.)</td></tr>
+      <tr><td>Rootless mode</td><td>Running the Docker daemon and containers without root privileges on the host</td></tr>
+      <tr><td>Sidecar</td><td>A helper container running alongside a main one in the same network/volume scope (log shipper, proxy, model-fetcher)</td></tr>
+      <tr><td>Cold start</td><td>Time from container start to serving its first real request — dominated by JVM class loading or model load for inference containers</td></tr>
+    </table>
+  </div>
+</section>
+
+<footer>Docker for Java &amp; AI Engineers · part of the <a href="index.html">cheatsheet index</a></footer>
+
+</div>
+</body>
+</html>
