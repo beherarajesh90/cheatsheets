@@ -1,15 +1,21 @@
 <!--
-THESIS: an index page as a real drawing sheet — a title block and six numbered
-sheets on cyanotype blueprint blue, not another glass-card dashboard grid.
-OWN-WORLD: deep cyanotype blue field, fine graph-paper linework, stencilled
-display type, IBM Plex Mono metadata, amber grease-pencil accent for marks.
-STORY: an engineer scans DRAWN BY / DATE / REV, then six sheets by discipline
-and picks the one they need — every sheet is a real drawing, not a card.
-FIRST VIEWPORT: title block bar top, sheet grid below, sheet one fully legible
-with number, discipline, icon and title before any scroll.
-FORM: blueprint drawing-index, chosen directly for a six-item personal
-reference site (see chat disclosure — full concept-seed round skipped as
-disproportionate to scope).
+THESIS: an index that reads as a screen-printed reference poster — flat ink
+panels with a deliberate color-registration offset that snaps true on
+hover — not another glass-card dashboard grid.
+OWN-WORLD: paper-white ground, black ink rules, Archivo Black masthead type,
+IBM Plex Mono meta labels, one flat poster color per category, misregistered
+hard-offset "shadow" as the signature depth device.
+STORY: visitor scans the color-key legend, finds a category band, picks a
+numbered panel — every panel is a print, not a card.
+FIRST VIEWPORT: masthead band, color legend, first category band and its
+panels legible before scroll.
+FORM: quick-reference poster, chosen directly with the user in chat after
+naming six candidate cheatsheet-object worlds (concept-seed round skipped —
+disproportionate for a personal reference site; direction picked by
+conversation instead of the dice).
+DATA-DRIVEN: categories/sheets live in one JS array (bottom of file) so
+adding a new cheatsheet later means one object, not new CSS — user stated
+more sheets are coming.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the
 finish review, the verdict, DESIGN.md, and every shipping raster carrying
 its provenance.
@@ -21,21 +27,17 @@ its provenance.
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cheatsheets — Rajesh Neyyala</title>
 <meta name="description" content="Engineering reference sheets: AWS, system design, concurrency, algorithms and microservices.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%230b3358'/%3E%3Cpath d='M4 4h16v16H4z' fill='none' stroke='%23ffb020' stroke-width='1.5'/%3E%3Cpath d='M4 9h16M9 4v16' stroke='%23ffb020' stroke-width='1'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23f4efe4'/%3E%3Crect x='3' y='3' width='18' height='18' fill='none' stroke='%23141414' stroke-width='2'/%3E%3Cpath d='M7 9h10M7 13h10M7 17h6' stroke='%23141414' stroke-width='1.6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Text:wght@600;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --blue-deep:#0a2c4d;
-    --blue:#0d3660;
-    --blue-line:rgba(196,222,248,0.14);
-    --blue-line-strong:rgba(196,222,248,0.26);
-    --paper:#eaf3fb;
-    --muted:#a9c6e2;
-    --amber:#ffb020;
-    --amber-dim:rgba(255,176,32,0.4);
-    --radius:2px;
+    --paper:#f4efe4;
+    --paper-raised:#fbf8f1;
+    --ink:#141414;
+    --ink-soft:#4a463d;
+    --rule:rgba(20,20,20,0.16);
   }
 
   *{box-sizing:border-box;}
@@ -43,311 +45,259 @@ its provenance.
 
   body{
     margin:0;
-    background-color:var(--blue-deep);
+    background:var(--paper);
     background-image:
-      repeating-linear-gradient(0deg, var(--blue-line) 0 1px, transparent 1px 80px),
-      repeating-linear-gradient(90deg, var(--blue-line) 0 1px, transparent 1px 80px),
-      repeating-linear-gradient(0deg, rgba(196,222,248,0.055) 0 1px, transparent 1px 16px),
-      repeating-linear-gradient(90deg, rgba(196,222,248,0.055) 0 1px, transparent 1px 16px);
-    color:var(--paper);
+      radial-gradient(rgba(20,20,20,0.05) 0.6px, transparent 0.6px);
+    background-size:6px 6px;
+    color:var(--ink);
     font-family:'IBM Plex Mono', ui-monospace, monospace;
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
   }
 
-  ::selection{ background:var(--amber); color:#1a1200; }
+  ::selection{ background:var(--ink); color:var(--paper); }
 
-  *:focus-visible{
-    outline:2px solid var(--amber);
-    outline-offset:3px;
-  }
+  *:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
 
   ::-webkit-scrollbar{ width:12px; height:12px; }
-  ::-webkit-scrollbar-track{ background:var(--blue-deep); }
-  ::-webkit-scrollbar-thumb{ background:var(--blue-line-strong); border:3px solid var(--blue-deep); border-radius:6px; }
-  ::-webkit-scrollbar-thumb:hover{ background:var(--amber-dim); }
+  ::-webkit-scrollbar-track{ background:var(--paper); }
+  ::-webkit-scrollbar-thumb{ background:var(--ink); border:3px solid var(--paper); border-radius:0; }
 
-  .stencil{
-    font-family:'Big Shoulders Stencil Text', 'Big Shoulders Stencil Display', sans-serif;
-    text-transform:uppercase;
-    letter-spacing:0.02em;
-  }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 20px 60px; }
 
-  .wrap{
-    max-width:1180px;
-    margin:0 auto;
-    padding:28px 20px 60px;
+  /* ---------- masthead ---------- */
+  .masthead{
+    background:var(--ink);
+    color:var(--paper);
+    margin:0 -20px 0;
+    padding:34px 20px 26px;
   }
-
-  /* ---------- title block ---------- */
-  .titleblock{
-    border:1.5px solid var(--blue-line-strong);
-    margin-bottom:34px;
+  .masthead-inner{ max-width:1140px; margin:0 auto; }
+  .masthead-kicker{
+    display:flex; align-items:center; gap:10px;
+    font-size:11px; letter-spacing:0.2em; color:rgba(244,239,228,0.6);
+    margin-bottom:10px;
   }
-  .titleblock-top{
-    display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    gap:20px;
-    padding:22px 22px 18px;
-    border-bottom:1.5px solid var(--blue-line-strong);
-  }
-  .titleblock-mark{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:11px;
-    color:var(--muted);
-    letter-spacing:0.18em;
-  }
-  .titleblock-mark svg{ width:22px; height:22px; flex:none; }
+  .masthead-kicker svg{ width:16px; height:16px; }
   h1{
-    margin:2px 0 0;
-    font-size:clamp(2.4rem, 6vw, 4.4rem);
-    line-height:0.95;
-    font-weight:800;
-    color:var(--paper);
-  }
-  .titleblock-sub{
-    margin:10px 0 0;
-    font-size:13px;
-    color:var(--muted);
-    letter-spacing:0.04em;
-  }
-  .titleblock-fields{
-    display:grid;
-    grid-template-columns:repeat(5, 1fr);
-  }
-  .field{
-    padding:10px 16px;
-    border-right:1px solid var(--blue-line);
-    font-size:10.5px;
-    letter-spacing:0.12em;
-    color:var(--muted);
-  }
-  .field:last-child{ border-right:none; }
-  .field b{
-    display:block;
-    margin-top:3px;
-    font-size:12.5px;
-    letter-spacing:0.03em;
-    color:var(--paper);
-    font-weight:600;
-  }
-
-  /* ---------- sheet grid ---------- */
-  .index-label{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin:0 0 16px;
-    font-size:11px;
-    letter-spacing:0.22em;
-    color:var(--muted);
-  }
-  .index-label::after{
-    content:"";
-    flex:1;
-    height:1px;
-    background:var(--blue-line-strong);
-  }
-
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:18px;
-  }
-
-  .sheet{
-    position:relative;
-    display:flex;
-    flex-direction:column;
-    min-height:230px;
-    padding:20px;
-    border:1.5px solid var(--blue-line-strong);
-    background:linear-gradient(180deg, rgba(234,243,251,0.03), transparent 40%);
-    color:inherit;
-    text-decoration:none;
-    opacity:0;
-    transform:translateY(10px);
-    animation:reveal 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
-    transition:background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-  }
-  .sheet:hover, .sheet:focus-visible{
-    transform:translateY(-4px);
-    background:linear-gradient(180deg, rgba(255,176,32,0.06), transparent 55%);
-    box-shadow:0 18px 30px -18px rgba(0,0,0,0.55);
-  }
-
-  .sheet::before, .sheet::after{
-    content:"";
-    position:absolute;
-    width:14px; height:14px;
-    border-color:var(--blue-line-strong);
-    transition:border-color 0.25s ease;
-  }
-  .sheet::before{ top:-1.5px; left:-1.5px; border-top:1.5px solid; border-left:1.5px solid; }
-  .sheet::after{ bottom:-1.5px; right:-1.5px; border-bottom:1.5px solid; border-right:1.5px solid; }
-  .sheet:hover::before, .sheet:hover::after,
-  .sheet:focus-visible::before, .sheet:focus-visible::after{
-    border-color:var(--amber);
-  }
-
-  .sheet-head{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    font-size:10.5px;
-    letter-spacing:0.14em;
-    color:var(--muted);
-    margin-bottom:18px;
-  }
-  .sheet-head .num{ color:var(--paper); font-weight:600; }
-  .sheet-head .tag{ color:var(--amber); text-align:right; }
-
-  .sheet-icon{ width:34px; height:34px; color:var(--muted); margin-bottom:14px; transition:color 0.25s ease; }
-  .sheet:hover .sheet-icon, .sheet:focus-visible .sheet-icon{ color:var(--amber); }
-
-  .sheet h2{
-    margin:0 0 8px;
-    font-size:1.5rem;
-    line-height:1.05;
-    font-weight:700;
-    color:var(--paper);
-    font-family:'Big Shoulders Stencil Text', sans-serif;
+    margin:0;
+    font-family:'Archivo Black', sans-serif;
     text-transform:uppercase;
+    font-size:clamp(2.6rem, 7vw, 5rem);
+    line-height:0.92;
+    letter-spacing:-0.01em;
+  }
+  .masthead-sub{
+    margin:12px 0 0;
+    font-size:13px;
+    color:rgba(244,239,228,0.72);
+    max-width:56ch;
+    line-height:1.6;
+  }
+
+  /* legend */
+  .legend{
+    display:flex; flex-wrap:wrap; gap:10px 22px;
+    list-style:none; margin:24px 0 0; padding:16px 0 0;
+    border-top:1px solid rgba(244,239,228,0.25);
+    font-size:11px; letter-spacing:0.06em;
+  }
+  .legend li{ display:flex; align-items:center; gap:8px; color:rgba(244,239,228,0.85); }
+  .legend .swatch{ width:10px; height:10px; flex:none; }
+
+  /* ---------- sections ---------- */
+  section.category{ margin-top:38px; }
+  .category-band{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px;
+    padding:9px 16px;
+    color:#fff;
+    font-family:'Archivo Black', sans-serif;
+    text-transform:uppercase;
+    font-size:clamp(1rem, 2.4vw, 1.35rem);
     letter-spacing:0.01em;
   }
-  .sheet p{
-    margin:0;
-    font-size:12.5px;
-    line-height:1.55;
-    color:var(--muted);
-    max-width:38ch;
-  }
-  .sheet-foot{
-    margin-top:auto;
-    padding-top:16px;
-    display:flex;
-    justify-content:space-between;
-    font-size:10px;
-    letter-spacing:0.1em;
-    color:rgba(169,198,226,0.55);
+  .category-band .count{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:11px;
+    letter-spacing:0.14em;
   }
 
-  @keyframes reveal{ to{ opacity:1; transform:translateY(0); } }
-  @media (prefers-reduced-motion:reduce){
-    .sheet{ animation:none; opacity:1; transform:none; }
+  .entries{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:22px 18px;
+    margin-top:20px;
   }
+
+  .entry{
+    position:relative;
+    display:flex; flex-direction:column;
+    min-height:220px;
+    padding:18px;
+    background:var(--paper-raised);
+    border:2px solid var(--ink);
+    color:inherit;
+    text-decoration:none;
+    box-shadow:5px 5px 0 var(--accent, var(--ink));
+    transition:box-shadow 0.3s cubic-bezier(.16,1,.3,1), transform 0.3s cubic-bezier(.16,1,.3,1), background 0.3s ease;
+  }
+  .entry:hover, .entry:focus-visible{
+    box-shadow:1px 1px 0 var(--accent, var(--ink));
+    transform:translate(4px,4px);
+    background:var(--accent-tint, var(--paper-raised));
+  }
+
+  .entry-head{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    font-size:10.5px; letter-spacing:0.12em; color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+  .entry-head .num{ color:var(--ink); font-weight:600; }
+
+  .entry-icon{ width:30px; height:30px; color:var(--accent, var(--ink)); margin-bottom:12px; transition:transform 0.3s ease; }
+  .entry:hover .entry-icon, .entry:focus-visible .entry-icon{ transform:scale(1.08) rotate(-2deg); }
+
+  .entry h3{
+    margin:0 0 8px;
+    font-family:'Archivo Black', sans-serif;
+    text-transform:uppercase;
+    font-size:1.18rem;
+    line-height:1.08;
+    letter-spacing:0;
+  }
+  .entry p{ margin:0; font-size:12.5px; line-height:1.55; color:var(--ink-soft); max-width:38ch; }
+
+  .entry-foot{
+    margin-top:auto; padding-top:14px;
+    display:flex; justify-content:space-between;
+    font-size:10px; letter-spacing:0.1em; color:var(--ink-soft);
+  }
+  .entry-foot .go{ font-weight:600; color:var(--ink); }
 
   footer{
-    margin-top:44px;
-    padding-top:18px;
-    border-top:1.5px solid var(--blue-line-strong);
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:space-between;
-    font-size:11px;
-    letter-spacing:0.06em;
-    color:var(--muted);
+    margin-top:52px; padding:20px 0 0;
+    border-top:2px solid var(--ink);
+    display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between;
+    font-size:11px; letter-spacing:0.05em; color:var(--ink-soft);
   }
-  footer a{ color:var(--paper); }
+  footer a{ color:var(--ink); }
 
   @media (max-width:980px){
-    .grid{ grid-template-columns:repeat(2, 1fr); }
-    .titleblock-fields{ grid-template-columns:repeat(3, 1fr); }
-    .field:nth-child(3){ border-right:none; }
+    .entries{ grid-template-columns:repeat(2, 1fr); }
   }
   @media (max-width:640px){
-    .grid{ grid-template-columns:1fr; }
-    .titleblock-top{ flex-direction:column; align-items:flex-start; }
-    .titleblock-fields{ grid-template-columns:repeat(2, 1fr); }
-    .field{ border-right:1px solid var(--blue-line); border-bottom:1px solid var(--blue-line); }
+    .entries{ grid-template-columns:1fr; }
+    .masthead{ padding:26px 16px 20px; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="titleblock">
-    <div class="titleblock-top">
-      <div>
-        <div class="titleblock-mark">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M9 3v18"/></svg>
-          DWG INDEX · CHEATSHEETS
-        </div>
-        <h1 class="stencil">Field&nbsp;Reference&nbsp;Sheets</h1>
-        <p class="titleblock-sub">Six drawings. AWS, system design, concurrency, algorithms, microservices.</p>
+  <div class="masthead">
+    <div class="masthead-inner">
+      <div class="masthead-kicker">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18"/><path d="M7 9h10M7 13h10M7 17h6"/></svg>
+        RAJESHNEYYALA.DEV
       </div>
-    </div>
-    <div class="titleblock-fields">
-      <div class="field">DRAWN BY<b>R. Neyyala</b></div>
-      <div class="field">DATE<b id="issue-date">—</b></div>
-      <div class="field">REV<b>A</b></div>
-      <div class="field">SCALE<b>N.T.S.</b></div>
-      <div class="field">SHEET<b>1 OF 1</b></div>
+      <h1>Cheatsheet Index</h1>
+      <p class="masthead-sub">A growing set of quick-reference sheets for interviews and day-to-day engineering. Color-coded by discipline — the key updates as sheets are added.</p>
+      <ul class="legend" id="legend"></ul>
     </div>
   </div>
 
-  <div class="index-label">SHEETS 01–06</div>
-
-  <div class="grid">
-
-    <a class="sheet" href="aws-cheatsheet.html" style="animation-delay:0.02s">
-      <div class="sheet-head"><span class="num">DWG-01</span><span class="tag">CLOUD / AWS</span></div>
-      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.5 4.5 4.5 0 0 1 17.5 17H7z"/></svg>
-      <h2>AWS for Java &amp; AI Engineers</h2>
-      <p>Core services, patterns and gotchas for Java and AI workloads on AWS.</p>
-      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
-    </a>
-
-    <a class="sheet" href="HLD-Cheat-Sheet.html" style="animation-delay:0.08s">      <div class="sheet-head"><span class="num">DWG-02</span><span class="tag">SYSTEM DESIGN</span></div>
-      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="4.5"/><rect x="4" y="10" width="16" height="4.5"/><rect x="4" y="16" width="16" height="4.5"/></svg>
-      <h2>HLD Interview Cheat Sheet</h2>
-      <p>High-level design primitives, trade-offs and interview patterns.</p>
-      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
-    </a>
-
-    <a class="sheet" href="lld-cheatsheet.html" style="animation-delay:0.14s">      <div class="sheet-head"><span class="num">DWG-03</span><span class="tag">SYSTEM DESIGN</span></div>
-      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16"/><path d="M4 11h16M12 11v9"/></svg>
-      <h2>LLD Knowledge Base</h2>
-      <p>Low-level design, OOP patterns and SDE2 backend fundamentals.</p>
-      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
-    </a>
-
-    <a class="sheet" href="java-concurrency-cheatsheet.html" style="animation-delay:0.20s">      <div class="sheet-head"><span class="num">DWG-04</span><span class="tag">CONCURRENCY</span></div>
-      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8c4 0 4 8 8 8s4-8 8-8"/><path d="M4 16c4 0 4-8 8-8s4 8 8 8"/></svg>
-      <h2>Java Concurrency</h2>
-      <p>Threads, locks, executors and the Java memory model, distilled.</p>
-      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
-    </a>
-
-    <a class="sheet" href="dsa-cheatsheet.html" style="animation-delay:0.26s">      <div class="sheet-head"><span class="num">DWG-05</span><span class="tag">ALGORITHMS</span></div>
-      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="4.5" r="2"/><circle cx="6" cy="14" r="2"/><circle cx="18" cy="14" r="2"/><circle cx="12" cy="19.5" r="1.6"/><path d="M12 6.5 6 12M12 6.5l6 5.5M6 16l4.5 2M18 16l-4.5 2"/></svg>
-      <h2>DSA Pattern Map</h2>
-      <p>Core data structure and algorithm patterns for interviews.</p>
-      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
-    </a>
-
-    <a class="sheet" href="microservices-cheatsheet.html" style="animation-delay:0.32s">      <div class="sheet-head"><span class="num">DWG-06</span><span class="tag">DISTRIBUTED SYS</span></div>
-      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z"/><path d="M12 3v18M4 7.5l8 4.5 8-4.5"/></svg>
-      <h2>Microservices Java Cheat Sheet</h2>
-      <p>Service boundaries, resilience and Java microservice patterns.</p>
-      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
-    </a>
-
-  </div>
+  <main id="sections"></main>
 
   <footer>
-    <span>© <span id="year">2026</span> Rajesh Neyyala · compiled reference set</span>
+    <span>© <span id="year"></span> Rajesh Neyyala · compiled reference set</span>
     <span>cheatsheets.rajeshneyyala.dev</span>
   </footer>
 
 </div>
+
 <script>
-  document.getElementById('year').textContent = new Date().getFullYear();
-  document.getElementById('issue-date').textContent = new Date().toISOString().slice(0,10);
+// One object per sheet. Add a new entry here to add a new tile — no CSS edits needed.
+// Category color assigns automatically from PALETTE, cycling if categories exceed it.
+const ICONS = {
+  cloud: '<path d="M7 17a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.5 4.5 4.5 0 0 1 17.5 17H7z"/>',
+  layers: '<rect x="4" y="4" width="16" height="4.5"/><rect x="4" y="10" width="16" height="4.5"/><rect x="4" y="16" width="16" height="4.5"/>',
+  blocks: '<rect x="4" y="4" width="16" height="16"/><path d="M4 11h16M12 11v9"/>',
+  threads: '<path d="M4 8c4 0 4 8 8 8s4-8 8-8"/><path d="M4 16c4 0 4-8 8-8s4 8 8 8"/>',
+  tree: '<circle cx="12" cy="4.5" r="2"/><circle cx="6" cy="14" r="2"/><circle cx="18" cy="14" r="2"/><circle cx="12" cy="19.5" r="1.6"/><path d="M12 6.5 6 12M12 6.5l6 5.5M6 16l4.5 2M18 16l-4.5 2"/>',
+  mesh: '<path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z"/><path d="M12 3v18M4 7.5l8 4.5 8-4.5"/>'
+};
+
+const PALETTE = [
+  { bg:'#c8402a', tint:'rgba(200,64,42,0.12)',  ink:'#fff' },
+  { bg:'#1e5bc6', tint:'rgba(30,91,198,0.10)',  ink:'#fff' },
+  { bg:'#dba018', tint:'rgba(219,160,24,0.16)', ink:'#141414' },
+  { bg:'#1f8f6f', tint:'rgba(31,143,111,0.12)', ink:'#fff' },
+  { bg:'#7b4fe0', tint:'rgba(123,79,224,0.12)', ink:'#fff' },
+  { bg:'#c23b7a', tint:'rgba(194,59,122,0.12)', ink:'#fff' },
+];
+
+const CATEGORIES = [
+  { name:'Cloud', sheets:[
+    { num:'01', title:'AWS for Java & AI Engineers', desc:'Core services, patterns and gotchas for Java and AI workloads on AWS.', href:'aws-cheatsheet.html', icon:'cloud' },
+  ]},
+  { name:'System Design', sheets:[
+    { num:'02', title:'HLD Interview Cheat Sheet', desc:'High-level design primitives, trade-offs and interview patterns.', href:'HLD-Cheat-Sheet.html', icon:'layers' },
+    { num:'03', title:'LLD Knowledge Base', desc:'Low-level design, OOP patterns and SDE2 backend fundamentals.', href:'lld-cheatsheet.html', icon:'blocks' },
+  ]},
+  { name:'Concurrency', sheets:[
+    { num:'04', title:'Java Concurrency', desc:'Threads, locks, executors and the Java memory model, distilled.', href:'java-concurrency-cheatsheet.html', icon:'threads' },
+  ]},
+  { name:'Algorithms', sheets:[
+    { num:'05', title:'DSA Pattern Map', desc:'Core data structure and algorithm patterns for interviews.', href:'dsa-cheatsheet.html', icon:'tree' },
+  ]},
+  { name:'Distributed Systems', sheets:[
+    { num:'06', title:'Microservices Java Cheat Sheet', desc:'Service boundaries, resilience and Java microservice patterns.', href:'microservices-cheatsheet.html', icon:'mesh' },
+  ]},
+];
+
+const legend = document.getElementById('legend');
+const sectionsRoot = document.getElementById('sections');
+
+CATEGORIES.forEach((cat, i) => {
+  const color = PALETTE[i % PALETTE.length];
+
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="swatch" style="background:${color.bg}"></span>${cat.name}`;
+  legend.appendChild(li);
+
+  const section = document.createElement('section');
+  section.className = 'category';
+  section.innerHTML = `
+    <div class="category-band" style="background:${color.bg}; color:${color.ink}">
+      <span>${cat.name}</span>
+      <span class="count">${String(cat.sheets.length).padStart(2,'0')} SHEET${cat.sheets.length > 1 ? 'S' : ''}</span>
+    </div>
+    <div class="entries"></div>
+  `;
+  const entriesRoot = section.querySelector('.entries');
+
+  cat.sheets.forEach(s => {
+    const a = document.createElement('a');
+    a.className = 'entry';
+    a.href = s.href;
+    a.style.setProperty('--accent', color.bg);
+    a.style.setProperty('--accent-tint', color.tint);
+    a.innerHTML = `
+      <div class="entry-head"><span class="num">No. ${s.num}</span><span>${cat.name.toUpperCase()}</span></div>
+      <svg class="entry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${ICONS[s.icon] || ''}</svg>
+      <h3>${s.title}</h3>
+      <p>${s.desc}</p>
+      <div class="entry-foot"><span>HTML</span><span class="go">OPEN →</span></div>
+    `;
+    entriesRoot.appendChild(a);
+  });
+
+  sectionsRoot.appendChild(section);
+});
+
+document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
