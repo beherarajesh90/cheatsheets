@@ -1,0 +1,3584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLD Interview Knowledge Base — SDE2 Backend</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root {
+  --bg:#0f172a;--bg2:#1e293b;--bg3:#2d3748;--bg4:#374151;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --accent:#a78bfa;--accent2:#c4b5fd;--accent3:#7c3aed;
+  --green:#10b981;--yellow:#f59e0b;--red:#ef4444;--blue:#3b82f6;--orange:#f97316;
+  --border:#334155;--sidebar-w:270px;--header-h:54px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.6;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+#header{height:var(--header-h);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+#header h1{font-size:14px;font-weight:700;color:var(--accent2);white-space:nowrap}
+#search-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--text);font-size:13px;width:200px;outline:none}
+#search-box:focus{border-color:var(--accent)}
+.hbtn{background:var(--accent3);color:#fff;border:none;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;white-space:nowrap}
+.hbtn:hover{background:var(--accent)}
+.hbtn.quiz-btn{background:#065f46;color:#6ee7b7}
+.hbtn.quiz-btn:hover{background:#047857}
+#mode-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;gap:4px;padding:5px 14px;flex-shrink:0;overflow-x:auto}
+.mode-btn{background:var(--bg3);color:var(--text2);border:none;padding:4px 11px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap;transition:all .15s}
+.mode-btn:hover{color:var(--text)}
+.mode-btn.active{background:var(--accent3);color:#fff}
+#layout{display:flex;flex:1;overflow:hidden}
+#sidebar{width:var(--sidebar-w);background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;padding:8px 0}
+.sb-group{margin-bottom:4px}
+.sb-group-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:8px 16px 4px}
+.sb-item{display:block;padding:5px 16px 5px 20px;color:var(--text2);font-size:12px;cursor:pointer;border-left:2px solid transparent;transition:all .15s}
+.sb-item:hover{color:var(--text);background:var(--bg3);border-left-color:var(--accent)}
+.sb-item.active{color:var(--accent2);background:var(--bg3);border-left-color:var(--accent)}
+#main{flex:1;overflow-y:auto;padding:24px 32px;max-width:980px}
+section{margin-bottom:48px;scroll-margin-top:16px}
+h1{font-size:21px;font-weight:800;color:var(--accent2);border-bottom:2px solid var(--accent3);padding-bottom:8px;margin-bottom:20px}
+h2{font-size:15px;font-weight:700;color:var(--text);margin:22px 0 10px}
+h3{font-size:13px;font-weight:600;color:var(--accent2);margin:14px 0 7px}
+p{color:var(--text2);margin-bottom:10px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px}
+.card-title{font-weight:700;color:var(--accent2);margin-bottom:8px;font-size:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:13px}
+th{background:var(--bg3);color:var(--accent2);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+tr:hover td{background:var(--bg3)}
+code{background:var(--bg3);padding:2px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:12px;color:var(--accent2)}
+pre{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;margin:10px 0 14px;overflow-x:auto;font-family:'Fira Code','Courier New',monospace;font-size:12px;color:#e2e8f0;line-height:1.5}
+.callout{border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:13px}
+.callout-tip{background:#0c2d1a;border-left:3px solid var(--green);color:#6ee7b7}
+.callout-warn{background:#2d1a0c;border-left:3px solid var(--yellow);color:#fcd34d}
+.callout-info{background:#0c1a2d;border-left:3px solid var(--blue);color:#93c5fd}
+.callout-purple{background:#1a0c2d;border-left:3px solid var(--accent3);color:var(--accent2)}
+ul,ol{padding-left:20px;color:var(--text2);margin-bottom:10px}
+li{margin-bottom:4px}
+.tag{display:inline-block;background:var(--accent3);color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin-right:4px;margin-bottom:4px}
+.tag-green{background:#065f46;color:#6ee7b7}
+.tag-yellow{background:#78350f;color:#fcd34d}
+.tag-blue{background:#1e3a5f;color:#93c5fd}
+.pattern-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
+.pattern-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.p-creational{color:var(--green)}
+.p-structural{color:var(--blue)}
+.p-behavioral{color:var(--accent2)}
+.mermaid{background:var(--bg3);border-radius:8px;padding:12px;margin:10px 0;overflow-x:auto}
+.solid-card{border-left:4px solid var(--accent3)}
+.comparison-table th{background:var(--bg3)}
+.trap-item{background:var(--bg3);border-radius:8px;padding:12px;margin-bottom:10px;border-left:3px solid var(--yellow)}
+.top100-list li{padding:4px 0;border-bottom:1px solid var(--border);color:var(--text2);font-size:13px}
+.concept-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px}
+
+/* Pattern comparison section */
+.pair-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px}
+.pair-title{font-weight:700;color:var(--orange);font-size:13px;margin-bottom:8px}
+.pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pair-side{background:var(--bg2);border-radius:8px;padding:10px}
+.pair-side h4{font-size:12px;font-weight:600;margin-bottom:6px}
+.pair-side.left h4{color:var(--blue)}
+.pair-side.right h4{color:var(--green)}
+.pair-verdict{background:var(--bg2);border-left:3px solid var(--orange);padding:8px 12px;border-radius:0 6px 6px 0;margin-top:8px;font-size:12px;color:var(--text2)}
+
+/* Pattern Quiz */
+#quiz-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px}
+.quiz-box{background:var(--bg2);border:2px solid var(--accent3);border-radius:16px;padding:30px;max-width:680px;width:100%;margin:auto}
+.quiz-score-bar{height:6px;background:var(--bg3);border-radius:3px;margin-bottom:20px;overflow:hidden}
+.quiz-score-fill{height:100%;background:var(--green);border-radius:3px;transition:width .4s}
+.quiz-scenario{background:var(--bg3);border-radius:8px;padding:16px;margin-bottom:18px;font-size:13px;color:var(--text);line-height:1.6}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.quiz-opt{background:var(--bg3);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s;text-align:left}
+.quiz-opt:hover{border-color:var(--accent);color:var(--text)}
+.quiz-opt.correct{background:#0c2d1a;border-color:var(--green);color:#6ee7b7}
+.quiz-opt.wrong{background:#2d0c0c;border-color:var(--red);color:#fca5a5}
+.quiz-opt.reveal-correct{background:#0c2d1a;border-color:var(--green);color:#6ee7b7}
+.quiz-explanation{background:var(--bg3);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:12px 16px;font-size:12px;color:var(--text2);margin-bottom:14px;display:none}
+
+/* Flashcard enhanced */
+#fc-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;align-items:center;justify-content:center}
+.fc-box{background:var(--bg2);border:2px solid var(--accent3);border-radius:16px;padding:32px;max-width:640px;width:92%;position:relative}
+.fc-progress-bar{height:4px;background:var(--bg3);border-radius:2px;margin-bottom:16px;overflow:hidden}
+.fc-progress-fill{height:100%;background:var(--accent3);border-radius:2px;transition:width .3s}
+.fc-cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.fc-cat{padding:3px 10px;border-radius:12px;font-size:11px;cursor:pointer;border:1px solid var(--border);color:var(--text2)}
+.fc-cat.active{background:var(--accent3);color:#fff;border-color:var(--accent3)}
+.fc-cat.cat-oop{border-color:#10b981}
+.fc-cat.cat-oop.active{background:#10b981;color:#fff}
+.fc-cat.cat-creational{border-color:#3b82f6}
+.fc-cat.cat-creational.active{background:#3b82f6;color:#fff}
+.fc-cat.cat-structural{border-color:#f97316}
+.fc-cat.cat-structural.active{background:#f97316;color:#fff}
+.fc-cat.cat-behavioral{border-color:#a78bfa}
+.fc-cat.cat-behavioral.active{background:#a78bfa;color:#fff}
+.fc-cat.cat-concurrency{border-color:#ef4444}
+.fc-cat.cat-concurrency.active{background:#ef4444;color:#fff}
+.fc-cat.cat-cases{border-color:#f59e0b}
+.fc-cat.cat-cases.active{background:#f59e0b;color:#000}
+.fc-meta{display:flex;justify-content:space-between;align-items:center;color:var(--text3);font-size:12px;margin-bottom:12px}
+.fc-known-count{color:var(--green);font-weight:600}
+.fc-card-area{min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:8px 0}
+.fc-question{font-size:1.1rem;font-weight:600;color:var(--text);padding:16px;text-align:center}
+.fc-answer{display:none;margin-top:14px;font-size:.9rem;color:var(--accent2);background:var(--bg3);padding:14px;border-radius:8px;width:100%;white-space:pre-line}
+.fc-hint{color:var(--text3);font-size:.75rem;margin-top:8px}
+.fc-actions{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.fc-btn{padding:7px 18px;border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}
+.fc-btn-nav{background:var(--bg3);color:var(--text2)}
+.fc-btn-known{background:#065f46;color:#6ee7b7}
+.fc-btn-review{background:#78350f;color:#fcd34d}
+.fc-btn-next{background:var(--accent3);color:#fff}
+.fc-btn-shuffle{background:var(--bg3);color:var(--text2)}
+
+@media(max-width:700px){
+  #sidebar{display:none}
+  .grid-2,.grid-3,.pair-grid,.quiz-options{grid-template-columns:1fr}
+  #main{padding:14px}
+}
+
+/* Quiz overlay */
+#quiz-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.85); display:flex;
+  align-items:center; justify-content:center; z-index:1000;
+}
+.quiz-container {
+  background:var(--bg2); border:1px solid var(--border); border-radius:12px;
+  width:min(700px,95vw); max-height:90vh; overflow-y:auto; padding:24px;
+}
+.quiz-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.quiz-close { background:none; border:1px solid var(--border); color:var(--text); 
+  padding:4px 10px; border-radius:6px; cursor:pointer; font-size:18px; }
+#quiz-score-bar { height:6px; background:var(--bg3); border-radius:3px; margin-bottom:20px; }
+#quiz-score-fill { height:100%; background:var(--green); border-radius:3px; transition:width 0.4s; }
+.quiz-scenario-text { background:var(--bg3); padding:16px; border-radius:8px; 
+  font-size:15px; line-height:1.6; margin-bottom:16px; }
+#quiz-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.quiz-opt { background:var(--bg3); border:1px solid var(--border); color:var(--text);
+  padding:12px 16px; border-radius:8px; cursor:pointer; font-size:14px; text-align:left;
+  transition:all 0.2s; }
+.quiz-opt:hover:not(:disabled) { border-color:var(--blue); background:rgba(74,158,255,0.1); }
+.quiz-correct { background:rgba(56,178,120,0.2) !important; border-color:var(--green) !important; color:var(--green) !important; }
+.quiz-wrong { background:rgba(229,83,83,0.2) !important; border-color:var(--red) !important; color:var(--red) !important; }
+#quiz-feedback { padding:14px; border-radius:8px; font-size:14px; line-height:1.6; margin-bottom:12px; }
+.quiz-feedback-correct { background:rgba(56,178,120,0.15); border:1px solid var(--green); }
+.quiz-feedback-wrong { background:rgba(229,83,83,0.15); border:1px solid var(--red); }
+.fb-icon { font-size:18px; }
+#quiz-next { background:var(--blue); color:#fff; border:none; padding:10px 24px;
+  border-radius:8px; cursor:pointer; font-size:15px; width:100%; }
+#quiz-result { text-align:center; padding:24px; }
+#quiz-result-icon { font-size:64px; margin-bottom:12px; }
+#quiz-result-score { font-size:36px; font-weight:700; color:var(--green); margin-bottom:8px; }
+#quiz-result-msg { font-size:15px; color:var(--text-muted); margin-bottom:20px; }
+#quiz-result button { margin:6px; padding:10px 20px; border-radius:8px; 
+  cursor:pointer; font-size:14px; border:1px solid var(--border); background:var(--bg3); color:var(--text); }
+
+/* Flashcard overlay */
+#fc-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.85); display:flex;
+  align-items:center; justify-content:center; z-index:1000;
+}
+.fc-container {
+  background:var(--bg2); border:1px solid var(--border); border-radius:12px;
+  width:min(680px,95vw); max-height:95vh; overflow-y:auto; padding:24px;
+}
+.fc-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+#fc-category-bar { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.fc-cat { background:var(--bg3); border:1px solid var(--border); color:var(--text-muted);
+  padding:5px 12px; border-radius:20px; cursor:pointer; font-size:12px; }
+.fc-cat.active, .fc-cat:hover { border-color:var(--blue); color:var(--blue); background:rgba(74,158,255,0.1); }
+#fc-progress-bar { height:4px; background:var(--bg3); border-radius:2px; margin-bottom:16px; }
+#fc-progress-fill { height:100%; background:var(--blue); border-radius:2px; transition:width 0.3s; }
+#fc-card-area { min-height:260px; margin-bottom:16px; }
+#fc-card { background:var(--bg3); border:2px solid var(--border); border-radius:12px;
+  padding:24px; min-height:220px; cursor:pointer; transition:border-color 0.3s;
+  display:flex; flex-direction:column; justify-content:center; }
+#fc-card:hover { border-color:var(--blue); }
+#fc-card.fc-known { border-color:var(--green); }
+#fc-card.fc-review { border-color:#f59e0b; }
+#fc-front, #fc-back { font-size:16px; line-height:1.6; }
+#fc-front p, #fc-back p { font-size:15px; line-height:1.7; }
+#fc-hint { text-align:center; color:var(--text-muted); font-size:12px; margin-top:12px; }
+.fc-cat-tag { display:inline-block; font-size:10px; font-weight:700; letter-spacing:1px;
+  background:var(--bg4); border-radius:4px; padding:2px 8px; margin-bottom:10px;
+  color:var(--blue); border:1px solid rgba(74,158,255,0.3); }
+#fc-controls { display:flex; gap:8px; justify-content:center; margin-bottom:12px; }
+#fc-controls button { background:var(--bg3); border:1px solid var(--border); color:var(--text);
+  padding:8px 16px; border-radius:8px; cursor:pointer; font-size:13px; }
+#fc-btn-known:hover { border-color:var(--green); color:var(--green); }
+#fc-btn-review:hover { border-color:#f59e0b; color:#f59e0b; }
+#fc-legend { display:flex; gap:12px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-muted); }
+#fc-legend button { background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:12px; text-decoration:underline; }
+#fc-known-count { color:var(--green); }
+#fc-review-count { color:#f59e0b; }
+
+/* QA list */
+.qa-list details { border:1px solid var(--border); border-radius:8px; margin-bottom:8px; }
+.qa-list summary { padding:12px 16px; cursor:pointer; font-weight:600; list-style:none;
+  display:flex; align-items:center; gap:8px; }
+.qa-list summary::-webkit-details-marker { display:none; }
+.qa-list summary::before { content:'▶'; font-size:10px; transition:transform 0.2s; color:var(--blue); }
+details[open] summary::before { transform:rotate(90deg); }
+.qa-answer { padding:12px 16px 16px; border-top:1px solid var(--border); 
+  font-size:14px; line-height:1.7; }
+.qa-answer pre { background:var(--bg3); padding:12px; border-radius:6px; overflow-x:auto; font-size:12px; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h1>⚙️ LLD Interview Knowledge Base — SDE2</h1>
+  <input id="search-box" type="text" placeholder="/ to search..." oninput="doSearch(this.value)">
+  <button class="hbtn" onclick="openFlashcards()">⚡ Flashcards</button>
+  <button class="hbtn quiz-btn" onclick="openQuiz()">🎯 Pattern Quiz</button>
+</div>
+
+<div id="mode-bar">
+  <button class="mode-btn active" data-mode="full" onclick="showMode('full')">📚 Full Reference</button>
+  <button class="mode-btn" data-mode="15min" onclick="showMode('15min')">⏱ 15-min</button>
+  <button class="mode-btn" data-mode="1hr" onclick="showMode('1hr')">🕐 1-hr</button>
+  <button class="mode-btn" data-mode="3hr" onclick="showMode('3hr')">🕒 3-hr</button>
+  <button class="mode-btn" data-mode="patterns" onclick="showMode('patterns')">🎨 Patterns</button>
+  <button class="mode-btn" data-mode="cases" onclick="showMode('cases')">🏗 Cases</button>
+  <button class="mode-btn" data-mode="traps" onclick="showMode('traps')">⚠️ Traps</button>
+</div>
+
+<div id="layout">
+<nav id="sidebar">
+  <div class="sb-group">
+    <div class="sb-group-title">Foundations</div>
+    <span class="sb-item active" onclick="nav('sec-oop')">OOP Fundamentals</span>
+    <span class="sb-item" onclick="nav('sec-solid')">SOLID Principles</span>
+    <span class="sb-item" onclick="nav('sec-framework')">Interview Framework</span>
+    <span class="sb-item" onclick="nav('sec-uml')">UML Class Diagrams</span>
+  </div>
+  <div class="sb-group">
+    <div class="sb-group-title">Design Patterns</div>
+    <span class="sb-item" onclick="nav('sec-creational')">Creational (5)</span>
+    <span class="sb-item" onclick="nav('sec-structural')">Structural (7)</span>
+    <span class="sb-item" onclick="nav('sec-behavioral')">Behavioral (11)</span>
+    <span class="sb-item" onclick="nav('sec-comparison')">⚖️ Pattern Comparisons</span>
+  </div>
+  <div class="sb-group">
+    <div class="sb-group-title">Java Specifics</div>
+    <span class="sb-item" onclick="nav('sec-java')">Java OOP &amp; Collections</span>
+    <span class="sb-item" onclick="nav('sec-concurrency')">Concurrency Patterns</span>
+  </div>
+  <div class="sb-group">
+    <div class="sb-group-title">GRASP &amp; Case Studies</div>
+    <span class="sb-item" onclick="nav('sec-grasp')">GRASP Principles</span>
+    <span class="sb-item" onclick="nav('sec-cases')">15 LLD Case Studies</span>
+  </div>
+  <div class="sb-group">
+    <div class="sb-group-title">Interview Prep</div>
+    <span class="sb-item" onclick="nav('sec-decisions')">Decision Trees</span>
+    <span class="sb-item" onclick="nav('sec-traps')">LLD Traps (15)</span>
+    <span class="sb-item" onclick="nav('sec-top50')">Top 50 Concepts</span>
+    <span class="sb-item" onclick="nav('sec-qbank')">Q Bank</span>
+    <span class="sb-item" onclick="nav('sec-revision')">Rapid Revision</span>
+  </div>
+</nav>
+
+<main id="main">
+<!-- ===== OOP FUNDAMENTALS ===== -->
+<section id="sec-oop" class="mode-full mode-1hr mode-3hr">
+<h1>OOP Fundamentals</h1>
+<div class="callout callout-tip">LLD interviews test whether you can translate real-world requirements into clean, extensible object-oriented code. Master these four pillars — they underpin every design pattern.</div>
+
+<h2>The Four Pillars</h2>
+<div class="grid-2">
+<div class="card solid-card" style="border-left-color:#10b981">
+<div class="card-title">🔒 Encapsulation</div>
+<p>Bundle data + behaviour. Hide internal state. Control access via a well-defined interface.</p>
+<pre><code>// BAD: public fields
+class BankAccount { public double balance; }
+
+// GOOD: encapsulated
+class BankAccount {
+  private double balance;
+  public void deposit(double amt) {
+    if (amt <= 0) throw new IllegalArgumentException();
+    this.balance += amt;
+  }
+  public double getBalance() { return balance; }
+}</code></pre>
+<strong>Why:</strong> Change internals without breaking callers. Invariants enforced in one place.
+</div>
+<div class="card solid-card" style="border-left-color:#3b82f6">
+<div class="card-title">🔮 Abstraction</div>
+<p>Expose WHAT an object does, hide HOW it does it. Depend on the interface, not the implementation.</p>
+<pre><code>interface PaymentGateway {
+  boolean charge(String userId, double amount);
+  boolean refund(String txnId);
+}
+
+// Multiple implementations, same interface
+class StripeGateway implements PaymentGateway {...}
+class PayPalGateway implements PaymentGateway {...}
+class RazorpayGateway implements PaymentGateway {...}</code></pre>
+<strong>Why:</strong> Swap implementations without touching callers. Easy to mock in tests.
+</div>
+</div>
+<div class="grid-2">
+<div class="card solid-card" style="border-left-color:#a78bfa">
+<div class="card-title">🧬 Inheritance</div>
+<p>Child class inherits fields + methods from parent. Enables IS-A relationships and code reuse.</p>
+<pre><code>abstract class Vehicle {
+  protected String id;
+  abstract double calculateFare(double km);
+  void startEngine() { System.out.println("Vroom"); }
+}
+class Car extends Vehicle {
+  double calculateFare(double km) { return km * 12.0; }
+}
+class Bike extends Vehicle {
+  double calculateFare(double km) { return km * 8.0; }
+}</code></pre>
+<strong>Pitfall:</strong> Deep hierarchies = tight coupling. Prefer composition when in doubt.
+</div>
+<div class="card solid-card" style="border-left-color:#f59e0b">
+<div class="card-title">🌀 Polymorphism</div>
+<p>Same interface, different behaviour. Runtime polymorphism (overriding) vs compile-time (overloading).</p>
+<pre><code>// Runtime polymorphism
+Vehicle v = new Car();
+v.calculateFare(10); // → Car's version at runtime
+
+// Single method works for ANY Vehicle
+void printFare(Vehicle v, double km) {
+  System.out.println(v.getClass().getSimpleName()
+    + ": ₹" + v.calculateFare(km));
+}
+// Overloading (compile-time)
+int add(int a, int b)    { return a+b; }
+double add(double a, double b) { return a+b; }</code></pre>
+<strong>Why:</strong> Write general code that works for all subtypes. Add new types without changing existing code (OCP).
+</div>
+</div>
+
+<h2>Beyond the 4 Pillars</h2>
+<div class="grid-3">
+<div class="card">
+<div class="card-title">Composition vs Inheritance</div>
+<pre><code>// INHERITANCE (wrong)
+class Stack extends ArrayList {
+  // exposes add(), remove(), get()!
+}
+
+// COMPOSITION (right)
+class Stack {
+  private ArrayList&lt;E&gt; list;
+  void push(E e) { list.add(e); }
+  E pop() { return list.remove(list.size()-1); }
+  // Only exposes what's needed
+}</code></pre>
+<strong>Rule:</strong> IS-A → inherit. HAS-A or wants to restrict → compose.
+</div>
+<div class="card">
+<div class="card-title">Law of Demeter</div>
+<pre><code>// VIOLATION (train wreck)
+order.getCustomer()
+     .getAddress()
+     .getCity(); // talks to strangers
+
+// BETTER (tell, don't ask)
+order.getCustomerCity(); // delegate internally
+
+// Each unit should have limited
+// knowledge about other units.
+// "Only talk to your direct friends."</code></pre>
+</div>
+<div class="card">
+<div class="card-title">Tell, Don't Ask</div>
+<pre><code>// ASK (bad) — asking state then deciding
+if (account.getBalance() > amount) {
+  account.debit(amount);
+}
+
+// TELL (good) — let object decide
+account.debit(amount); // throws if insufficient
+
+// Objects should be responsible
+// for their own behaviour.</code></pre>
+</div>
+</div>
+
+<div class="callout callout-warn">
+<strong>Interview tip:</strong> When asked "what is OOP?", don't just list the 4 pillars. Show you understand the design goal: managing complexity through modularity, encapsulation of change, and the power of polymorphism to write open/extensible code.
+</div>
+</section>
+
+<!-- ===== SOLID ===== -->
+<section id="sec-solid" class="mode-full mode-1hr mode-3hr">
+<h1>SOLID Principles</h1>
+<div class="callout callout-purple"><strong>Mnemonic:</strong> <strong>S</strong>mall classes, <strong>O</strong>pen doors, <strong>L</strong>iskov promises, <strong>I</strong>nterface diets, <strong>D</strong>epend up. Every SOLID principle has a pattern that implements it.</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">S — Single Responsibility Principle</div>
+<h3>A class should have exactly one reason to change</h3>
+<p>If a class handles both business logic AND data persistence AND formatting, it has 3 reasons to change. Split it.</p>
+<pre><code>// BAD: one class does everything
+class Report {
+  List&lt;Sale&gt; fetchSalesData() {...}    // DB access
+  double calculateRevenue() {...}      // business logic
+  String formatHTML() {...}            // formatting
+  void sendByEmail() {...}             // transport
+}
+
+// GOOD: each class has one concern
+class SalesRepository  { List&lt;Sale&gt; fetchSalesData() {...} }
+class RevenueCalculator { double calculate(List&lt;Sale&gt; s) {...} }
+class ReportFormatter   { String formatHTML(Report r) {...} }
+class EmailService      { void send(String to, String body) {...} }</code></pre>
+<span class="tag tag-green">Pattern: Service decomposition</span>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">O — Open/Closed Principle</div>
+<h3>Open for extension, closed for modification</h3>
+<p>Add new behaviour by adding new code, not changing existing code. Implemented via polymorphism.</p>
+<pre><code>// BAD: adding new shape requires modifying AreaCalculator
+class AreaCalculator {
+  double area(Object shape) {
+    if (shape instanceof Circle) { ... }
+    else if (shape instanceof Rectangle) { ... }
+    // Must edit this class for every new shape!
+  }
+}
+
+// GOOD: add new shape = add new class, nothing changes
+interface Shape { double area(); }
+class Circle implements Shape { double area() { return Math.PI*r*r; } }
+class Rectangle implements Shape { double area() { return w*h; } }
+class Triangle implements Shape { double area() { return 0.5*b*h; } }
+// AreaCalculator.sum(shapes) never needs to change!</code></pre>
+<span class="tag tag-green">Pattern: Strategy, Observer, Factory Method</span>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">L — Liskov Substitution Principle</div>
+<h3>Subtypes must be substitutable for their base types</h3>
+<p>If S extends T, wherever T is used, S must work correctly without callers knowing. Classic violation: Square extends Rectangle.</p>
+<pre><code>// VIOLATION: Square extends Rectangle
+class Rectangle { void setWidth(int w); void setHeight(int h); }
+class Square extends Rectangle {
+  void setWidth(int w) { this.w = this.h = w; } // breaks Rectangle contract!
+}
+void test(Rectangle r) {
+  r.setWidth(5); r.setHeight(4);
+  assert r.area() == 20; // FAILS for Square (gets 16)!
+}
+
+// FIX: both implement Shape
+interface Shape { double area(); }
+class Rectangle implements Shape { ... }
+class Square implements Shape { ... }
+
+// LSP rules: subtypes must:
+// - Accept same or wider input parameters
+// - Return same or narrower output
+// - Not throw new exception types
+// - Not strengthen preconditions
+// - Not weaken postconditions</code></pre>
+<span class="tag tag-green">Pattern: Always think "can caller tell the difference?"</span>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">I — Interface Segregation Principle</div>
+<h3>Clients should not depend on methods they don't use</h3>
+<p>Fat interfaces force implementors to implement irrelevant methods (empty or throw). Split them.</p>
+<pre><code>// BAD: fat interface
+interface Worker {
+  void work(); void eat(); void sleep();
+}
+class Robot implements Worker {
+  void work() { ... }
+  void eat() { throw new UnsupportedOperationException(); } // robots don't eat!
+  void sleep() { throw new UnsupportedOperationException(); }
+}
+
+// GOOD: segregated interfaces
+interface Workable { void work(); }
+interface Eatable  { void eat();  }
+interface Sleepable { void sleep(); }
+class Human implements Workable, Eatable, Sleepable { ... }
+class Robot implements Workable { void work() { ... } }</code></pre>
+<span class="tag tag-green">Pattern: Multiple focused interfaces over one fat interface</span>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">D — Dependency Inversion Principle</div>
+<h3>High-level modules should not depend on low-level modules. Both should depend on abstractions.</h3>
+<pre><code>// BAD: high-level depends on low-level concrete
+class OrderService {
+  private MySQLDatabase db = new MySQLDatabase(); // tightly coupled!
+  void placeOrder(Order o) { db.save(o); }
+}
+
+// GOOD: both depend on abstraction
+interface OrderRepository { void save(Order o); }
+class MySQLOrderRepository implements OrderRepository { ... }
+class MongoOrderRepository implements OrderRepository { ... }
+
+class OrderService {
+  private final OrderRepository repo; // depends on abstraction
+  OrderService(OrderRepository repo) { this.repo = repo; } // INJECTION
+  void placeOrder(Order o) { repo.save(o); }
+}
+// Swap DB without touching OrderService!
+// Spring @Autowired implements this via IoC container</code></pre>
+<span class="tag tag-green">Pattern: Dependency Injection, IoC Container</span>
+</div>
+</section>
+
+<!-- ===== INTERVIEW FRAMEWORK ===== -->
+<section id="sec-framework" class="mode-full mode-1hr mode-3hr">
+<h1>LLD Interview Framework</h1>
+<div class="callout callout-tip">AlgoMaster LLD interviews follow a predictable arc. Master this framework to stay structured under pressure.</div>
+
+<h2>The 45-Minute Arc</h2>
+<div class="grid-3">
+<div class="card"><div class="card-title">⏱ 0–5 min: Clarify</div>
+<ul><li>What actors/users are involved?</li><li>What are the core use cases? (3-5)</li><li>Any obvious constraints? (concurrency, scale)</li><li>Which features are in/out of scope?</li></ul>
+<p><em>"Before I design, let me confirm the core use cases..."</em></p>
+</div>
+<div class="card"><div class="card-title">⏱ 5–15 min: Entities</div>
+<ul><li>Identify nouns → classes</li><li>Identify verbs → methods</li><li>Draw relationships (IS-A, HAS-A)</li><li>Define enums for status/type fields</li></ul>
+<p><em>"The key entities I see are..."</em></p>
+</div>
+<div class="card"><div class="card-title">⏱ 15–35 min: Class Design</div>
+<ul><li>Write key class skeletons</li><li>Identify patterns that apply</li><li>Handle edge cases (concurrency, null)</li><li>Show extensibility</li></ul>
+<p><em>"Let me start with the core service class..."</em></p>
+</div>
+</div>
+<div class="grid-2">
+<div class="card"><div class="card-title">⏱ 35–40 min: Patterns & Justification</div>
+<ul><li>Name the patterns you used and WHY</li><li>"I used Strategy here because the algorithm varies..."</li><li>"I used Singleton for the controller because..."</li><li>Mention what SOLID principles you followed</li></ul>
+</div>
+<div class="card"><div class="card-title">⏱ 40–45 min: Extensions</div>
+<ul><li>Propose concurrency fixes if relevant</li><li>Mention how to make it distributed</li><li>Walk through a new use case: "If we added feature X..."</li><li>Ask if they want to drill into anything</li></ul>
+</div>
+</div>
+
+<h2>Clarifying Questions Toolkit</h2>
+<table>
+<tr><th>Category</th><th>Questions to Ask</th></tr>
+<tr><td>Actors</td><td>Who are the users? (Admin, Customer, Driver...)</td></tr>
+<tr><td>Core use cases</td><td>Top 3-5 operations (create, search, update, delete)?</td></tr>
+<tr><td>Concurrency</td><td>Can multiple users do this simultaneously? Race conditions?</td></tr>
+<tr><td>Extensibility</td><td>Will we add more types/strategies later?</td></tr>
+<tr><td>Constraints</td><td>Any rules I should encode? (e.g. max 3 loans, min balance)</td></tr>
+<tr><td>Non-goals</td><td>What are we explicitly NOT designing? (payments, notifications...)</td></tr>
+</table>
+
+<h2>Class Design Template</h2>
+<pre><code>// Step 1: Enums for all states/types
+enum Status { ACTIVE, INACTIVE, PENDING }
+
+// Step 2: Core entity classes (nouns from requirements)
+class Entity {
+  String id;               // always have an ID
+  Status status;           // always model states as enum
+  LocalDateTime createdAt; // timestamps matter
+  // relationships: composition (private field) or association (id reference)
+}
+
+// Step 3: Core service class
+class EntityService {
+  private final EntityRepository repo;       // DIP: depend on interface
+  private final NotificationService notify;  // separate concerns
+  
+  EntityService(EntityRepository r, NotificationService n) { ... } // DI
+  
+  Entity create(CreateRequest req) {
+    validate(req);          // validation first
+    Entity e = map(req);    // map DTO to entity
+    repo.save(e);           // persist
+    notify.send(e);         // side effects after
+    return e;
+  }
+}
+
+// Step 4: Note patterns used
+// "I used Repository pattern to decouple persistence"
+// "I used Observer for notifications"
+// "I'd add Strategy for pricing variations"</code></pre>
+</section>
+
+<!-- ===== UML ===== -->
+<section id="sec-uml" class="mode-full mode-3hr">
+<h1>UML Class Diagrams</h1>
+<h2>6 Relationship Types</h2>
+<table>
+<tr><th>Relationship</th><th>UML Notation</th><th>Code</th><th>Example</th></tr>
+<tr><td><strong>Inheritance</strong></td><td>———▷ (solid + hollow arrow)</td><td><code>extends</code></td><td>Car extends Vehicle</td></tr>
+<tr><td><strong>Realization</strong></td><td>- - -▷ (dashed + hollow arrow)</td><td><code>implements</code></td><td>Dog implements Animal</td></tr>
+<tr><td><strong>Composition</strong></td><td>◆——— (filled diamond)</td><td>private field, lifecycle tied</td><td>House has Rooms (room dies with house)</td></tr>
+<tr><td><strong>Aggregation</strong></td><td>◇——— (open diamond)</td><td>private field, independent lifecycle</td><td>Department has Employees (employee lives on)</td></tr>
+<tr><td><strong>Association</strong></td><td>——— (plain line)</td><td>field reference</td><td>Student takes Course</td></tr>
+<tr><td><strong>Dependency</strong></td><td>- - -→ (dashed arrow)</td><td>method param, local var</td><td>Renderer uses Color</td></tr>
+</table>
+
+<h2>Parking Lot Class Diagram</h2>
+<div class="mermaid">
+classDiagram
+  class ParkingLot {
+    -String id
+    -List~ParkingFloor~ floors
+    +park(Vehicle) ParkingTicket
+    +exit(ticketId) double
+    -findSpot(VehicleType) ParkingSpot
+  }
+  class ParkingFloor {
+    -int floorNum
+    -Map~Integer,ParkingSpot~ spots
+    +findFreeSpot(VehicleType) ParkingSpot
+  }
+  class ParkingSpot {
+    -int spotId
+    -SpotType type
+    -boolean occupied
+    +canFit(VehicleType) bool
+  }
+  class ParkingTicket {
+    -String ticketId
+    -LocalDateTime entryTime
+    -ParkingSpot spot
+    -TicketStatus status
+  }
+  class Vehicle {
+    -String plate
+    -VehicleType type
+  }
+  ParkingLot "1" *-- "many" ParkingFloor
+  ParkingFloor "1" *-- "many" ParkingSpot
+  ParkingTicket "1" --> "1" ParkingSpot
+  ParkingTicket "1" --> "1" Vehicle
+</div>
+</section>
+
+<!-- ===== CREATIONAL PATTERNS ===== -->
+<section id="sec-creational" class="mode-full mode-patterns mode-1hr mode-3hr">
+<h1>Creational Patterns (5)</h1>
+<div class="callout callout-info">Creational patterns deal with HOW objects are created. They decouple the creation process from the class itself, giving you control over what gets created, who creates it, and when.</div>
+<div class="callout callout-tip"><strong>Mnemonic — BAFPS:</strong> <strong>B</strong>uild it step-by-step, <strong>A</strong>bstract the factory, <strong>F</strong>actory lets subclass decide, <strong>P</strong>rototype clones, <strong>S</strong>ingleton is one.</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">CREATIONAL</div>
+<h3>1. Singleton — One Instance</h3>
+<p><strong>Problem:</strong> Need exactly one instance (Config, DB pool, Cache). <strong>Intent:</strong> Ensure only one instance exists; provide global access point.</p>
+<div class="mermaid">
+classDiagram
+  class Singleton {
+    -static Singleton instance
+    -Singleton()
+    +static getInstance() Singleton
+    +getConnection() Connection
+  }
+  Singleton --> Singleton : creates once
+</div>
+<pre><code>// BEST: Enum Singleton (thread-safe, serialization-safe, reflection-safe)
+enum AppConfig {
+  INSTANCE;
+  private final Properties props = loadProps();
+  public String get(String key) { return props.getProperty(key); }
+}
+// Usage: AppConfig.INSTANCE.get("db.url")
+
+// ALTERNATIVE: Double-checked locking (when Enum won't work)
+class ConnectionPool {
+  private static volatile ConnectionPool instance; // volatile prevents reorder
+  private ConnectionPool() {}
+  public static ConnectionPool getInstance() {
+    if (instance == null) {                    // 1st check (no lock)
+      synchronized (ConnectionPool.class) {
+        if (instance == null) {               // 2nd check (with lock)
+          instance = new ConnectionPool();
+        }
+      }
+    }
+    return instance;
+  }
+}
+
+// STATIC HOLDER (lazy + thread-safe without volatile)
+class Registry {
+  private static class Holder { static final Registry INSTANCE = new Registry(); }
+  public static Registry getInstance() { return Holder.INSTANCE; }
+}</code></pre>
+<strong>When:</strong> Config, Logger, Thread pools, Hardware device drivers, DB connection pool. <strong>Avoid:</strong> Over-using it — global state makes testing hard.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">CREATIONAL</div>
+<h3>2. Factory Method — Subclass Decides</h3>
+<p><strong>Problem:</strong> Framework needs to create objects but doesn't know which concrete class to use. <strong>Intent:</strong> Define interface for creating objects; let subclasses decide which class to instantiate.</p>
+<div class="mermaid">
+classDiagram
+  class Notification {
+    +send(String msg)
+  }
+  class EmailNotification { +send(String msg) }
+  class SMSNotification   { +send(String msg) }
+  class NotificationFactory {
+    +createNotification(type) Notification
+  }
+  Notification <|-- EmailNotification
+  Notification <|-- SMSNotification
+  NotificationFactory ..> Notification : creates
+</div>
+<pre><code>interface Notification { void send(String msg); }
+class EmailNotification implements Notification { ... }
+class SMSNotification   implements Notification { ... }
+class PushNotification  implements Notification { ... }
+
+class NotificationFactory {
+  public static Notification create(String type) {
+    return switch (type) {
+      case "EMAIL" -> new EmailNotification();
+      case "SMS"   -> new SMSNotification();
+      case "PUSH"  -> new PushNotification();
+      default -> throw new IllegalArgumentException("Unknown: " + type);
+    };
+  }
+}
+// Usage (client doesn't know concrete class)
+Notification n = NotificationFactory.create("EMAIL");
+n.send("Your order is placed!");</code></pre>
+<strong>When:</strong> Creating objects whose type is determined at runtime, multiple product types share interface.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">CREATIONAL</div>
+<h3>3. Abstract Factory — Family of Objects</h3>
+<p><strong>Problem:</strong> Need to create families of related objects (e.g., all Windows UI or all Mac UI) without specifying concrete classes. <strong>Intent:</strong> Factory of factories.</p>
+<pre><code>// Family: Button + Checkbox (must be from same OS)
+interface Button   { void render(); }
+interface Checkbox { void render(); }
+
+class WinButton   implements Button   { void render() { /*Win style*/} }
+class MacButton   implements Button   { void render() { /*Mac style*/} }
+class WinCheckbox implements Checkbox { void render() { /*Win style*/} }
+class MacCheckbox implements Checkbox { void render() { /*Mac style*/} }
+
+interface UIFactory {
+  Button   createButton();
+  Checkbox createCheckbox();
+}
+class WindowsUIFactory implements UIFactory {
+  Button   createButton()   { return new WinButton(); }
+  Checkbox createCheckbox() { return new WinCheckbox(); }
+}
+class MacUIFactory implements UIFactory {
+  Button   createButton()   { return new MacButton(); }
+  Checkbox createCheckbox() { return new MacCheckbox(); }
+}
+// Client gets the factory, never touches concrete classes
+UIFactory factory = new MacUIFactory(); // or WindowsUIFactory
+Button btn = factory.createButton(); // always consistent family</code></pre>
+<strong>When:</strong> UI toolkits, Cloud provider SDKs (AWS vs GCP), DB driver families.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">CREATIONAL</div>
+<h3>4. Builder — Complex Object Construction</h3>
+<p><strong>Problem:</strong> Constructor with many optional parameters (telescoping constructor anti-pattern). <strong>Intent:</strong> Separate complex construction from representation; build step-by-step.</p>
+<pre><code>// Telescoping anti-pattern:
+new Pizza("large","thin",true,false,true,false,"mushrooms")
+// Which arg is which?!
+
+// Builder pattern
+class Pizza {
+  private final String size, crust, topping;
+  private final boolean cheese, pepperoni, mushrooms;
+  
+  private Pizza(Builder b) {
+    this.size = b.size; this.crust = b.crust;
+    this.cheese = b.cheese; this.mushrooms = b.mushrooms;
+    this.topping = b.topping;
+  }
+  
+  public static class Builder {
+    // required
+    private final String size, crust;
+    // optional (with defaults)
+    private boolean cheese = false;
+    private boolean mushrooms = false;
+    private String topping = "";
+    
+    public Builder(String size, String crust) { this.size=size; this.crust=crust; }
+    public Builder cheese()  { this.cheese=true; return this; }  // fluent
+    public Builder mushrooms() { this.mushrooms=true; return this; }
+    public Builder topping(String t) { this.topping=t; return this; }
+    public Pizza build() { return new Pizza(this); }
+  }
+}
+// Clean, readable, no positional confusion
+Pizza p = new Pizza.Builder("large","thin").cheese().topping("mushrooms").build();</code></pre>
+<strong>When:</strong> Object has many optional fields, construction order matters, immutable objects. Real examples: <code>HttpRequest.Builder</code>, <code>StringBuilder</code>, Lombok <code>@Builder</code>.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">CREATIONAL</div>
+<h3>5. Prototype — Clone Objects</h3>
+<p><strong>Problem:</strong> Object creation is expensive; need many similar objects. <strong>Intent:</strong> Create new objects by copying (cloning) an existing prototype.</p>
+<pre><code>interface Cloneable { Shape clone(); }
+
+abstract class Shape {
+  String color;
+  abstract Shape clone();
+}
+class Circle extends Shape {
+  int radius;
+  Circle(Circle other) { this.color = other.color; this.radius = other.radius; } // copy ctor
+  Shape clone() { return new Circle(this); }
+}
+
+// Registry — lookup and clone configured prototypes
+class ShapeRegistry {
+  private Map&lt;String, Shape&gt; registry = new HashMap&lt;&gt;();
+  void register(String key, Shape s) { registry.put(key, s); }
+  Shape get(String key) { return registry.get(key).clone(); } // returns copy!
+}
+// Client
+ShapeRegistry reg = new ShapeRegistry();
+reg.register("small-red-circle", new Circle("red", 5));
+Shape s1 = reg.get("small-red-circle"); // clone, don't create from scratch
+Shape s2 = reg.get("small-red-circle"); // different instance, same config</code></pre>
+<strong>When:</strong> Object creation is expensive (DB read, network call), many similar objects needed. Real: <code>Integer.valueOf()</code> caches -128 to 127, String pool.
+</div>
+</section>
+
+<!-- ===== STRUCTURAL PATTERNS ===== -->
+<section id="sec-structural" class="mode-full mode-patterns mode-1hr mode-3hr">
+<h1>Structural Patterns (7)</h1>
+<div class="callout callout-info">Structural patterns deal with HOW classes and objects are composed. They enable you to build larger structures from smaller parts while keeping them flexible.</div>
+<div class="callout callout-tip"><strong>Mnemonic — ABCDFPP:</strong> <strong>A</strong>dapter converts, <strong>B</strong>ridge decouples, <strong>C</strong>omposite tree, <strong>D</strong>ecorator wraps, <strong>F</strong>acade simplifies, <strong>P</strong>roxy controls, <strong>P</strong>iggyback Flyweight shares.</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">STRUCTURAL</div>
+<h3>1. Adapter — Incompatible → Compatible</h3>
+<p><strong>Problem:</strong> Existing class has the right logic but wrong interface. Can't change the class. <strong>Intent:</strong> Wrap an object to translate its interface into one clients expect.</p>
+<div class="mermaid">
+classDiagram
+  class MediaPlayer { +play(type, file) }
+  class AdvancedPlayer { +playVlc(file)\n+playMp4(file) }
+  class MediaAdapter {
+    -AdvancedPlayer player
+    +play(type, file)
+  }
+  MediaPlayer <|.. MediaAdapter
+  MediaAdapter --> AdvancedPlayer
+</div>
+<pre><code>// Existing legacy class (can't change)
+class LegacyPaymentSystem {
+  void processPayment(int amountInPaisa, long accountNum) { ... }
+}
+// New expected interface
+interface PaymentGateway { void pay(double amountInRupees, String userId); }
+
+// Adapter bridges them
+class LegacyPaymentAdapter implements PaymentGateway {
+  private LegacyPaymentSystem legacy = new LegacyPaymentSystem();
+  public void pay(double rupees, String userId) {
+    int paisa = (int)(rupees * 100);
+    long account = Long.parseLong(userId);
+    legacy.processPayment(paisa, account); // translates call
+  }
+}</code></pre>
+<strong>When:</strong> Integrating third-party libs, legacy code migration. <strong>Real:</strong> <code>Arrays.asList()</code>, <code>InputStreamReader(InputStream)</code>.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">STRUCTURAL</div>
+<h3>2. Decorator — Add Behaviour at Runtime</h3>
+<p><strong>Problem:</strong> Want to add responsibilities to objects individually without subclassing (which creates combinatorial explosion). <strong>Intent:</strong> Wrap objects with same interface; each decorator adds one feature.</p>
+<div class="mermaid">
+classDiagram
+  class DataSource { +writeData(data)\n+readData() }
+  class FileDataSource { +writeData(data)\n+readData() }
+  class DataSourceDecorator {
+    -DataSource wrappee
+    +writeData(data)
+    +readData()
+  }
+  class EncryptionDecorator { +writeData(data)\n+readData() }
+  class CompressionDecorator { +writeData(data)\n+readData() }
+  DataSource <|.. FileDataSource
+  DataSource <|.. DataSourceDecorator
+  DataSourceDecorator <|-- EncryptionDecorator
+  DataSourceDecorator <|-- CompressionDecorator
+  DataSourceDecorator --> DataSource
+</div>
+<pre><code>interface Coffee { String getDescription(); double getCost(); }
+class SimpleCoffee implements Coffee {
+  public String getDescription() { return "Coffee"; }
+  public double getCost() { return 50.0; }
+}
+abstract class CoffeeDecorator implements Coffee {
+  protected Coffee coffee;
+  CoffeeDecorator(Coffee c) { this.coffee = c; }
+}
+class MilkDecorator extends CoffeeDecorator {
+  MilkDecorator(Coffee c) { super(c); }
+  public String getDescription() { return coffee.getDescription() + ", Milk"; }
+  public double getCost() { return coffee.getCost() + 15.0; }
+}
+class SugarDecorator extends CoffeeDecorator { ... }
+
+// Flexible composition!
+Coffee c = new SugarDecorator(new MilkDecorator(new SimpleCoffee()));
+// "Coffee, Milk, Sugar" — 65.0
+// vs 9 subclasses (CoffeeWithMilk, CoffeeWithSugar, CoffeeWithMilkAndSugar...)</code></pre>
+<strong>Real Java:</strong> <code>new BufferedReader(new InputStreamReader(new FileInputStream("f")))</code>.
+<strong>When:</strong> Adding optional features to objects, when subclassing causes class explosion.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">STRUCTURAL</div>
+<h3>3. Proxy — Control Access</h3>
+<p><strong>Problem:</strong> Need to control access to an object (security, lazy init, caching, logging). <strong>Intent:</strong> Provide a surrogate with the same interface; add behaviour without changing the real object.</p>
+<pre><code>// Types of Proxy:
+// Virtual Proxy: lazy initialization
+class HeavyImageProxy implements Image {
+  private String path; private HeavyImage real;
+  public void display() {
+    if (real == null) real = new HeavyImage(path); // load only when needed
+    real.display();
+  }
+}
+// Protection Proxy: access control
+class SecureDataProxy implements DataService {
+  private DataService real; private AuthService auth;
+  public Data getData(String userId) {
+    if (!auth.hasPermission(userId, "READ")) throw new AccessDeniedException();
+    return real.getData(userId);
+  }
+}
+// Caching Proxy: memoize
+class CachingProxy implements WeatherService {
+  private WeatherService real; private Map&lt;String, Weather&gt; cache = new HashMap&lt;&gt;();
+  public Weather getWeather(String city) {
+    return cache.computeIfAbsent(city, c -> real.getWeather(c));
+  }
+}
+// Spring AOP uses dynamic proxy for @Transactional, @Cacheable, @Secured</code></pre>
+<strong>When:</strong> Lazy loading expensive resources, access control, logging/monitoring, caching.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">STRUCTURAL</div>
+<h3>4. Facade — Simplify Complex Subsystem</h3>
+<p><strong>Problem:</strong> Complex subsystem with many classes is hard to use. <strong>Intent:</strong> Provide a simple, high-level interface to a complex subsystem.</p>
+<pre><code>// Complex subsystem
+class VideoEncoder { void encode(String file, String format) {...} }
+class AudioMixer   { void mix(String file, int volume) {...} }
+class BitrateSelector { String select(String quality) {...} }
+class ThumbnailGenerator { void generate(String file) {...} }
+
+// Facade — hides all complexity
+class VideoConversionFacade {
+  private VideoEncoder encoder = new VideoEncoder();
+  private AudioMixer mixer = new AudioMixer();
+  private BitrateSelector selector = new BitrateSelector();
+  private ThumbnailGenerator thumbGen = new ThumbnailGenerator();
+  
+  public String convertVideo(String file, String format) {
+    String bitrate = selector.select("high");
+    encoder.encode(file, format);
+    mixer.mix(file, 100);
+    thumbGen.generate(file);
+    return file.replace(".avi", "." + format);
+  }
+}
+// Client uses ONE simple method instead of 4+ classes</code></pre>
+<strong>When:</strong> Simplifying complex APIs, hiding legacy subsystems, defining entry points to layers. <strong>Real:</strong> Spring's <code>JdbcTemplate</code>, <code>HttpClient</code>.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">STRUCTURAL</div>
+<h3>5. Composite — Tree of Objects</h3>
+<p><strong>Problem:</strong> Need to treat individual objects and groups of objects uniformly. <strong>Intent:</strong> Compose objects into tree structures; leaf and container share same interface.</p>
+<pre><code>interface FileSystemItem {
+  String getName(); long getSize(); void print(String indent);
+}
+class File implements FileSystemItem {
+  private String name; private long size;
+  public long getSize() { return size; }
+  public void print(String indent) { System.out.println(indent + name + " (" + size + ")"); }
+}
+class Directory implements FileSystemItem {
+  private String name; private List&lt;FileSystemItem&gt; children = new ArrayList&lt;&gt;();
+  public void add(FileSystemItem item) { children.add(item); }
+  public long getSize() { return children.stream().mapToLong(FileSystemItem::getSize).sum(); }
+  public void print(String indent) {
+    System.out.println(indent + name + "/");
+    children.forEach(c -> c.print(indent + "  "));
+  }
+}
+// Client treats File and Directory identically!
+FileSystemItem root = new Directory("root");
+root.add(new File("readme.txt", 100));
+root.add(new File("app.jar", 5000));
+FileSystemItem src = new Directory("src");
+src.add(new File("Main.java", 300));
+root.add(src);
+root.print("");</code></pre>
+<strong>When:</strong> Part-whole hierarchies (file system, UI components, org charts, XML/JSON DOM). <strong>Real:</strong> <code>java.awt.Component</code>, JUnit test suites.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">STRUCTURAL</div>
+<h3>6. Bridge — Decouple Abstraction from Implementation</h3>
+<p><strong>Problem:</strong> Two orthogonal dimensions of change cause class explosion (e.g., 3 shapes × 3 colors = 9 classes). <strong>Intent:</strong> Put the two dimensions in separate hierarchies and compose them.</p>
+<pre><code>// Without Bridge: CircleRed, CircleBlue, RectangleRed, RectangleBlue... (M×N)
+// With Bridge: M shapes + N renderers = M+N classes
+
+interface Renderer { void renderCircle(double r); void renderRect(double w, double h); }
+class VectorRenderer implements Renderer { /* draw vector shapes */ }
+class RasterRenderer implements Renderer { /* draw pixel shapes */ }
+
+abstract class Shape {
+  protected Renderer renderer; // bridge to implementation
+  Shape(Renderer r) { this.renderer = r; }
+  abstract void draw();
+}
+class Circle extends Shape {
+  double radius;
+  Circle(double r, Renderer renderer) { super(renderer); this.radius = r; }
+  void draw() { renderer.renderCircle(radius); }
+}
+// Mix and match:
+new Circle(5, new VectorRenderer()).draw();
+new Circle(5, new RasterRenderer()).draw();</code></pre>
+<strong>When:</strong> Two orthogonal class hierarchies, platform-independent code. <strong>vs Adapter:</strong> Bridge is designed upfront; Adapter is a retrofit for incompatibility.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">STRUCTURAL</div>
+<h3>7. Flyweight — Share Common State</h3>
+<p><strong>Problem:</strong> Too many objects consuming too much memory because most of their state is duplicated. <strong>Intent:</strong> Share INTRINSIC state; pass EXTRINSIC state in from outside.</p>
+<pre><code>// Intrinsic (shared, stored in flyweight): species, colour, mesh data
+// Extrinsic (unique per object, passed in): position, health
+
+class TreeType { // Flyweight
+  String name, color, texture; // intrinsic (shared by all trees of this type)
+  void draw(int x, int y) { /* draw at position x,y */ } // x,y = extrinsic
+}
+class TreeTypeFactory {
+  private static Map&lt;String, TreeType&gt; pool = new HashMap&lt;&gt;();
+  static TreeType get(String name, String color, String texture) {
+    return pool.computeIfAbsent(name+color+texture,
+      k -> new TreeType(name, color, texture));
+  }
+}
+class Tree { // Context — tiny, many instances
+  int x, y; TreeType type; // reference to shared flyweight
+  Tree(int x, int y, String n, String c, String t) {
+    this.x=x; this.y=y; this.type = TreeTypeFactory.get(n, c, t);
+  }
+  void draw() { type.draw(x, y); }
+}
+// 1M trees but only 5 TreeType objects in memory!</code></pre>
+<strong>Real Java:</strong> <code>Integer.valueOf(-128 to 127)</code> cache, String pool (<code>intern()</code>), Character cache.
+</div>
+</section>
+
+<!-- ===== BEHAVIORAL PATTERNS ===== -->
+<section id="sec-behavioral" class="mode-full mode-patterns mode-1hr mode-3hr">
+<h1>Behavioral Patterns (11)</h1>
+<div class="callout callout-info">Behavioral patterns deal with communication between objects — how they interact and assign responsibilities.</div>
+<div class="callout callout-tip"><strong>Mnemonic — COT IS CC MMV:</strong> <strong>C</strong>ommand, <strong>O</strong>bserver, <strong>T</strong>emplate, <strong>I</strong>terator, <strong>S</strong>tate, <strong>C</strong>hain, <strong>C</strong>oR, <strong>M</strong>ediator, <strong>M</strong>emento, <strong>V</strong>isitor, (Strategy)</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">BEHAVIORAL</div>
+<h3>Observer — Publish/Subscribe (1-to-N)</h3>
+<p><strong>Problem:</strong> Multiple objects need to know when one object changes state. Tight coupling would require knowing all subscribers. <strong>Intent:</strong> Subject maintains list of observers, notifies all on state change.</p>
+<div class="mermaid">
+classDiagram
+  class Subject {
+    -List~Observer~ observers
+    +subscribe(Observer)
+    +unsubscribe(Observer)
+    +notify(event, data)
+  }
+  class Observer {
+    +update(event, data)
+  }
+  class EmailObserver { +update(event, data) }
+  class SMSObserver   { +update(event, data) }
+  class LogObserver   { +update(event, data) }
+  Observer <|.. EmailObserver
+  Observer <|.. SMSObserver
+  Observer <|.. LogObserver
+  Subject --> Observer : notifies
+</div>
+<pre><code>interface Observer { void update(String event, Object data); }
+class EventBus { // Subject
+  private Map&lt;String, List&lt;Observer&gt;&gt; listeners = new HashMap&lt;&gt;();
+  public void subscribe(String event, Observer o) {
+    listeners.computeIfAbsent(event, k -> new ArrayList&lt;&gt;()).add(o);
+  }
+  public void publish(String event, Object data) {
+    listeners.getOrDefault(event, List.of()).forEach(o -> o.update(event, data));
+  }
+}
+EventBus bus = new EventBus();
+bus.subscribe("order.placed", (e,d) -> sendEmail(d));
+bus.subscribe("order.placed", (e,d) -> updateInventory(d));
+bus.publish("order.placed", order);</code></pre>
+<strong>Push vs Pull:</strong> Push = subject sends data; Pull = observer fetches after notification.<br>
+<strong>Real:</strong> Spring events, RxJava, GUI listeners, Kafka consumers.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">BEHAVIORAL</div>
+<h3>Strategy — Interchangeable Algorithms</h3>
+<p><strong>Problem:</strong> Multiple algorithms for same task; need to switch at runtime. <strong>Intent:</strong> Encapsulate each algorithm; make them interchangeable. Implements OCP.</p>
+<div class="mermaid">
+classDiagram
+  class Context {
+    -Strategy strategy
+    +setStrategy(Strategy)
+    +executeStrategy()
+  }
+  class Strategy { +execute() }
+  class QuickSort  { +execute() }
+  class MergeSort  { +execute() }
+  class HeapSort   { +execute() }
+  Strategy <|.. QuickSort
+  Strategy <|.. MergeSort
+  Strategy <|.. HeapSort
+  Context --> Strategy
+</div>
+<pre><code>interface PricingStrategy { double calculate(Order order); }
+class RegularPricing  implements PricingStrategy { public double calculate(Order o) { return o.total; } }
+class DiscountPricing implements PricingStrategy { public double calculate(Order o) { return o.total * 0.9; } }
+class HolidayPricing  implements PricingStrategy { public double calculate(Order o) { return o.total * 0.8; } }
+
+class OrderService {
+  private PricingStrategy pricing;
+  public void setPricing(PricingStrategy p) { this.pricing = p; }
+  public double checkout(Order o) { return pricing.calculate(o); }
+}
+// Change algorithm without changing OrderService
+service.setPricing(new HolidayPricing()); // runtime switch</code></pre>
+<strong>When:</strong> Payment methods (Credit/UPI/Net Banking), sorting algorithms, routing strategies, compression.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">BEHAVIORAL</div>
+<h3>Command — Encapsulate Request (Undo/Redo)</h3>
+<p><strong>Problem:</strong> Need to parameterize actions, support undo/redo, queue operations, or log commands. <strong>Intent:</strong> Encapsulate request as an object with execute() and undo().</p>
+<pre><code>interface Command { void execute(); void undo(); }
+class TextEditor {
+  private StringBuilder text = new StringBuilder();
+  public void insert(int pos, String s) { text.insert(pos, s); }
+  public void delete(int start, int end) { text.delete(start, end); }
+  public String getText() { return text.toString(); }
+}
+class InsertCommand implements Command {
+  private TextEditor e; private int pos; private String s;
+  InsertCommand(TextEditor e, int p, String s) { this.e=e; pos=p; this.s=s; }
+  public void execute() { e.insert(pos, s); }
+  public void undo()    { e.delete(pos, pos + s.length()); }
+}
+class CommandHistory {
+  private Deque&lt;Command&gt; history = new ArrayDeque&lt;&gt;();
+  public void execute(Command c) { c.execute(); history.push(c); }
+  public void undo() { if (!history.isEmpty()) history.pop().undo(); }
+}</code></pre>
+<strong>When:</strong> Text editor Ctrl+Z, transaction logs, job queues, macro recording.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">BEHAVIORAL</div>
+<h3>Template Method — Algorithm Skeleton</h3>
+<p><strong>Problem:</strong> Multiple classes share the same algorithm structure but vary in specific steps. <strong>Intent:</strong> Define skeleton in base class; subclasses fill in specific steps without changing the order.</p>
+<pre><code>abstract class DataProcessor {
+  // Template method — final so order can't change
+  public final void process() {
+    readData();      // concrete (common)
+    parseData();     // abstract (varies)
+    validateData();  // hook (optional override)
+    saveData();      // concrete (common)
+  }
+  private void readData()  { System.out.println("Reading..."); }
+  protected abstract void parseData();
+  protected void validateData() { /* default no-op */ } // hook
+  private void saveData()  { System.out.println("Saving..."); }
+}
+class CSVProcessor extends DataProcessor {
+  protected void parseData() { System.out.println("Parsing CSV..."); }
+}
+class JSONProcessor extends DataProcessor {
+  protected void parseData() { System.out.println("Parsing JSON..."); }
+  protected void validateData() { System.out.println("Schema validating..."); }
+}</code></pre>
+<strong>Real:</strong> JUnit (setUp/test/tearDown), Spring's <code>JdbcTemplate</code>, <code>HttpServlet.service()</code>.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">BEHAVIORAL</div>
+<h3>State — Behavior Tied to State</h3>
+<p><strong>Problem:</strong> Object must behave differently depending on its current state; long if-else chains. <strong>Intent:</strong> Extract state-specific behaviour into separate state classes; context delegates to current state.</p>
+<div class="mermaid">
+classDiagram
+  class VendingMachine {
+    -VMState state
+    +insertCoin()
+    +selectProduct()
+    +dispense()
+    +setState(VMState)
+  }
+  class VMState {
+    +insertCoin(VendingMachine)
+    +selectProduct(VendingMachine)
+    +dispense(VendingMachine)
+  }
+  class IdleState      { +insertCoin() +selectProduct() +dispense() }
+  class HasCoinState   { +insertCoin() +selectProduct() +dispense() }
+  class DispensingState{ +insertCoin() +selectProduct() +dispense() }
+  VMState <|.. IdleState
+  VMState <|.. HasCoinState
+  VMState <|.. DispensingState
+  VendingMachine --> VMState
+</div>
+<pre><code>// Order lifecycle: PENDING→CONFIRMED→SHIPPED→DELIVERED→CANCELLED
+interface OrderState { void confirm(Order o); void ship(Order o); void deliver(Order o); void cancel(Order o); }
+class PendingState implements OrderState {
+  public void confirm(Order o) { o.setState(new ConfirmedState()); System.out.println("Confirmed"); }
+  public void ship(Order o)    { System.out.println("Must confirm first"); }
+  public void cancel(Order o)  { o.setState(new CancelledState()); }
+  public void deliver(Order o) { System.out.println("Not shipped yet"); }
+}</code></pre>
+<strong>When:</strong> Order lifecycle, traffic lights, ATM, connection states (TCP), game objects.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">BEHAVIORAL</div>
+<h3>Chain of Responsibility — Pass the Buck</h3>
+<p><strong>Problem:</strong> More than one object may handle a request; handler not known a priori. <strong>Intent:</strong> Chain handlers; each decides to process or pass to next.</p>
+<pre><code>abstract class SupportHandler {
+  protected SupportHandler next;
+  public SupportHandler setNext(SupportHandler h) { next = h; return h; }
+  public abstract void handle(Ticket ticket);
+  protected void passToNext(Ticket t) { if (next != null) next.handle(t); }
+}
+class L1Support extends SupportHandler {
+  public void handle(Ticket t) {
+    if (t.level <= 1) System.out.println("L1 resolved: " + t.issue);
+    else passToNext(t);
+  }
+}
+// Chain setup (fluent)
+SupportHandler l1 = new L1Support();
+l1.setNext(new L2Support()).setNext(new L3Support());
+l1.handle(new Ticket(3, "Server down")); // escalates to L3</code></pre>
+<strong>Real:</strong> Spring Security filter chain, Servlet filters, exception handler hierarchy, logging frameworks.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">BEHAVIORAL</div>
+<h3>Iterator — Traverse Without Exposing</h3>
+<pre><code>// Java's enhanced for-loop uses Iterator internally
+for (String s : collection) { ... } // calls iterator()
+// Custom Iterator for a Tree (in-order traversal)
+class InOrderIterator&lt;T&gt; implements Iterator&lt;T&gt; {
+  private Deque&lt;Node&lt;T&gt;&gt; stack = new ArrayDeque&lt;&gt;();
+  InOrderIterator(Node&lt;T&gt; root) { pushLeft(root); }
+  private void pushLeft(Node&lt;T&gt; n) { while (n!=null) { stack.push(n); n=n.left; } }
+  public boolean hasNext() { return !stack.isEmpty(); }
+  public T next() { Node&lt;T&gt; n=stack.pop(); pushLeft(n.right); return n.val; }
+}</code></pre>
+<strong>When:</strong> Custom traversal (tree, graph), hiding internal structure (ArrayList vs LinkedList same iteration).
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">BEHAVIORAL</div>
+<h3>Mediator — Central Communication Hub</h3>
+<pre><code>interface ChatMediator { void sendMessage(String msg, User sender); void addUser(User u); }
+class ChatRoom implements ChatMediator {
+  private List&lt;User&gt; users = new ArrayList&lt;&gt;();
+  public void addUser(User u) { users.add(u); }
+  public void sendMessage(String msg, User sender) {
+    users.stream().filter(u -> u != sender).forEach(u -> u.receive(msg));
+  }
+}
+// vs Observer: Mediator has smart routing; Observer broadcasts to all</code></pre>
+<strong>Real:</strong> Air traffic control, MVC Controller, Message broker.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">BEHAVIORAL</div>
+<h3>Memento — Snapshot & Restore</h3>
+<pre><code>class Editor {
+  private String content;
+  public EditorMemento save() { return new EditorMemento(content); }
+  public void restore(EditorMemento m) { content = m.getContent(); }
+}
+class EditorMemento { private final String content; /* immutable snapshot */ }
+class History {
+  private Deque&lt;EditorMemento&gt; snapshots = new ArrayDeque&lt;&gt;();
+  public void push(EditorMemento m) { snapshots.push(m); }
+  public EditorMemento pop() { return snapshots.pop(); }
+}
+// Works with Command: Command calls editor.save() before execute(), push to History
+// Undo: restore from snapshot</code></pre>
+<strong>When:</strong> Game save states, transaction rollback, Photoshop history, browser back button.
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">BEHAVIORAL</div>
+<h3>Visitor — New Operations Without Modifying Classes</h3>
+<pre><code>interface ShapeVisitor { void visitCircle(Circle c); void visitRect(Rectangle r); }
+interface Shape { void accept(ShapeVisitor v); }
+class Circle implements Shape { double r; public void accept(ShapeVisitor v) { v.visitCircle(this); } }
+
+// Add new operations without touching Shape hierarchy
+class AreaCalculator implements ShapeVisitor {
+  public void visitCircle(Circle c)    { System.out.println(Math.PI*c.r*c.r); }
+  public void visitRect(Rectangle r)   { System.out.println(r.w*r.h); }
+}
+class XMLExporter implements ShapeVisitor { ... } // new operation = new Visitor class</code></pre>
+<strong>When:</strong> AST traversal in compilers, report generators, adding operations to stable class hierarchy.<br>
+<strong>Key:</strong> Double dispatch — <code>shape.accept(visitor)</code> then <code>visitor.visit(concreteShape)</code>.
+</div>
+</section>
+
+<!-- ===== PATTERN COMPARISONS ===== -->
+<section id="sec-comparison" class="mode-full mode-patterns mode-1hr mode-3hr">
+<h1>⚖️ Pattern Comparisons — Confused Pairs</h1>
+<div class="callout callout-warn">These are the most commonly confused patterns in LLD interviews. Know the KEY differentiator for each pair.</div>
+
+<h2>Creational: Factory vs Builder vs Prototype</h2>
+<div class="pair-card">
+<div class="pair-title">Factory Method vs Abstract Factory</div>
+<div class="pair-grid">
+<div class="pair-side left"><h4>Factory Method</h4>
+<ul><li>ONE product type</li><li>Subclass decides which concrete class</li><li>Override a single <code>create()</code> method</li><li>Example: <code>NotificationFactory.create("EMAIL")</code></li></ul>
+</div>
+<div class="pair-side right"><h4>Abstract Factory</h4>
+<ul><li>FAMILIES of related products</li><li>All products must be compatible (e.g. same OS)</li><li>Override an entire factory interface</li><li>Example: <code>UIFactory</code> creates Button+Checkbox+TextField</li></ul>
+</div>
+</div>
+<div class="pair-verdict">🎯 <strong>Key differentiator:</strong> Need ONE type? → Factory Method. Need a whole family that belongs together? → Abstract Factory.</div>
+</div>
+
+<div class="pair-card">
+<div class="pair-title">Factory Method vs Builder</div>
+<div class="pair-grid">
+<div class="pair-side left"><h4>Factory Method</h4>
+<ul><li>Simple creation, one step</li><li>Type chosen at runtime</li><li>All params known upfront</li><li>Returns polymorphic type</li></ul>
+</div>
+<div class="pair-side right"><h4>Builder</h4>
+<ul><li>Complex creation, multi-step</li><li>Many optional parameters</li><li>Fluent API for readable setup</li><li>Returns one specific type (immutable)</li></ul>
+</div>
+</div>
+<div class="pair-verdict">🎯 <strong>Key differentiator:</strong> Choosing the type? → Factory. Many optional params / complex init? → Builder.</div>
+</div>
+
+<h2>Structural: Adapter vs Facade vs Decorator vs Proxy</h2>
+<div class="pair-card">
+<div class="pair-title">All Four Wrap Objects — What's the Difference?</div>
+<table>
+<tr><th>Pattern</th><th>Intent</th><th>Changes Interface?</th><th>When</th></tr>
+<tr><td><strong>Adapter</strong></td><td>Convert incompatible interface to expected one</td><td>✅ YES — translates interface</td><td>Legacy code, 3rd party libs</td></tr>
+<tr><td><strong>Decorator</strong></td><td>Add new behaviour, keep same interface</td><td>❌ NO — same interface</td><td>Optional features, runtime composition</td></tr>
+<tr><td><strong>Proxy</strong></td><td>Control access to object, keep same interface</td><td>❌ NO — same interface</td><td>Lazy init, security, caching, logging</td></tr>
+<tr><td><strong>Facade</strong></td><td>Simplify multiple classes into one interface</td><td>✅ YES — new simpler interface</td><td>Complex subsystems, layered architecture</td></tr>
+</table>
+<div class="pair-verdict">🎯 <strong>Key differentiator:</strong> Incompatibility? Adapter. Add features? Decorator. Control access? Proxy. Simplify many? Facade.</div>
+</div>
+
+<div class="pair-card">
+<div class="pair-title">Decorator vs Inheritance</div>
+<div class="pair-grid">
+<div class="pair-side left"><h4>Inheritance</h4>
+<ul><li>Static (compile time)</li><li>N features → 2^N subclasses (Coffee: Milk, Sugar, Caramel = 8 classes)</li><li>Can't combine at runtime</li><li>Simple hierarchies</li></ul>
+</div>
+<div class="pair-side right"><h4>Decorator</h4>
+<ul><li>Dynamic (runtime)</li><li>N decorators → N classes, infinite combos</li><li>Stack decorators in any order</li><li>Same interface as wrapped</li></ul>
+</div>
+</div>
+<div class="pair-verdict">🎯 <strong>Key differentiator:</strong> Need runtime combinations? → Decorator. Simple fixed extension? → Inheritance.</div>
+</div>
+
+<h2>Behavioral: Strategy vs State vs Template Method</h2>
+<div class="pair-card">
+<div class="pair-title">Strategy vs State</div>
+<div class="pair-grid">
+<div class="pair-side left"><h4>Strategy</h4>
+<ul><li>Client explicitly swaps algorithm</li><li>Strategies are stateless</li><li>No knowledge of each other</li><li>Context doesn't change based on strategy</li><li>Example: sorting algorithm, pricing</li></ul>
+</div>
+<div class="pair-side right"><h4>State</h4>
+<ul><li>State transitions happen internally</li><li>States know about each other (they trigger transitions)</li><li>Context behavior changes as state changes</li><li>State object changes the context's state</li><li>Example: order lifecycle, ATM</li></ul>
+</div>
+</div>
+<div class="pair-verdict">🎯 <strong>Key differentiator:</strong> WHO controls switching? Client → Strategy. Object transitions itself internally → State.</div>
+</div>
+
+<div class="pair-card">
+<div class="pair-title">Strategy vs Template Method</div>
+<div class="pair-grid">
+<div class="pair-side left"><h4>Strategy</h4>
+<ul><li>Uses <strong>composition</strong></li><li>Full algorithm in separate class</li><li>Swap entire algorithm</li><li>More flexible, preferred (no inheritance)</li></ul>
+</div>
+<div class="pair-side right"><h4>Template Method</h4>
+<ul><li>Uses <strong>inheritance</strong></li><li>Skeleton in base class, steps in subclass</li><li>Algorithm order locked (final method)</li><li>Simpler when algorithm structure rarely changes</li></ul>
+</div>
+</div>
+<div class="pair-verdict">🎯 <strong>Key differentiator:</strong> Composition wanted / full algorithm varies? → Strategy. Inheritance OK / only steps vary? → Template Method.</div>
+</div>
+
+<div class="pair-card">
+<div class="pair-title">Observer vs Mediator</div>
+<div class="pair-grid">
+<div class="pair-side left"><h4>Observer</h4>
+<ul><li>Subject broadcasts to ALL observers</li><li>Subject doesn't know what observers do</li><li>Simple 1-to-N notification</li><li>Observers are decoupled from each other</li><li>Example: EventBus, Kafka topic</li></ul>
+</div>
+<div class="pair-side right"><h4>Mediator</h4>
+<ul><li>Central hub ROUTES to specific recipients</li><li>Mediator knows about all participants</li><li>Smart M-to-N coordination</li><li>Participants are decoupled from each other</li><li>Example: Chat room, Air traffic control</li></ul>
+</div>
+</div>
+<div class="pair-verdict">🎯 <strong>Key differentiator:</strong> Broadcast to all? → Observer. Smart routing / coordination? → Mediator.</div>
+</div>
+
+<div class="pair-card">
+<div class="pair-title">Command vs Strategy</div>
+<div class="pair-grid">
+<div class="pair-side left"><h4>Command</h4>
+<ul><li>Encapsulates WHAT to do (the request)</li><li>Supports undo/redo</li><li>Can be queued, logged, scheduled</li><li>Has execute() + undo()</li><li>About deferred execution</li></ul>
+</div>
+<div class="pair-side right"><h4>Strategy</h4>
+<ul><li>Encapsulates HOW to do it (the algorithm)</li><li>No undo concept</li><li>Executed immediately when selected</li><li>Has one method: execute()/sort()/calculate()</li><li>About algorithm variation</li></ul>
+</div>
+</div>
+<div class="pair-verdict">🎯 <strong>Key differentiator:</strong> Need undo/queue/log the action? → Command. Just swapping algorithm? → Strategy.</div>
+</div>
+
+<div class="pair-card">
+<div class="pair-title">Chain of Responsibility vs Decorator</div>
+<div class="pair-grid">
+<div class="pair-side left"><h4>Chain of Responsibility</h4>
+<ul><li>Request MAY STOP at any handler</li><li>Only ONE handler typically processes</li><li>Handler decides: process or pass</li><li>Example: Support escalation, auth filter</li></ul>
+</div>
+<div class="pair-side right"><h4>Decorator</h4>
+<ul><li>Request goes through ALL decorators</li><li>Each decorator ADDS something</li><li>All decorators execute (cumulative)</li><li>Example: IO streams, middleware pipeline</li></ul>
+</div>
+</div>
+<div class="pair-verdict">🎯 <strong>Key differentiator:</strong> Request may stop early? → CoR. All must process? → Decorator.</div>
+</div>
+
+<h2>Quick Pattern Picker — "I need to..."</h2>
+<table>
+<tr><th>I need to...</th><th>Use</th></tr>
+<tr><td>Create object whose type is decided at runtime</td><td><strong>Factory Method</strong></td></tr>
+<tr><td>Create consistent families of related objects</td><td><strong>Abstract Factory</strong></td></tr>
+<tr><td>Build an object with many optional params</td><td><strong>Builder</strong></td></tr>
+<tr><td>Copy an expensive-to-create object</td><td><strong>Prototype</strong></td></tr>
+<tr><td>Ensure exactly one instance globally</td><td><strong>Singleton</strong> (Enum preferred)</td></tr>
+<tr><td>Use a legacy class with wrong interface</td><td><strong>Adapter</strong></td></tr>
+<tr><td>Add optional features dynamically (not subclassing)</td><td><strong>Decorator</strong></td></tr>
+<tr><td>Control/gate access to an expensive object</td><td><strong>Proxy</strong></td></tr>
+<tr><td>Simplify a complex multi-class subsystem</td><td><strong>Facade</strong></td></tr>
+<tr><td>Treat leaves and containers uniformly (tree)</td><td><strong>Composite</strong></td></tr>
+<tr><td>Share lots of similar objects efficiently</td><td><strong>Flyweight</strong></td></tr>
+<tr><td>Notify multiple objects when state changes</td><td><strong>Observer</strong></td></tr>
+<tr><td>Swap algorithm at runtime without if-else</td><td><strong>Strategy</strong></td></tr>
+<tr><td>Support undo/redo or queue operations</td><td><strong>Command</strong></td></tr>
+<tr><td>Fix algorithm order but let steps vary</td><td><strong>Template Method</strong></td></tr>
+<tr><td>Change behaviour as internal state changes</td><td><strong>State</strong></td></tr>
+<tr><td>Pass request through a chain of handlers</td><td><strong>Chain of Responsibility</strong></td></tr>
+<tr><td>Traverse collection without exposing internals</td><td><strong>Iterator</strong></td></tr>
+<tr><td>Route messages between many components</td><td><strong>Mediator</strong></td></tr>
+<tr><td>Snapshot and restore object state</td><td><strong>Memento</strong></td></tr>
+<tr><td>Add new operations to fixed class hierarchy</td><td><strong>Visitor</strong></td></tr>
+</table>
+</section>
+
+<!-- ===== JAVA ===== -->
+<section id="sec-java" class="mode-full mode-3hr">
+<h1>☕ Java OOP & Collections Deep Dive</h1>
+
+<div class="concept-card">
+<h3>equals() & hashCode() Contract</h3>
+<pre><code>// RULE: If equals() true → hashCode() MUST be same.
+// If hashCode() same → equals() MAY be false (collision is OK).
+// Always use IMMUTABLE fields in equals/hashCode!
+class Money {
+  private final BigDecimal amount; private final String currency;
+  @Override public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Money)) return false;
+    Money m = (Money) o;
+    return amount.compareTo(m.amount) == 0 && currency.equals(m.currency);
+  }
+  @Override public int hashCode() { return Objects.hash(amount, currency); }
+}
+// 5 rules: Reflexive, Symmetric, Transitive, Consistent, equals(null)=false</code></pre>
+
+<h3>Comparable vs Comparator</h3>
+<pre><code>// Comparable = natural ordering (intrinsic to class, implements compareTo)
+class Employee implements Comparable&lt;Employee&gt; {
+  @Override public int compareTo(Employee o) { return Integer.compare(this.id, o.id); }
+}
+Collections.sort(list); // uses compareTo
+
+// Comparator = external/ad-hoc ordering
+Comparator&lt;Employee&gt; bySalary = Comparator.comparingDouble(Employee::getSalary)
+                                            .reversed()
+                                            .thenComparing(Employee::getName);
+list.sort(bySalary);
+// Use Comparator: multiple orderings needed, or class not yours to modify</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>Collections — Which to Use When</h3>
+<table>
+<tr><th>Interface</th><th>Implementation</th><th>Use When</th><th>get/add/remove</th></tr>
+<tr><td>List</td><td>ArrayList</td><td>Index access, iteration, default choice</td><td>O(1)/O(1)*/O(n)</td></tr>
+<tr><td>List</td><td>LinkedList</td><td>Frequent insert/delete at ends only</td><td>O(n)/O(1)/O(1)</td></tr>
+<tr><td>Set</td><td>HashSet</td><td>Unique, unordered, fast membership test</td><td>O(1)</td></tr>
+<tr><td>Set</td><td>LinkedHashSet</td><td>Unique + preserve insertion order</td><td>O(1)</td></tr>
+<tr><td>Set</td><td>TreeSet</td><td>Unique + sorted (range queries)</td><td>O(log n)</td></tr>
+<tr><td>Map</td><td>HashMap</td><td>Key-value, fast lookup, default choice</td><td>O(1)</td></tr>
+<tr><td>Map</td><td>LinkedHashMap</td><td>Key-value + insertion/access order → <strong>LRU Cache!</strong></td><td>O(1)</td></tr>
+<tr><td>Map</td><td>TreeMap</td><td>Key-value + sorted keys, floor/ceiling</td><td>O(log n)</td></tr>
+<tr><td>Map</td><td>ConcurrentHashMap</td><td>Thread-safe key-value, segment locking</td><td>O(1)</td></tr>
+<tr><td>Queue</td><td>ArrayDeque</td><td>Stack or Queue (PREFER over Stack/LinkedList)</td><td>O(1)</td></tr>
+<tr><td>Queue</td><td>PriorityQueue</td><td>Min/max heap, top-K, Dijkstra</td><td>O(log n)</td></tr>
+<tr><td>Queue</td><td>LinkedBlockingQueue</td><td>Thread-safe Producer-Consumer</td><td>O(1)</td></tr>
+</table>
+<pre><code>// LRU Cache using LinkedHashMap (simplest implementation)
+class LRUCache&lt;K,V&gt; extends LinkedHashMap&lt;K,V&gt; {
+  private final int cap;
+  LRUCache(int c) { super(c, 0.75f, true); this.cap = c; } // accessOrder=true!
+  protected boolean removeEldestEntry(Map.Entry&lt;K,V&gt; eldest) { return size() > cap; }
+}</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>Generics + Optional + Stream API</h3>
+<pre><code>// PECS: Producer Extends, Consumer Super
+List&lt;? extends Number&gt; nums  = Arrays.asList(1,2,3); // read Number (producer)
+List&lt;? super Integer&gt; ints   = new ArrayList&lt;Number&gt;(); // write Integer (consumer)
+
+// Optional — avoid NPE, force callers to handle absence
+Optional&lt;User&gt; user = findById(id);
+String name = user.map(User::getName)
+                  .filter(n -> !n.isEmpty())
+                  .orElse("Anonymous"); // never null!
+// Anti-patterns: optional.get() without check, Optional as method param
+
+// Stream API pipeline
+Map&lt;Department, Double&gt; avgSalary = employees.stream()
+  .filter(e -> e.getSalary() &gt; 0)
+  .collect(Collectors.groupingBy(
+    Employee::getDepartment,
+    Collectors.averagingDouble(Employee::getSalary)));
+
+// flatMap for nested collections
+List&lt;String&gt; allSkills = employees.stream()
+  .flatMap(e -> e.getSkills().stream())
+  .distinct().sorted().collect(Collectors.toList());</code></pre>
+</div>
+</section>
+
+<!-- ===== CONCURRENCY ===== -->
+<section id="sec-concurrency" class="mode-full mode-3hr">
+<h1>⚡ Concurrency Patterns</h1>
+
+<div class="concept-card">
+<h3>Thread Safety Mechanisms — Choose the Right One</h3>
+<table>
+<tr><th>Mechanism</th><th>Guarantee</th><th>Performance</th><th>Use For</th></tr>
+<tr><td><code>synchronized</code></td><td>Mutual exclusion + visibility</td><td>Slower (OS lock)</td><td>General critical sections</td></tr>
+<tr><td><code>volatile</code></td><td>Visibility only (NO atomicity)</td><td>Fast</td><td>Simple flags, stop signals</td></tr>
+<tr><td><code>AtomicInteger</code></td><td>Atomic CAS on single var</td><td>Fastest</td><td>Counters, sequences</td></tr>
+<tr><td><code>ReentrantLock</code></td><td>Explicit lock (+ tryLock)</td><td>Medium</td><td>Need timeout/fair/conditions</td></tr>
+<tr><td><code>ReadWriteLock</code></td><td>Concurrent reads, exclusive writes</td><td>Good for read-heavy</td><td>Cache, config</td></tr>
+<tr><td><code>ConcurrentHashMap</code></td><td>Segment-level locking</td><td>High</td><td>Shared maps</td></tr>
+<tr><td><code>ThreadLocal</code></td><td>Per-thread isolation</td><td>Fast (no sync)</td><td>SimpleDateFormat, DB conn</td></tr>
+</table>
+<pre><code>// volatile: visibility, NOT atomicity
+private static volatile boolean running = true; // flag for thread stop
+
+// Double-checked locking needs volatile (prevents partial init visibility)
+private static volatile Singleton instance;
+
+// AtomicInteger: CAS (Compare-And-Swap), lock-free
+AtomicInteger counter = new AtomicInteger(0);
+int old = counter.getAndIncrement(); // thread-safe, no lock
+
+// ReentrantLock advantages: tryLock, fair mode, multiple conditions
+ReentrantLock lock = new ReentrantLock(true); // fair=true
+if (lock.tryLock(100, TimeUnit.MS)) { try { ... } finally { lock.unlock(); } }
+
+// ReadWriteLock — concurrent reads!
+ReadWriteLock rwLock = new ReentrantReadWriteLock();
+rwLock.readLock().lock();  try { return map.get(k); } finally { rwLock.readLock().unlock(); }
+rwLock.writeLock().lock(); try { map.put(k,v); }     finally { rwLock.writeLock().unlock(); }
+
+// ThreadLocal — ALWAYS remove() in thread pools!
+ThreadLocal&lt;Conn&gt; connLocal = ThreadLocal.withInitial(this::createConn);
+try { connLocal.get().doWork(); } finally { connLocal.remove(); } // critical!</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>ExecutorService & CompletableFuture</h3>
+<pre><code>// Thread pool types
+ExecutorService fixed  = Executors.newFixedThreadPool(8);     // bounded, predictable
+ExecutorService cached = Executors.newCachedThreadPool();      // DANGER: unbounded!
+ScheduledExecutorService sched = Executors.newScheduledThreadPool(2);
+
+// Production: Custom ThreadPoolExecutor
+ThreadPoolExecutor exec = new ThreadPoolExecutor(
+  4,   // corePoolSize
+  10,  // maximumPoolSize
+  60, TimeUnit.SECONDS,          // keepAlive for idle threads
+  new LinkedBlockingQueue&lt;&gt;(100), // bounded queue!
+  new ThreadPoolExecutor.CallerRunsPolicy()); // backpressure
+
+// CompletableFuture — async composition
+CompletableFuture&lt;User&gt; userF  = CompletableFuture.supplyAsync(() -> fetchUser(id));
+CompletableFuture&lt;Order&gt; orderF = CompletableFuture.supplyAsync(() -> fetchOrder(id));
+
+CompletableFuture.allOf(userF, orderF)        // wait for both
+  .thenRun(() -> combine(userF.join(), orderF.join()));
+
+userF.thenCompose(u -> fetchProfile(u.getId()))  // flatMap (async chain)
+     .thenApply(p -> p.getName())                 // map (sync transform)
+     .exceptionally(ex -> "Anonymous");           // error recovery
+
+// Thread pool sizing rules of thumb
+// CPU-bound tasks: N+1 threads (N = CPU cores)
+// I/O-bound tasks: N × (1 + waitTime/computeTime)</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>Producer-Consumer & Synchronizers</h3>
+<pre><code>// BlockingQueue: canonical Producer-Consumer
+BlockingQueue&lt;Task&gt; queue = new ArrayBlockingQueue&lt;&gt;(100); // bounded
+// Producer
+queue.put(task);    // blocks when full (backpressure!)
+// Consumer  
+Task t = queue.take(); // blocks when empty
+
+// CountDownLatch: wait for N events
+CountDownLatch latch = new CountDownLatch(3);
+executor.submit(() -> { doWork(); latch.countDown(); }); // x3
+latch.await(); // main thread waits until count reaches 0
+
+// CyclicBarrier: N threads rendezvous
+CyclicBarrier barrier = new CyclicBarrier(3, () -> System.out.println("All ready!"));
+// Each thread calls barrier.await(); all proceed when all have arrived
+
+// Semaphore: limit concurrent access
+Semaphore pool = new Semaphore(10); // max 10 concurrent
+pool.acquire(); try { useResource(); } finally { pool.release(); }
+
+// Deadlock prevention
+// 1. Lock ordering: always acquire A then B (never B then A)
+// 2. tryLock with timeout: avoid infinite wait
+// 3. Lock hierarchy: assign levels, always acquire lower-level first</code></pre>
+</div>
+</section>
+
+<!-- ===== GRASP ===== -->
+<section id="sec-grasp" class="mode-full mode-3hr">
+<h1>🎯 GRASP Principles (9)</h1>
+<div class="callout callout-info">GRASP (General Responsibility Assignment Software Patterns) — 9 principles for assigning responsibilities to classes. Complements GoF patterns.</div>
+
+<div class="grid-3">
+<div class="card"><div class="card-title">1. Information Expert</div>
+<p>Assign responsibility to the class that has the data needed to fulfill it.</p>
+<p><em>"Who knows the order total? Order class does."</em></p>
+<pre><code>class Order {
+  // EXPERT: has lineItems
+  double getTotal() {
+    return lineItems.stream()
+      .mapToDouble(LineItem::getSubtotal).sum();
+  }
+}</code></pre></div>
+<div class="card"><div class="card-title">2. Creator</div>
+<p>Assign object creation to the class that (a) contains, (b) aggregates, (c) closely uses, or (d) has init data for the new object.</p>
+<p><em>"Order creates OrderItems; OrderFactory creates Orders."</em></p></div>
+<div class="card"><div class="card-title">3. Controller</div>
+<p>Assign system event handling to a Controller class (facade, use-case, or session controller).</p>
+<p><em>"OrderController handles placeOrder(), not Order itself."</em></p></div>
+</div>
+<div class="grid-3">
+<div class="card"><div class="card-title">4. Low Coupling</div>
+<p>Assign responsibilities to minimize dependencies. Fewer dependencies = easier change.</p>
+<pre><code>// High coupling: Service knows DB, Cache, Email
+// Low coupling: Service depends on interfaces
+// Achieved via: DI, interfaces, events</code></pre></div>
+<div class="card"><div class="card-title">5. High Cohesion</div>
+<p>Give a class a focused, related set of responsibilities. Each class = one clear purpose.</p>
+<p>Low cohesion = God class doing everything = hard to change.</p></div>
+<div class="card"><div class="card-title">6. Polymorphism</div>
+<p>Use polymorphism instead of if-else type checks. When behaviour varies by type, use polymorphism (OCP).</p>
+<pre><code>// Instead of: if (type=="pdf") ... else if (type=="word")
+// Use: interface Report { void generate(); }</code></pre></div>
+</div>
+<div class="grid-3">
+<div class="card"><div class="card-title">7. Pure Fabrication</div>
+<p>Create a class that doesn't exist in the domain when needed for low coupling / high cohesion. Service classes, DAOs, Utilities.</p>
+<p><em>OrderRepository doesn't map to domain, but gives cohesion to DB ops.</em></p></div>
+<div class="card"><div class="card-title">8. Indirection</div>
+<p>Introduce an intermediate object to decouple two classes. Message broker, Controller, Adapter.</p>
+<p><em>"Don't call the DB directly; go through a Repository."</em></p></div>
+<div class="card"><div class="card-title">9. Protected Variations</div>
+<p>Identify points of instability; wrap them in a stable interface. Changes in one part don't ripple through system.</p>
+<p><em>"DB schema changes don't affect Service layer — DAO absorbs the change."</em></p></div>
+</div>
+</section>
+
+<!-- ===== CASE STUDIES ===== -->
+<section id="sec-cases" class="mode-full mode-cases mode-3hr">
+<h1>🏗️ LLD Case Studies (15+1)</h1>
+<div class="callout callout-tip">Every case study: <strong>1)</strong> Clarify use cases <strong>2)</strong> Identify entities/enums <strong>3)</strong> Design key class + service <strong>4)</strong> Name patterns used</div>
+
+<div class="concept-card">
+<h3>1. Parking Lot System</h3>
+<pre><code>enum VehicleType { MOTORCYCLE, CAR, TRUCK }
+enum SpotType    { COMPACT, REGULAR, LARGE }
+enum TicketStatus{ ACTIVE, PAID }
+
+class Vehicle { String plate; VehicleType type; }
+class ParkingSpot { int id; SpotType type; boolean occupied; Vehicle parked; }
+class ParkingFloor { int num; Map&lt;Integer,ParkingSpot&gt; spots;
+  ParkingSpot findFree(VehicleType t) { /* match SpotType to VehicleType */ } }
+class ParkingTicket { String id; LocalDateTime entry; ParkingSpot spot; TicketStatus status; }
+class ParkingLot { // Singleton
+  private static ParkingLot instance;
+  List&lt;ParkingFloor&gt; floors; Map&lt;String,ParkingTicket&gt; active;
+  ParkingTicket park(Vehicle v) {
+    ParkingSpot s = findSpot(v.type); s.occupied=true; s.parked=v;
+    ParkingTicket t = new ParkingTicket(uuid(), now(), s);
+    active.put(t.id, t); return t;
+  }
+  double exit(String ticketId) {
+    ParkingTicket t = active.remove(ticketId); t.spot.occupied=false;
+    return PricingStrategy.charge(t); // Strategy pattern
+  }
+}
+// Patterns: Singleton (ParkingLot), Strategy (pricing), Template Method (fee calc)</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>2. LRU Cache — O(1) get & put</h3>
+<pre><code>class LRUCache {
+  private final int cap;
+  private final Map&lt;Integer,Node&gt; map = new HashMap&lt;&gt;();
+  private final Node head = new Node(0,0), tail = new Node(0,0); // sentinels
+  LRUCache(int cap) { this.cap=cap; head.next=tail; tail.prev=head; }
+  
+  public int get(int key) {
+    if (!map.containsKey(key)) return -1;
+    moveToFront(map.get(key)); return map.get(key).val;
+  }
+  public void put(int key, int val) {
+    if (map.containsKey(key)) { map.get(key).val=val; moveToFront(map.get(key)); return; }
+    if (map.size()==cap) { map.remove(tail.prev.key); remove(tail.prev); }
+    Node n = new Node(key,val); map.put(key,n); addFront(n);
+  }
+  private void moveToFront(Node n) { remove(n); addFront(n); }
+  private void remove(Node n) { n.prev.next=n.next; n.next.prev=n.prev; }
+  private void addFront(Node n) { n.next=head.next; n.prev=head; head.next.prev=n; head.next=n; }
+}
+// Alternatively: extend LinkedHashMap(cap, 0.75f, true) + override removeEldestEntry()</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>3. Chess Game</h3>
+<pre><code>enum Color { WHITE, BLACK }
+abstract class Piece { Color color; int row, col; abstract List&lt;int[]&gt; validMoves(Board b); }
+class King   extends Piece { /* 8 surrounding squares, no check */ }
+class Rook   extends Piece { /* horizontal + vertical rays */ }
+class Bishop extends Piece { /* diagonal rays */ }
+class Queen  extends Piece { /* Rook + Bishop moves */ }
+class Knight extends Piece { /* 8 L-shaped jumps */ }
+class Pawn   extends Piece { /* forward 1-2, diagonal capture */ }
+
+class Board { Piece[][] grid = new Piece[8][8]; /* RNBQKBNR / pppppppp */ }
+class Game {
+  Board board; Player white, black; Player turn;
+  List&lt;Move&gt; history = new ArrayList&lt;&gt;(); // Memento
+  
+  boolean move(Move m) {
+    if (!isValid(m)) return false;
+    if (wouldExposeKing(m)) return false; // can't leave king in check
+    applyMove(m); history.add(m); toggle();
+    if (isCheckmate()) announceWinner();
+    return true;
+  }
+  boolean inCheck(Color c) { /* find king, check if attacked */ }
+  boolean isCheckmate(Color c) { return inCheck(c) && noValidMoves(c); }
+}
+// Patterns: State (game phases), Command (moves+undo), Strategy (AI move picking)</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>4. BookMyShow — Seat Booking</h3>
+<pre><code>class Show { String id; Movie movie; Screen screen; LocalDateTime time; Map&lt;Seat,SeatStatus&gt; seats; }
+enum SeatStatus { AVAILABLE, LOCKED, BOOKED }
+class Booking { String id; Show show; List&lt;Seat&gt; seats; User user; BookingStatus status; }
+
+class BookingService {
+  // KEY: concurrency — prevent double booking!
+  Booking reserve(String showId, List&lt;String&gt; seatIds, String userId) {
+    synchronized (showId.intern()) { // or Redis distributed lock
+      Show show = showRepo.findById(showId);
+      if (!allAvailable(show, seatIds)) throw new SeatsUnavailableException();
+      seatIds.forEach(id -> show.seats.put(show.getSeat(id), LOCKED)); // lock seats
+      Booking b = bookingRepo.save(new Booking(show, seatIds, userId));
+      scheduleLockExpiry(b, Duration.ofMinutes(15)); // TTL on lock
+      return b;
+    }
+  }
+  void confirm(String bookingId) { /* payment done → LOCKED → BOOKED */ }
+  void expire(String bookingId)  { /* TTL fired → LOCKED → AVAILABLE */ }
+}
+// Patterns: Facade (BookingService), Observer (notify on confirm), Strategy (seat selection)</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>5. Elevator System (SCAN/LOOK Algorithm)</h3>
+<pre><code>enum Direction { UP, DOWN, IDLE }
+class Elevator {
+  int id, currentFloor; Direction dir; ElevatorState state;
+  TreeSet&lt;Integer&gt; upQ  = new TreeSet&lt;&gt;();           // pending up requests
+  TreeSet&lt;Integer&gt; downQ= new TreeSet&lt;&gt;(reverseOrder()); // pending down
+  
+  void addRequest(int floor) {
+    if (floor &gt; currentFloor || dir == UP) upQ.add(floor);
+    else downQ.add(floor);
+  }
+  void step() { // SCAN: serve all in one direction, then reverse
+    if (dir == UP && !upQ.isEmpty()) { currentFloor = upQ.first(); upQ.remove(currentFloor); }
+    else if (!downQ.isEmpty()) { dir = DOWN; currentFloor = downQ.first(); downQ.remove(currentFloor); }
+    else if (!upQ.isEmpty())  { dir = UP;   currentFloor = upQ.first(); upQ.remove(currentFloor); }
+    else dir = IDLE;
+  }
+}
+class ElevatorController { // Singleton
+  Elevator assign(int floor, Direction dir) {
+    return elevators.stream()
+      .filter(e -> e.state != MAINTENANCE)
+      .min(Comparator.comparingInt(e -> cost(e, floor, dir))).get();
+  }
+}
+// Patterns: State (elevator states), Strategy (scheduling: FCFS/SCAN/LOOK), Singleton (controller)</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>6. Vending Machine (State Pattern)</h3>
+<pre><code>interface VMState { void insertCoin(VM m); void selectItem(VM m, String code); void dispense(VM m); void returnChange(VM m); }
+class IdleState implements VMState {
+  public void insertCoin(VM m) { m.setState(new HasCoinState()); }
+  public void selectItem(VM m, String c) { System.out.println("Insert coin first"); }
+  // ... others print errors
+}
+class HasCoinState implements VMState {
+  public void insertCoin(VM m) { System.out.println("Already has coin"); }
+  public void selectItem(VM m, String c) {
+    if (m.getItem(c).qty > 0 && m.getBalance() >= m.getItem(c).price)
+      m.setState(new DispensingState(c));
+    else System.out.println("Insufficient funds or out of stock");
+  }
+}
+class VM {
+  private VMState state = new IdleState(); private double balance;
+  void setState(VMState s) { state = s; }
+  void insertCoin(Coin c) { balance += c.value; state.insertCoin(this); }
+}
+// Change algorithm for coin change: greedy (largest coin first)</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>7. ATM System</h3>
+<pre><code>// State machine: Idle → CardInserted → PinEntered → Transacting → Idle
+// Chain of Responsibility for cash dispensing: 100s → 50s → 20s → 10s → 5s → 1s
+abstract class BillDispenser {
+  protected BillDispenser next; int denomination;
+  public void dispense(int amount) {
+    int bills = amount / denomination;
+    if (bills > 0) System.out.println("Dispensing " + bills + " × ₹" + denomination);
+    int remainder = amount % denomination;
+    if (remainder > 0 && next != null) next.dispense(remainder);
+  }
+}
+// Chain: new Bill(100).setNext(new Bill(50)).setNext(new Bill(20))...</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>8. Library Management System</h3>
+<pre><code>class Book { String isbn, title; int totalCopies, available; }
+class Member { String id; List&lt;Loan&gt; activeLoans; }
+class Loan { Book book; Member member; LocalDate due; boolean returned; }
+
+class LibraryService {
+  static final int MAX_LOANS = 3, LOAN_DAYS = 14;
+  Loan checkout(String memberId, String isbn) {
+    Member m = memberRepo.find(memberId);
+    if (m.activeLoans.size() >= MAX_LOANS) throw new LimitException();
+    Book b = bookRepo.find(isbn);
+    if (b.available == 0) { reserveQueue.add(m, b); throw new UnavailableException(); }
+    b.available--;
+    return loanRepo.save(new Loan(b, m, now().plusDays(LOAN_DAYS)));
+  }
+  void returnBook(String loanId) {
+    Loan l = loanRepo.find(loanId); l.book.available++; l.returned = true;
+    if (isOverdue(l)) fineService.charge(l.member, days(l) * FINE_PER_DAY);
+    notifyNextInQueue(l.book); // Observer pattern
+  }
+}</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>9. Ride Sharing (Uber Core)</h3>
+<pre><code>enum DriverStatus { AVAILABLE, ON_TRIP, OFFLINE }
+enum RideStatus { REQUESTED, ASSIGNED, IN_PROGRESS, COMPLETED, CANCELLED }
+class Ride { Rider rider; Driver driver; Location pickup, drop; RideStatus status; double fare; }
+
+class RideService {
+  DriverMatchStrategy matcher; FareCalculator fareCalc;
+  Ride request(String riderId, Location pickup, Location drop) {
+    double fare = fareCalc.estimate(pickup, drop, now()); // surge pricing
+    Ride ride = rideRepo.save(new Ride(riderId, pickup, drop, fare));
+    Driver d = matcher.findBest(pickup, availableDrivers());
+    if (d == null) throw new NoDriverException();
+    d.status = ON_TRIP; ride.driver = d; ride.status = ASSIGNED;
+    notifyBoth(d, ride.rider, ride); return ride;
+  }
+  void complete(String rideId) {
+    Ride r = rideRepo.find(rideId); r.status = COMPLETED;
+    double actual = fareCalc.calculate(r);
+    paymentService.charge(r.rider, actual);
+    r.driver.status = AVAILABLE;
+    ratingService.request(r);
+  }
+}
+interface DriverMatchStrategy { Driver findBest(Location pickup, List&lt;Driver&gt; available); }
+class NearestDriver implements DriverMatchStrategy { /* min distance */ }
+class HighestRatedDriver implements DriverMatchStrategy { /* max rating within 5km */ }</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>10. Splitwise (Expense Sharing)</h3>
+<pre><code>enum SplitType { EQUAL, EXACT, PERCENTAGE, SHARE }
+class User { String id, name, email; }
+class Expense {
+  String id; User paidBy; double totalAmount;
+  String description; List&lt;Split&gt; splits;
+}
+class Split { User user; double amount; boolean settled; }
+class Group { String id; List&lt;User&gt; members; List&lt;Expense&gt; expenses; }
+
+class ExpenseService {
+  void addExpense(String groupId, String paidById, double amount, List&lt;String&gt; memberIds, SplitType type) {
+    Group g = groupRepo.find(groupId); User payer = userRepo.find(paidById);
+    List&lt;Split&gt; splits = SplitCalculator.calculate(amount, memberIds, type); // Strategy!
+    Expense e = new Expense(uuid(), payer, amount, splits);
+    g.expenses.add(e); expenseRepo.save(e);
+    notificationService.notifyAll(memberIds, e);
+  }
+  
+  Map&lt;String, Double&gt; getBalances(String groupId) {
+    Map&lt;String, Double&gt; balances = new HashMap&lt;&gt;();
+    groupRepo.find(groupId).expenses.forEach(e -> {
+      balances.merge(e.paidBy.id, e.totalAmount, Double::sum);
+      e.splits.forEach(s -> balances.merge(s.user.id, -s.amount, Double::sum));
+    });
+    return balances;
+  }
+  
+  // Simplify debts (NP-hard, use greedy): 
+  // Sort by balance → match biggest creditor with biggest debtor
+  List&lt;Transaction&gt; simplifyDebts(Map&lt;String,Double&gt; balances) { ... }
+}
+
+interface SplitCalculator { List&lt;Split&gt; calculate(double total, List&lt;String&gt; ids, SplitType t); }
+class EqualSplit implements SplitCalculator { /* total / N each */ }
+class ExactSplit implements SplitCalculator { /* user specifies exact amounts */ }
+class PercentageSplit implements SplitCalculator { /* user specifies %s that sum to 100 */ }
+// Patterns: Strategy (split types), Observer (notifications), Repository</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>11. Hotel Management System</h3>
+<pre><code>class Room { int num; RoomType type; RoomStatus status; double pricePerNight; Set&lt;Amenity&gt; amenities; }
+class Reservation { String id; Guest guest; Room room; LocalDate checkIn, checkOut; double cost; ReservationStatus status; }
+
+class HotelService {
+  List&lt;Room&gt; search(RoomType type, LocalDate from, LocalDate to) {
+    return roomRepo.all().stream().filter(r -> r.type==type && !hasConflict(r,from,to))
+                   .sorted(comparing(r -> r.pricePerNight)).collect(toList());
+  }
+  Reservation book(String guestId, int roomNum, LocalDate from, LocalDate to) {
+    Room r = roomRepo.find(roomNum);
+    if (hasConflict(r,from,to)) throw new UnavailableException();
+    long nights = DAYS.between(from, to);
+    double cost = nights * r.pricePerNight * seasonMultiplier(from); // Strategy
+    return reservationRepo.save(new Reservation(guestId, r, from, to, cost));
+  }
+  Bill checkOut(String resId) {
+    Reservation r = reservationRepo.find(resId); r.room.status = AVAILABLE;
+    Bill b = billService.generate(r); // room + extras (minibar, laundry)
+    paymentService.charge(r.guest, b.total); return b;
+  }
+}</code></pre>
+</div>
+
+<div class="concept-card">
+<h3>12–15: More Case Studies</h3>
+<div class="grid-2">
+<div class="card"><div class="card-title">Snake & Ladder</div>
+<pre><code>class Board { Map&lt;Int,Int&gt; snakes, ladders; int size=100;
+  int apply(int pos) {
+    if (snakes.containsKey(pos)) return snakes.get(pos);
+    if (ladders.containsKey(pos)) return ladders.get(pos);
+    return pos; }}
+class Game { Board board; List&lt;Player&gt; players; Dice dice;
+  boolean turn() {
+    Player p = current(); int newPos = p.pos + dice.roll();
+    if (newPos &lt;= 100) p.pos = board.apply(newPos);
+    if (p.pos == 100) { System.out.println(p+" wins!"); return true; }
+    rotate(); return false; }}</code></pre></div>
+<div class="card"><div class="card-title">Food Delivery (Core)</div>
+<pre><code>// Saga: Place → RestaurantAccept → Assign Agent → Pickup → Deliver
+class OrderOrchestrator { // Saga coordinator
+  Order place(OrderRequest req) {
+    Order o = orderRepo.save(req.toOrder());
+    notifyRestaurant(o);   // async
+    assignAgent(o);        // async (CompletableFuture)
+    return o;
+  }
+  void assignAgent(Order o) {
+    CompletableFuture.runAsync(() -> {
+      Agent a = agentService.findNearest(o.restaurant.loc);
+      o.agent = a; a.status = ON_DELIVERY;
+      notifyAgent(a, o);
+    });
+  }
+}</code></pre></div>
+</div>
+<div class="grid-2">
+<div class="card"><div class="card-title">Social Feed (Fan-Out)</div>
+<pre><code>// HYBRID: pre-compute regular users, pull celebs
+void createPost(Post post) {
+  postRepo.save(post);
+  List&lt;String&gt; fans = userService.getFollowers(post.userId);
+  // Regular followers: push to feed cache
+  regularFans(fans).forEach(fid ->
+    feedCache.addToFeed(fid, post.id)); // Redis sorted set
+  // Celebrity posts: pulled at read time
+}
+List&lt;Post&gt; getFeed(String userId) {
+  List&lt;Post&gt; cached = feedCache.get(userId);
+  List&lt;Post&gt; celebPosts = getCelebPosts(userId); // pull
+  return merge(cached, celebPosts);
+}</code></pre></div>
+<div class="card"><div class="card-title">Notification Service</div>
+<pre><code>// Strategy + Chain of Responsibility
+interface Channel { void send(User u, Notif n); boolean supports(ChanType t); }
+class EmailChannel implements Channel { ... }
+class SMSChannel   implements Channel { ... }
+class PushChannel  implements Channel { ... }
+
+class NotifService {
+  void send(Notif n, List&lt;User&gt; users) {
+    users.parallelStream().forEach(u ->
+      u.prefs.stream()
+        .filter(c -> n.channels.contains(c))
+        .forEach(c -> getChannel(c).send(u, n)));
+    // Retry on failure: Chain of Responsibility
+  }
+}</code></pre></div>
+</div>
+</div>
+</section>
+
+<section id="sec-decisions" class="section">
+<h2>⚖️ Decision Trees</h2>
+
+<div class="subsection">
+<h3>🌳 Which Pattern to Use — Master Decision Tree</h3>
+<div class="mermaid">
+flowchart TD
+    A[What's the problem?] --> B{Object Creation?}
+    A --> C{Object Structure?}
+    A --> D{Object Behavior?}
+    
+    B --> B1{How many objects?}
+    B1 -->|One only| B2[Singleton]
+    B1 -->|Many, hide type| B3{Need family?}
+    B3 -->|Yes| B4[Abstract Factory]
+    B3 -->|No| B5{Complex build?}
+    B5 -->|Yes| B6[Builder]
+    B5 -->|No| B7[Factory Method]
+    B1 -->|Copy existing| B8[Prototype]
+    
+    C --> C1{What to do?}
+    C1 -->|Wrap to add features| C2[Decorator]
+    C1 -->|Match interfaces| C3[Adapter]
+    C1 -->|Simplify subsystem| C4[Facade]
+    C1 -->|Control access| C5[Proxy]
+    C1 -->|Tree structure| C6[Composite]
+    C1 -->|Vary impl + interface| C7[Bridge]
+    C1 -->|Avoid subclass explosion| C8[Flyweight]
+    
+    D --> D1{What to do?}
+    D1 -->|Notify many| D2[Observer]
+    D1 -->|Swap algorithm| D3[Strategy]
+    D1 -->|Request as object| D4[Command]
+    D1 -->|Walk collection| D5[Iterator]
+    D1 -->|State machine| D6[State]
+    D1 -->|Template + hooks| D7[Template Method]
+    D1 -->|Pass along chain| D8[Chain of Responsibility]
+    D1 -->|Central coordinator| D9[Mediator]
+    D1 -->|Snapshot/restore| D10[Memento]
+    D1 -->|Lazy computation| D11[Interpreter]
+    D1 -->|Decouple visitor| D12[Visitor]
+</div>
+</div>
+
+<div class="subsection">
+<h3>🔑 Key Decision Questions</h3>
+<div class="pattern-grid">
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">Composition</div>
+<div class="pattern-name">Interface vs Abstract Class?</div>
+<div class="pattern-intent">Use <strong>Interface</strong> when: multiple inheritance needed, contract only (no state), unrelated classes share behavior (Comparable, Serializable)<br><br>Use <strong>Abstract Class</strong> when: share state/code, template method pattern, strong IS-A relationship</div>
+<div class="code-block">// Interface: can implement many
+class Dog implements Runnable, Comparable&lt;Dog&gt; {}
+
+// Abstract: shares code
+abstract class Vehicle {
+  protected int speed; // shared state
+  abstract void accelerate();
+  void stop() { speed = 0; } // shared code
+}</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">Composition</div>
+<div class="pattern-name">Composition vs Inheritance?</div>
+<div class="pattern-intent"><strong>Favor Composition</strong> (HAS-A) when: want to change behavior at runtime, avoid fragile base class, combine multiple behaviors<br><br><strong>Use Inheritance</strong> (IS-A) when: true IS-A relationship, want polymorphism via type hierarchy, LSP is satisfied</div>
+<div class="code-block">// Composition — flexible
+class Duck {
+  FlyBehavior fly; // can change at runtime!
+  QuackBehavior quack;
+  void performFly() { fly.fly(); }
+}
+
+// Inheritance — brittle
+class RubberDuck extends Duck {
+  void fly() { /* can't fly! */ } // violates LSP</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">Creation</div>
+<div class="pattern-name">Which Singleton variant?</div>
+<div class="pattern-intent">🥇 <strong>Enum</strong>: thread-safe, serialization-safe, reflection-safe (Best!)<br>🥈 <strong>Static Holder</strong>: lazy + thread-safe via class loading<br>🥉 <strong>DCL + volatile</strong>: explicit lazy, JVM-aware<br>❌ <strong>Eager</strong>: simple but initializes at class load</div>
+<div class="code-block">// BEST: Enum Singleton
+enum Config { INSTANCE;
+  public String get(String k) { return props.get(k); }
+}
+
+// Lazy + thread-safe: Static Holder
+private static class Holder {
+  static final DB INSTANCE = new DB();
+}
+public static DB getInstance() { return Holder.INSTANCE; }</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">Behavior</div>
+<div class="pattern-name">Strategy vs State?</div>
+<div class="pattern-intent"><strong>Strategy</strong>: Client controls which algorithm. Object doesn't know about other strategies. Stateless or per-call state.<br><br><strong>State</strong>: State transitions are internal. States know about each other (or a context manages). Encapsulates state-dependent behavior.</div>
+<div class="code-block">// Strategy: external control
+sorter.setStrategy(new QuickSort()); // CLIENT decides
+
+// State: internal transitions
+// VendingMachine changes its own state:
+class IdleState {
+  void insertCoin(VM vm) {
+    vm.setState(vm.getHasCoinState()); // internal
+  }
+}</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">Structure</div>
+<div class="pattern-name">Decorator vs Proxy vs Adapter?</div>
+<div class="pattern-intent"><strong>Decorator</strong>: Same interface, adds features, can be stacked, client chooses at runtime<br><strong>Proxy</strong>: Same interface, controls access (lazy/cache/auth), client unaware<br><strong>Adapter</strong>: Different interfaces, no new features, bridges incompatible APIs</div>
+<div class="code-block">// Decorator: new pizza.getPrice()
+Pizza p = new CheesePizza(new TomatoPizza(base));
+
+// Proxy: client uses IService, unaware of proxy
+IService s = new CachingProxy(new RealService());
+
+// Adapter: JSONDataSource wraps XMLDataSource
+DataSource ds = new XMLtoJSONAdapter(xmlSource);</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">Behavior</div>
+<div class="pattern-name">Observer vs Mediator?</div>
+<div class="pattern-intent"><strong>Observer</strong>: One subject → many observers. Observers don't know each other. Simple broadcast. Good for loose coupling.<br><br><strong>Mediator</strong>: Many objects ↔ one hub. Hub contains all logic. Objects only talk to hub. Good when many-to-many gets complex.</div>
+<div class="code-block">// Observer: Stock → many displays
+stock.addObserver(phoneDisplay);
+stock.addObserver(webDisplay); // don't know each other
+
+// Mediator: chat room
+chatRoom.send(alice, "hello"); // hub routes to bob, charlie
+// alice, bob, charlie don't reference each other</div>
+</div>
+
+</div><!-- pattern-grid -->
+</div><!-- subsection -->
+
+<div class="subsection">
+<h3>⚡ 30-Second Pattern Picker</h3>
+<table>
+<tr><th>I need to…</th><th>Pattern</th><th>Key Signal Word</th></tr>
+<tr><td>Ensure only ONE instance</td><td>Singleton</td><td>"only one", "global"</td></tr>
+<tr><td>Create objects without knowing type</td><td>Factory Method</td><td>"let subclass decide"</td></tr>
+<tr><td>Create families of related objects</td><td>Abstract Factory</td><td>"kit", "family", "theme"</td></tr>
+<tr><td>Build complex object step by step</td><td>Builder</td><td>"step by step", "fluent", "optional fields"</td></tr>
+<tr><td>Clone existing objects</td><td>Prototype</td><td>"copy", "clone", "template"</td></tr>
+<tr><td>Add features without subclassing</td><td>Decorator</td><td>"wrap", "add-on", "extend at runtime"</td></tr>
+<tr><td>Simplify complex subsystem</td><td>Facade</td><td>"simple interface", "one entry point"</td></tr>
+<tr><td>Make incompatible interfaces work</td><td>Adapter</td><td>"legacy", "third-party", "translate"</td></tr>
+<tr><td>Control access to object</td><td>Proxy</td><td>"lazy load", "cache", "access control"</td></tr>
+<tr><td>Tree of part-whole</td><td>Composite</td><td>"tree", "hierarchy", "file system"</td></tr>
+<tr><td>Notify multiple on change</td><td>Observer</td><td>"event", "subscribe", "notify", "listener"</td></tr>
+<tr><td>Swap algorithm at runtime</td><td>Strategy</td><td>"interchangeable", "algorithm family"</td></tr>
+<tr><td>Change behavior with state</td><td>State</td><td>"state machine", "context-dependent"</td></tr>
+<tr><td>Encapsulate request as object</td><td>Command</td><td>"undo/redo", "queue", "log", "macro"</td></tr>
+<tr><td>Pass request along handlers</td><td>Chain of Responsibility</td><td>"handler chain", "middleware", "pipeline"</td></tr>
+<tr><td>Define skeleton, let subclasses fill</td><td>Template Method</td><td>"invariant steps", "hook", "override"</td></tr>
+<tr><td>Central hub for object communication</td><td>Mediator</td><td>"chat room", "air traffic", "many-to-many"</td></tr>
+<tr><td>Save/restore state</td><td>Memento</td><td>"undo", "snapshot", "checkpoint"</td></tr>
+<tr><td>Traverse collection uniformly</td><td>Iterator</td><td>"next", "hasNext", "traverse"</td></tr>
+<tr><td>Add operations to class hierarchy</td><td>Visitor</td><td>"double dispatch", "open/closed"</td></tr>
+<tr><td>Decouple abstraction from impl</td><td>Bridge</td><td>"vary independently", "platform"</td></tr>
+</table>
+</div>
+</section>
+
+<section id="sec-traps" class="section">
+<h2>🚧 LLD Traps & How to Avoid Them</h2>
+
+<div class="subsection">
+<h3>Top 15 Interview Traps</h3>
+<div class="pattern-grid">
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #1</div>
+<div class="pattern-name">God Class Anti-Pattern</div>
+<div class="pattern-intent">❌ One class does everything (UserManager handles auth, profile, billing, email)<br>✅ Split by Single Responsibility: AuthService, ProfileService, BillingService, EmailService</div>
+<div class="code-block">// BAD
+class UserManager {
+  void authenticate() {...}
+  void updateProfile() {...}
+  void chargeCard() {...}
+  void sendEmail() {...}
+}
+
+// GOOD — separate by responsibility
+class AuthService { void authenticate() {...} }
+class PaymentService { void chargeCard() {...} }</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #2</div>
+<div class="pattern-name">Skipping Enums</div>
+<div class="pattern-intent">❌ Using String constants: "AVAILABLE", "BOOKED" → typo-prone, no exhaustive switch<br>✅ Use enums for fixed sets of states. They're type-safe, IDE-completable, and work in switch expressions</div>
+<div class="code-block">// BAD
+String status = "AVALIABLE"; // typo, no compile error!
+
+// GOOD
+enum SeatStatus { AVAILABLE, BOOKED, LOCKED }
+switch (seat.getStatus()) {
+  case AVAILABLE -> book(seat);
+  case BOOKED -> throw new AlreadyBookedException();
+  // compiler warns if LOCKED is unhandled!
+}</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #3</div>
+<div class="pattern-name">Mutable Public Fields</div>
+<div class="pattern-intent">❌ public fields with no encapsulation → any code can corrupt state<br>✅ private + getters, defensive copies for collections and mutable objects</div>
+<div class="code-block">// BAD
+public class Booking {
+  public Date checkIn; // mutable, public!
+  public List&lt;Guest&gt; guests; // caller can modify!
+}
+
+// GOOD
+private Date checkIn;
+private List&lt;Guest&gt; guests;
+public Date getCheckIn() { return new Date(checkIn.getTime()); }
+public List&lt;Guest&gt; getGuests() { return Collections.unmodifiableList(guests); }</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #4</div>
+<div class="pattern-name">Missing equals/hashCode</div>
+<div class="pattern-intent">❌ Default object identity breaks Sets, Maps, and deduplication<br>✅ Override both (contract: equal objects must have equal hashCode). Use same fields in both.</div>
+<div class="code-block">// BAD: uses object reference
+Set&lt;User&gt; set = new HashSet&lt;&gt;();
+set.add(new User("alice"));
+set.contains(new User("alice")); // FALSE!
+
+// GOOD
+@Override public boolean equals(Object o) {
+  if (!(o instanceof User)) return false;
+  return email.equals(((User) o).email);
+}
+@Override public int hashCode() {
+  return Objects.hash(email);
+}</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #5</div>
+<div class="pattern-name">Concrete Dependencies</div>
+<div class="pattern-intent">❌ Depending on concrete classes: new MySQLDB() → hard to test, can't swap<br>✅ Depend on interfaces (DIP). Inject via constructor. Makes testing with mocks trivial.</div>
+<div class="code-block">// BAD
+class OrderService {
+  MySQLDatabase db = new MySQLDatabase(); // concrete!
+}
+
+// GOOD
+class OrderService {
+  private final Repository db; // interface!
+  OrderService(Repository db) { this.db = db; } // injected!
+}
+// Test: new OrderService(new InMemoryRepository())
+// Prod: new OrderService(new MySQLRepository())</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #6</div>
+<div class="pattern-name">Null Returns</div>
+<div class="pattern-intent">❌ Returning null forces callers to null-check everywhere → NullPointerException<br>✅ Return Optional&lt;T&gt; for "maybe absent", empty collections (not null), or throw checked exceptions</div>
+<div class="code-block">// BAD
+User find(String id) { return null; } // caller forgets null check
+User u = repo.find("x");
+u.getName(); // NPE!
+
+// GOOD
+Optional&lt;User&gt; find(String id) { return Optional.ofNullable(...); }
+repo.find("x")
+    .map(User::getName)
+    .orElse("Unknown"); // never NPE
+
+// Collections: return empty, never null
+List&lt;Order&gt; getOrders() { return Collections.emptyList(); }</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #7</div>
+<div class="pattern-name">Primitive Obsession</div>
+<div class="pattern-intent">❌ Using primitives for domain concepts: String for email, int for money<br>✅ Create Value Objects that encapsulate validation and behavior</div>
+<div class="code-block">// BAD
+void book(String email, int price, String currency) { ... }
+// What if price is negative? email invalid?
+
+// GOOD - Value Objects
+class Email {
+  private final String value;
+  Email(String v) {
+    if (!v.contains("@")) throw new IllegalArgumentException();
+    this.value = v;
+  }
+}
+class Money {
+  private final BigDecimal amount;
+  private final Currency currency;
+  Money add(Money other) { ... }
+}</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #8</div>
+<div class="pattern-name">Over-Engineering / Premature Pattern</div>
+<div class="pattern-intent">❌ Adding Factory/Strategy/Observer for 2-3 simple cases just to "show patterns"<br>✅ Add patterns when you feel the pain: duplication, rigid conditionals, tight coupling. YAGNI!</div>
+<div class="code-block">// BAD: AbstractFactory for 2 types
+interface Button {} 
+class WindowsButton implements Button {}
+class MacButton implements Button {}
+interface GUIFactory { Button createButton(); }
+// ... 5 more classes for 2 buttons!
+
+// GOOD: Simple factory method is enough
+Button createButton(OS os) {
+  return os == OS.WINDOWS ? new WindowsButton() : new MacButton();
+}</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #9</div>
+<div class="pattern-name">Singleton Abuse</div>
+<div class="pattern-intent">❌ Making everything a Singleton "for convenience" → global state, tight coupling, untestable<br>✅ Use Singleton only for truly shared resources (config, connection pools). Inject via DI.</div>
+<div class="code-block">// BAD: Singletons everywhere
+UserService.getInstance().validate();
+OrderService.getInstance().create();
+// Impossible to test in isolation!
+
+// GOOD: Inject dependencies
+class CheckoutService {
+  CheckoutService(UserService users, OrderService orders) { ... }
+}
+// Tests: inject mocks
+new CheckoutService(mockUsers, mockOrders)</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #10</div>
+<div class="pattern-name">Not Handling Concurrency</div>
+<div class="pattern-intent">❌ Shared mutable state without synchronization → race conditions in multi-threaded LLD<br>✅ Use volatile for visibility, AtomicX for single-variable ops, synchronized/locks for compound ops</div>
+<div class="code-block">// BAD: Race condition
+class Counter { int count = 0; }
+// Thread A: count = count + 1 → reads 0, writes 1
+// Thread B: count = count + 1 → reads 0, writes 1 (lost!)
+
+// GOOD: AtomicInteger
+AtomicInteger count = new AtomicInteger(0);
+count.incrementAndGet(); // atomic read-modify-write
+
+// For Singleton: volatile + DCL
+private static volatile DB instance;
+if (instance == null) {
+  synchronized (DB.class) {
+    if (instance == null) instance = new DB();
+  }
+}</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #11</div>
+<div class="pattern-name">Missing Exceptions</div>
+<div class="pattern-intent">❌ Silent failures: returning false/null when things go wrong → caller can't distinguish success/failure<br>✅ Use custom exceptions that carry context. Checked for recoverable, unchecked for programming errors.</div>
+<div class="code-block">// BAD
+boolean book(int seatId) {
+  if (seat == null) return false; // WHY did it fail?
+  if (seat.isBooked()) return false; // same return for diff reasons
+}
+
+// GOOD
+void book(int seatId) throws SeatNotFoundException, SeatAlreadyBookedException {
+  Seat seat = repo.find(seatId)
+    .orElseThrow(() -> new SeatNotFoundException(seatId));
+  if (seat.isBooked()) throw new SeatAlreadyBookedException(seatId);
+  seat.book();
+}</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #12</div>
+<div class="pattern-name">Anemic Domain Model</div>
+<div class="pattern-intent">❌ Domain objects are pure data bags (just getters/setters). All logic in service classes.<br>✅ Put behavior where the data is. "Tell, Don't Ask." Rich domain model with methods that enforce invariants.</div>
+<div class="code-block">// BAD: Anemic
+class Order { double total; List&lt;Item&gt; items; /* only getters/setters */ }
+class OrderService { 
+  void applyDiscount(Order o) { o.setTotal(o.getTotal() * 0.9); } 
+}
+
+// GOOD: Rich model
+class Order {
+  private double total;
+  void applyDiscount(double pct) {
+    if (pct < 0 || pct > 1) throw new IllegalArgumentException();
+    this.total *= (1 - pct); // enforces invariant
+  }
+}</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #13</div>
+<div class="pattern-name">Breaking LSP Silently</div>
+<div class="pattern-intent">❌ Subclass narrows behavior (throws UnsupportedOperationException) or weakens postconditions<br>✅ Ask: "Can I always substitute the subtype for the parent without breaking the program?" Square→Rectangle fails this.</div>
+<div class="code-block">// BAD: Square violates LSP
+class Rectangle { setWidth(w); setHeight(h); }
+class Square extends Rectangle {
+  // Must set both: breaks parent contract!
+  void setWidth(int w) { super.setWidth(w); super.setHeight(w); }
+}
+// Client: r.setWidth(5); r.setHeight(3); → area should be 15
+// But if r is Square: area = 9! LSP violated
+
+// FIX: Don't inherit Square from Rectangle
+// Use separate classes or Shape interface</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #14</div>
+<div class="pattern-name">Circular Dependencies</div>
+<div class="pattern-intent">❌ A depends on B, B depends on A → can't compile, can't test, can't understand<br>✅ Introduce interface/event to break the cycle. One should depend on an abstraction the other implements.</div>
+<div class="code-block">// BAD: Circular
+class OrderService { PaymentService payment; }
+class PaymentService { OrderService order; } // cycle!
+
+// GOOD: Break with interface
+interface OrderEventListener { void onOrderPlaced(Order o); }
+class OrderService { List&lt;OrderEventListener&gt; listeners; }
+class PaymentService implements OrderEventListener {
+  void onOrderPlaced(Order o) { processPayment(o); }
+} // PaymentService no longer holds OrderService!</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type" style="background:#e53935">Trap #15</div>
+<div class="pattern-name">Forgetting Thread Safety in Singleton</div>
+<div class="pattern-intent">❌ Lazy Singleton without synchronization → two threads can create two instances<br>✅ Use Enum Singleton (best), Static Holder, or DCL + volatile. Eager init if startup cost is acceptable.</div>
+<div class="code-block">// BAD: Not thread-safe
+static DatabasePool instance;
+static DatabasePool getInstance() {
+  if (instance == null)         // Thread A and B both see null
+    instance = new DatabasePool(); // both create! 
+  return instance;
+}
+
+// BEST: Enum
+enum DatabasePool {
+  INSTANCE;
+  // Thread-safe, serialization-safe, reflection-safe
+  public Connection getConnection() { ... }
+}</div>
+</div>
+
+</div><!-- pattern-grid -->
+</div><!-- subsection -->
+</section>
+
+<section id="sec-top50" class="section">
+<h2>🏆 Top 50 LLD Concepts</h2>
+
+<div class="subsection">
+<h3>Quick Reference Glossary</h3>
+<div class="pattern-grid">
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">OOP Core</div>
+<div class="pattern-name">#1–10: OOP Fundamentals</div>
+<div class="pattern-intent">
+<strong>1. Encapsulation</strong> — Bundle data + methods; hide internals with private fields<br>
+<strong>2. Abstraction</strong> — Expose what, hide how; interfaces/abstract classes<br>
+<strong>3. Inheritance</strong> — IS-A relationship; subclass extends parent behavior<br>
+<strong>4. Polymorphism</strong> — One interface, many forms; runtime dispatch via overriding<br>
+<strong>5. Composition</strong> — HAS-A; prefer over inheritance for flexibility<br>
+<strong>6. Law of Demeter</strong> — Talk only to direct friends; a.b.c() is a violation<br>
+<strong>7. Tell Don't Ask</strong> — Tell objects what to do; don't query state then act<br>
+<strong>8. Value Object</strong> — Immutable, equality by value (Money, Email, Point)<br>
+<strong>9. Immutability</strong> — final fields, defensive copies; thread-safe by design<br>
+<strong>10. Cohesion</strong> — Class/method does ONE thing well; related things together
+</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">SOLID</div>
+<div class="pattern-name">#11–15: SOLID Principles</div>
+<div class="pattern-intent">
+<strong>11. SRP</strong> — One class, one reason to change; UserService ≠ UserEmailer<br>
+<strong>12. OCP</strong> — Open for extension, closed for modification; add via new classes<br>
+<strong>13. LSP</strong> — Subtypes substitutable for supertypes; Square ≠ extends Rectangle<br>
+<strong>14. ISP</strong> — Clients shouldn't depend on methods they don't use; fat → thin interfaces<br>
+<strong>15. DIP</strong> — Depend on abstractions; inject via constructor; enables testing
+</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">Creational</div>
+<div class="pattern-name">#16–20: Creational Patterns</div>
+<div class="pattern-intent">
+<strong>16. Singleton</strong> — One instance; Enum is best; use sparingly<br>
+<strong>17. Factory Method</strong> — Let subclass decide which class to create<br>
+<strong>18. Abstract Factory</strong> — Factory of factories; creates families of objects<br>
+<strong>19. Builder</strong> — Step-by-step construction; handles optional params; returns this<br>
+<strong>20. Prototype</strong> — Clone existing objects; implements Cloneable or copy constructor
+</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">Structural</div>
+<div class="pattern-name">#21–27: Structural Patterns</div>
+<div class="pattern-intent">
+<strong>21. Adapter</strong> — Convert interface; wraps incompatible class; like power adapter<br>
+<strong>22. Bridge</strong> — Decouple abstraction from impl; vary both independently<br>
+<strong>23. Composite</strong> — Tree of part-whole; leaf + composite share same interface<br>
+<strong>24. Decorator</strong> — Wrap to add features; stacks; same interface as wrapped<br>
+<strong>25. Facade</strong> — Simple interface to complex subsystem; single entry point<br>
+<strong>26. Flyweight</strong> — Share intrinsic state; separate extrinsic; millions of objects<br>
+<strong>27. Proxy</strong> — Surrogate for another object; lazy, caching, protection, remote
+</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">Behavioral</div>
+<div class="pattern-name">#28–38: Behavioral Patterns</div>
+<div class="pattern-intent">
+<strong>28. Observer</strong> — Subject notifies observers; 1:N; EventBus, listeners<br>
+<strong>29. Strategy</strong> — Family of algorithms; client swaps at runtime; interface-based<br>
+<strong>30. Command</strong> — Request as object; undo/redo; queue; macro<br>
+<strong>31. State</strong> — Change behavior with state; like a state machine; eliminates conditionals<br>
+<strong>32. Template Method</strong> — Define skeleton; subclasses fill hooks; invariant steps<br>
+<strong>33. Iterator</strong> — Sequential access without exposing structure; hasNext/next<br>
+<strong>34. Chain of Responsibility</strong> — Pass request along handler chain; may stop<br>
+<strong>35. Mediator</strong> — Central hub; objects communicate via hub; reduces coupling<br>
+<strong>36. Memento</strong> — Snapshot state; restore later; originator/caretaker/memento<br>
+<strong>37. Visitor</strong> — Add operation without modifying class; double dispatch<br>
+<strong>38. Interpreter</strong> — Grammar for language; parse and evaluate; AST nodes
+</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">GRASP</div>
+<div class="pattern-name">#39–44: GRASP Principles</div>
+<div class="pattern-intent">
+<strong>39. Information Expert</strong> — Assign responsibility to class with the info<br>
+<strong>40. Creator</strong> — B creates A if B contains/records/uses A<br>
+<strong>41. Low Coupling</strong> — Fewer dependencies → easier to change<br>
+<strong>42. High Cohesion</strong> — Related responsibilities together; focused class<br>
+<strong>43. Controller</strong> — First object to receive system event (Facade, Use Case)<br>
+<strong>44. Polymorphism</strong> — Use interfaces/overriding instead of type-checking conditionals
+</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">Java</div>
+<div class="pattern-name">#45–50: Java Specifics</div>
+<div class="pattern-intent">
+<strong>45. equals/hashCode contract</strong> — Equal objects must have equal hashCode; same fields in both<br>
+<strong>46. Comparable vs Comparator</strong> — Comparable: natural order (in class); Comparator: custom order (external)<br>
+<strong>47. PECS</strong> — Producer Extends, Consumer Super; &lt;? extends T&gt; to read, &lt;? super T&gt; to write<br>
+<strong>48. Optional</strong> — Represent "maybe absent"; use map/flatMap/orElse; don't use isPresent/get<br>
+<strong>49. Stream API</strong> — filter/map/reduce/collect; lazy until terminal op; avoid side effects in lambdas<br>
+<strong>50. Thread Safety</strong> — volatile (visibility), synchronized (atomicity), Atomic* (single-var), Lock (complex)
+</div>
+</div>
+
+</div><!-- pattern-grid -->
+</div><!-- subsection -->
+</section>
+
+<section id="sec-qbank" class="section">
+<h2>📋 Question Bank</h2>
+
+<div class="subsection">
+<h3>OOP & SOLID Questions</h3>
+<div class="qa-list">
+
+<details><summary>Q: What's the difference between Abstraction and Encapsulation?</summary>
+<div class="qa-answer">
+<strong>Abstraction</strong>: WHAT an object does — hiding implementation details behind interfaces. "User doesn't need to know how sort() works, just that it sorts." Achieved via abstract classes, interfaces.<br><br>
+<strong>Encapsulation</strong>: HOW it does it securely — bundling data + methods and restricting direct access via access modifiers (private fields, public getters). Guards against invalid state.<br><br>
+<em>Memory trick</em>: Abstraction = hide complexity. Encapsulation = hide data.
+</div></details>
+
+<details><summary>Q: Can you give a real example of LSP violation?</summary>
+<div class="qa-answer">
+<strong>Square extends Rectangle</strong>: Rectangle has setWidth/setHeight independently. A Square must keep sides equal, so setWidth(5); setHeight(3) would give area=9 not 15. Any code expecting Rectangle behavior breaks when given a Square.<br><br>
+<strong>Fix</strong>: Don't make Square extend Rectangle. Use a common Shape interface or make both independent classes. LSP: "All subtypes must be substitutable for their base type without breaking the program."
+</div></details>
+
+<details><summary>Q: How do you apply OCP in practice?</summary>
+<div class="qa-answer">
+Use Strategy pattern or polymorphism to add new behaviors without modifying existing code.<br><br>
+<strong>Example</strong>: Payment processing. Instead of if/else on payment type, create PaymentStrategy interface with processPay(). Each new payment method (UPI, Crypto) just implements the interface — zero modification to existing code.
+</div></details>
+
+<details><summary>Q: When does ISP matter in Java?</summary>
+<div class="qa-answer">
+When you have fat interfaces forcing classes to implement methods they don't use. E.g., a Worker interface with work() and eat() — a Robot implements Worker but doesn't eat → must provide empty/exception implementation.<br><br>
+<strong>Fix</strong>: Split into Workable and Feedable interfaces. Classes implement only what they need. This is why Java's Serializable, Runnable, Comparable are tiny single-method interfaces.
+</div></details>
+
+</div><!-- qa-list -->
+</div><!-- subsection -->
+
+<div class="subsection">
+<h3>Design Pattern Questions</h3>
+<div class="qa-list">
+
+<details><summary>Q: When would you use Builder vs Constructor?</summary>
+<div class="qa-answer">
+Use <strong>Builder</strong> when:<br>
+• 4+ parameters (telescoping constructor problem)<br>
+• Many optional parameters<br>
+• Need to create immutable objects step-by-step<br>
+• Parameters of same type (easy to mix up)<br><br>
+<code>Pizza pizza = new Pizza.Builder("large").cheese(true).pepperoni(true).build();</code><br><br>
+Use <strong>Constructor</strong> when: few required params, no optionals, simple object creation.
+</div></details>
+
+<details><summary>Q: Explain Decorator with a real example</summary>
+<div class="qa-answer">
+Coffee shop: Base coffee + add-ons.<br>
+<pre>Coffee c = new SugarDecorator(     // +$0.25
+              new MilkDecorator(   // +$0.50  
+                new SimpleCoffee() // $1.00
+              )
+            );
+c.getCost(); // 1.75</pre>
+Key insight: <strong>Avoids combinatorial subclass explosion</strong>. Without Decorator, you'd need classes for CoffeeWithMilk, CoffeeWithSugar, CoffeeWithMilkAndSugar, CoffeeWithSugarAndVanilla... (2^n subclasses for n add-ons!)
+</div></details>
+
+<details><summary>Q: Factory Method vs Abstract Factory — when to use which?</summary>
+<div class="qa-answer">
+<strong>Factory Method</strong>: One product, subclass decides which concrete type. "Create ONE thing, but let the subclass choose." E.g., Logger factory that creates FileLogger or DBLogger.<br><br>
+<strong>Abstract Factory</strong>: Family of related products. "Create a SUITE of things that work together." E.g., UI factory that creates matching Button + Checkbox + TextField all in Windows style OR Mac style.<br><br>
+<em>Signal</em>: If you hear "theme", "look-and-feel", "family", "kit" → Abstract Factory.
+</div></details>
+
+<details><summary>Q: How does Command pattern enable Undo/Redo?</summary>
+<div class="qa-answer">
+Each command implements execute() and undo(). Maintain a stack:<br>
+<pre>Deque&lt;Command&gt; history = new ArrayDeque&lt;&gt;();
+// Execute
+cmd.execute(); history.push(cmd);
+// Undo
+Command last = history.pop(); last.undo();</pre>
+Real world: Text editors (Ctrl+Z), database transactions, macro recording. Commands can also be queued, logged, or replayed for audit trails.
+</div></details>
+
+<details><summary>Q: Strategy vs Template Method — which to prefer?</summary>
+<div class="qa-answer">
+<strong>Strategy</strong> (composition): Inject algorithm as object. Change at runtime. Test easily with mock strategies. <em>Prefer this — follows Composition over Inheritance.</em><br><br>
+<strong>Template Method</strong> (inheritance): Algorithm skeleton in parent, steps in subclasses. Can't change at runtime. Tight coupling. Use when steps truly belong in the hierarchy (like JUnit's test lifecycle).<br><br>
+Rule: If you'd need more than 2 subclasses for variants → Strategy.
+</div></details>
+
+<details><summary>Q: Design a thread-safe Singleton in Java</summary>
+<div class="qa-answer">
+Three good options:<br>
+1. <strong>Enum</strong> (BEST): <code>enum Config { INSTANCE; }</code> — JVM guarantees one instance, serialization-safe, reflection-safe<br>
+2. <strong>Static Holder</strong>: Inner class loaded lazily by JVM class loader — thread-safe without synchronized<br>
+3. <strong>DCL + volatile</strong>: <code>private static volatile DB instance;</code> with double-checked locking<br><br>
+❌ Avoid: synchronized getInstance() (performance), eager without need (may fail early)
+</div></details>
+
+<details><summary>Q: When to use Observer vs Event Bus?</summary>
+<div class="qa-answer">
+<strong>Observer</strong>: Direct reference between subject and observer. Synchronous. Simple. Good when subject needs to know its observers.<br><br>
+<strong>Event Bus</strong> (publish-subscribe): Complete decoupling. Publisher doesn't know subscribers. Usually async. Good for large systems, cross-module communication. Spring's ApplicationEventPublisher, Guava EventBus.<br><br>
+Event Bus = Observer pattern + decoupled routing layer.
+</div></details>
+
+</div><!-- qa-list -->
+</div><!-- subsection -->
+
+<div class="subsection">
+<h3>Case Study Questions</h3>
+<div class="qa-list">
+
+<details><summary>Q: Design Parking Lot — what are the key classes?</summary>
+<div class="qa-answer">
+<strong>Enums</strong>: VehicleType {BIKE, CAR, TRUCK}, SlotStatus {AVAILABLE, OCCUPIED}<br>
+<strong>Entities</strong>: Vehicle(licensePlate, type), ParkingSlot(id, type, status), ParkingTicket(id, slot, vehicle, entryTime), ParkingFloor(id, slots[])<br>
+<strong>Services</strong>: ParkingLot (Singleton), ParkingAttendant, FeeCalculator (Strategy for hourly/flat)<br>
+<strong>Patterns used</strong>: Singleton (ParkingLot), Strategy (FeeCalculator), Factory (slot allocation), Observer (display board updates)
+</div></details>
+
+<details><summary>Q: Design LRU Cache — which data structures?</summary>
+<div class="qa-answer">
+<strong>HashMap + Doubly Linked List</strong>:<br>
+• HashMap: O(1) lookup (key → node reference)<br>
+• DLL: O(1) move-to-front on access, O(1) remove LRU from tail<br><br>
+<pre>class LRUCache {
+  int capacity;
+  Map&lt;Integer, Node&gt; map = new HashMap&lt;&gt;();
+  Node head, tail; // dummy nodes
+  // get: find in map, moveToFront, return val
+  // put: if full, remove tail.prev; add to front
+}</pre>
+Java shortcut: <code>new LinkedHashMap&lt;&gt;(capacity, 0.75f, true)</code> with removeEldestEntry override.
+</div></details>
+
+<details><summary>Q: Design BookMyShow — how do you handle concurrent seat booking?</summary>
+<div class="qa-answer">
+<strong>Problem</strong>: Two users booking seat A5 simultaneously → oversell<br><br>
+<strong>Solutions</strong>:<br>
+1. <strong>Database-level locking</strong>: SELECT FOR UPDATE on seat row → pessimistic lock<br>
+2. <strong>Optimistic locking</strong>: version field in Seat → check version on UPDATE<br>
+3. <strong>Application-level</strong>: synchronized block or ReentrantLock keyed by seatId<br>
+4. <strong>Temporary lock</strong>: Lock seat for 5 min during payment window<br><br>
+Best: DB-level + temporary lock for UX (show seat as "processing" during checkout).
+</div></details>
+
+<details><summary>Q: How would you implement Splitwise's debt simplification?</summary>
+<div class="qa-answer">
+<strong>Greedy algorithm</strong>: Compute net balance for each person (positive = owed money, negative = owes money).<br>
+<pre>// Sort: payers (positive) and debtors (negative)
+// Greedy: match largest debtor with largest payer
+while (!debtors.empty() && !payers.empty()) {
+  Person debtor = debtors.peek(); // owes most
+  Person payer = payers.peek();   // owed most
+  double amount = min(|debtor.balance|, payer.balance);
+  transactions.add(new Transaction(debtor, payer, amount));
+  // Adjust balances, remove settled parties
+}</pre>
+Minimizes number of transactions. O(n log n).
+</div></details>
+
+<details><summary>Q: Design an Elevator system — how do you handle scheduling?</summary>
+<div class="qa-answer">
+<strong>Key classes</strong>: Elevator(floor, direction, state), ElevatorController, Request(floor, dir)<br><br>
+<strong>SCAN Algorithm</strong> (like disk scheduling):<br>
+• Elevator moves in one direction serving all requests in that direction<br>
+• When no more requests in that direction, reverses<br>
+• Similar to how real elevators work<br><br>
+<strong>Simple dispatch</strong>: Assign request to elevator with minimum |currentFloor - requestFloor| that's going in the same direction or is idle.
+</div></details>
+
+</div><!-- qa-list -->
+</div><!-- subsection -->
+</section>
+
+<section id="sec-revision" class="section">
+<h2>⚡ Rapid Revision</h2>
+
+<div class="subsection">
+<h3>🕐 15-Minute Blitz (Interview tomorrow!)</h3>
+<div class="mnemonic-box">
+<div class="mnemonic-title">SOLID Mnemonic: "Small classes, Open doors, Liskov promises, Interface diets, Depend up"</div>
+</div>
+<table>
+<tr><th>What</th><th>Remember This</th></tr>
+<tr><td>SRP</td><td>One class = one reason to change. UserService ≠ UserEmailer</td></tr>
+<tr><td>OCP</td><td>Add via new class, not edit existing. Strategy pattern enables this</td></tr>
+<tr><td>LSP</td><td>Square doesn't extend Rectangle. Subtypes must honor parent contract</td></tr>
+<tr><td>ISP</td><td>Fat interface → split into thin ones. Robot shouldn't implement eat()</td></tr>
+<tr><td>DIP</td><td>new MySQLDB() → bad. Inject interface via constructor → good</td></tr>
+<tr><td>Singleton</td><td>Enum best. Static Holder for lazy. DCL + volatile</td></tr>
+<tr><td>Builder</td><td>4+ params, optionals. return this in setters. build() validates</td></tr>
+<tr><td>Factory</td><td>ONE type = Factory Method. FAMILY = Abstract Factory</td></tr>
+<tr><td>Decorator</td><td>Wraps same interface. Stacks. No subclass explosion. Coffee+addons</td></tr>
+<tr><td>Observer</td><td>Subject.notifyAll(). Listeners don't know each other. EventBus</td></tr>
+<tr><td>Strategy</td><td>Client chooses algorithm. Inject interface. Replace if/else chains</td></tr>
+<tr><td>Command</td><td>Request = object. Stack for undo/redo. Queue for later execution</td></tr>
+<tr><td>State</td><td>VendingMachine, TrafficLight. State transitions internal</td></tr>
+<tr><td>Proxy</td><td>Same interface. Lazy/Cache/Auth/Remote. Client unaware</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<h3>🕐 1-Hour Deep Dive</h3>
+<table>
+<tr><th>Topic</th><th>Key Concepts</th><th>Code to Know</th></tr>
+<tr><td>OOP Beyond 4</td><td>Composition > Inheritance, Law of Demeter, Tell Don't Ask</td><td>Duck with FlyBehavior field; a.getB().getC() → bad</td></tr>
+<tr><td>Creational Patterns</td><td>BAFPS: Builder, Abstract, Factory, Prototype, Singleton</td><td>Builder.build(), Factory.createProduct(), Enum singleton</td></tr>
+<tr><td>Structural Patterns</td><td>ABCDFPP: Adapter, Bridge, Composite, Decorator, Facade, Proxy, Flyweight</td><td>new SugarDec(new MilkDec(base)), service = new CachingProxy(real)</td></tr>
+<tr><td>Behavioral Patterns</td><td>COT IS CC MMV: Command, Observer, Template, Iterator, State, Chain, Command, Mediator, Mediator, Visitor</td><td>subject.notifyAll(), ctx.setState(new IdleState())</td></tr>
+<tr><td>Java Specifics</td><td>equals+hashCode same fields; Comparable=natural; Comparator=custom; PECS</td><td>Objects.hash(email); Comparator.comparing(User::getName)</td></tr>
+<tr><td>Concurrency</td><td>volatile=visibility; synchronized=atomicity; AtomicInt=single-var; Lock=complex</td><td>AtomicInteger.incrementAndGet(); ReentrantReadWriteLock</td></tr>
+<tr><td>Case Studies</td><td>ParkingLot, LRU, BookMyShow, Elevator, Splitwise key patterns</td><td>HashMap+DLL for LRU; Greedy for Splitwise debt</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<h3>🕐 3-Hour Full Prep</h3>
+<div class="pattern-grid">
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">Session 1</div>
+<div class="pattern-name">OOP + SOLID (45 min)</div>
+<div class="pattern-intent">
+☐ Read OOP section — 4 pillars + 3 beyond<br>
+☐ Draw UML: Association, Aggregation, Composition, Inheritance<br>
+☐ Code SOLID: write example that violates each, then fix it<br>
+☐ Square-Rectangle LSP violation — explain why<br>
+☐ Review GRASP: Information Expert, Creator, Low Coupling<br>
+</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-creational">Session 2</div>
+<div class="pattern-name">Patterns Deep Dive (75 min)</div>
+<div class="pattern-intent">
+☐ Creational: code Singleton (3 variants), Builder (step-by-step), Factory Method<br>
+☐ Structural: code Decorator (coffee), Proxy, Adapter with Mermaid diagrams<br>
+☐ Behavioral: code Observer, Strategy, Command with undo, State machine<br>
+☐ Pattern Comparisons: Strategy vs State, Factory vs Abstract Factory<br>
+☐ Take Pattern Quiz (click button above)<br>
+</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">Session 3</div>
+<div class="pattern-name">Case Studies (60 min)</div>
+<div class="pattern-intent">
+☐ Parking Lot: draw class diagram, identify patterns<br>
+☐ LRU Cache: code HashMap + DLL solution<br>
+☐ BookMyShow: how to handle concurrent booking?<br>
+☐ Elevator: SCAN scheduling algorithm<br>
+☐ Splitwise: greedy debt simplification algorithm<br>
+</div>
+</div>
+
+<div class="pattern-card">
+<div class="pattern-type p-structural">Session 4</div>
+<div class="pattern-name">Java + Concurrency (30 min)</div>
+<div class="pattern-intent">
+☐ equals/hashCode: write for a class, explain contract<br>
+☐ Comparable vs Comparator: code both for Student by GPA<br>
+☐ PECS: write generic method using extends and super<br>
+☐ Thread safety: volatile, synchronized, AtomicInteger examples<br>
+☐ Review 15 traps — identify which ones you'd have made<br>
+</div>
+</div>
+
+</div><!-- pattern-grid -->
+</div>
+
+<div class="subsection">
+<h3>🎯 Interview Checklist</h3>
+<table>
+<tr><th>Phase</th><th>What to Do</th><th>Time</th></tr>
+<tr><td>Clarify</td><td>Ask: actors, scale, features in/out scope, platforms</td><td>5 min</td></tr>
+<tr><td>Core Entities</td><td>Identify nouns → entities, verbs → methods</td><td>5 min</td></tr>
+<tr><td>Class Design</td><td>Draw UML: attributes, methods, relationships</td><td>15 min</td></tr>
+<tr><td>Patterns</td><td>Identify which patterns apply and WHY</td><td>5 min</td></tr>
+<tr><td>Code Key Parts</td><td>Core classes, key algorithms, thread safety if needed</td><td>15 min</td></tr>
+<tr><td>Edge Cases</td><td>Concurrency, validation, error handling, scale</td><td>5 min</td></tr>
+</table>
+</div>
+
+<div class="subsection">
+<h3>🔥 Pattern Mnemonics Master List</h3>
+<div class="pattern-grid">
+<div class="pattern-card">
+<div class="pattern-type p-creational">Creational</div>
+<div class="pattern-name">BAFPS</div>
+<div class="pattern-intent"><strong>B</strong>uilder (complex construction)<br><strong>A</strong>bstract Factory (families)<br><strong>F</strong>actory Method (one type)<br><strong>P</strong>rototype (clone)<br><strong>S</strong>ingleton (one instance)</div>
+</div>
+<div class="pattern-card">
+<div class="pattern-type p-structural">Structural</div>
+<div class="pattern-name">ABCDFPP</div>
+<div class="pattern-intent"><strong>A</strong>dapter (translate)<br><strong>B</strong>ridge (decouple)<br><strong>C</strong>omposite (tree)<br><strong>D</strong>ecorator (wrap+add)<br><strong>F</strong>acade (simplify)<br><strong>P</strong>roxy (control)<br><strong>F</strong>lyweight (share)</div>
+</div>
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">Behavioral</div>
+<div class="pattern-name">COT IS CC MMV</div>
+<div class="pattern-intent"><strong>C</strong>hain of Resp<br><strong>O</strong>bserver<br><strong>T</strong>emplate Method<br><strong>I</strong>terator<br><strong>S</strong>tate<br><strong>C</strong>ommand<br><strong>C</strong>o (Mediator!)<br><strong>M</strong>emento<br><strong>M</strong>ediator<br><strong>V</strong>isitor<br>+ Interpreter</div>
+</div>
+<div class="pattern-card">
+<div class="pattern-type p-behavioral">SOLID</div>
+<div class="pattern-name">Small-Open-Liskov-Interface-Depend</div>
+<div class="pattern-intent">"Small classes (<strong>S</strong>RP),<br><strong>O</strong>pen doors (OCP),<br><strong>L</strong>iskov promises (LSP),<br><strong>I</strong>nterface diets (ISP),<br><strong>D</strong>epend up (DIP)"</div>
+</div>
+</div>
+</div>
+</section>
+
+</main>
+</div><!-- layout -->
+
+<!-- ===== PATTERN QUIZ OVERLAY ===== -->
+<div id="quiz-overlay" style="display:none">
+<div class="quiz-container">
+<div class="quiz-header">
+  <h2>🎯 Pattern Recognition Quiz</h2>
+  <div id="quiz-progress-text">Question 1 of 20</div>
+  <button class="quiz-close" onclick="closeQuiz()">✕</button>
+</div>
+<div id="quiz-score-bar">
+  <div id="quiz-score-fill"></div>
+</div>
+<div id="quiz-body">
+  <div id="quiz-scenario"></div>
+  <div id="quiz-options"></div>
+  <div id="quiz-feedback" style="display:none"></div>
+  <button id="quiz-next" style="display:none" onclick="nextQuestion()">Next →</button>
+</div>
+<div id="quiz-result" style="display:none">
+  <div id="quiz-result-icon"></div>
+  <div id="quiz-result-score"></div>
+  <div id="quiz-result-msg"></div>
+  <button onclick="restartQuiz()">Retry Quiz</button>
+  <button onclick="closeQuiz()">Close</button>
+</div>
+</div>
+</div>
+
+<!-- ===== FLASHCARD OVERLAY ===== -->
+<div id="fc-overlay" style="display:none">
+<div class="fc-container">
+<div class="fc-header">
+  <h2>⚡ Flashcards</h2>
+  <div id="fc-stats">Card <span id="fc-idx">1</span> of <span id="fc-total">50</span></div>
+  <button class="quiz-close" onclick="closeFc()">✕</button>
+</div>
+<div id="fc-category-bar">
+  <button class="fc-cat active" onclick="setFcCat('all')">All</button>
+  <button class="fc-cat" onclick="setFcCat('oop')">OOP</button>
+  <button class="fc-cat" onclick="setFcCat('solid')">SOLID</button>
+  <button class="fc-cat" onclick="setFcCat('creational')">Creational</button>
+  <button class="fc-cat" onclick="setFcCat('structural')">Structural</button>
+  <button class="fc-cat" onclick="setFcCat('behavioral')">Behavioral</button>
+  <button class="fc-cat" onclick="setFcCat('java')">Java</button>
+  <button class="fc-cat" onclick="setFcCat('concurrency')">Concurrency</button>
+  <button class="fc-cat" onclick="setFcCat('cases')">Cases</button>
+</div>
+<div id="fc-progress-bar"><div id="fc-progress-fill"></div></div>
+<div id="fc-card-area">
+  <div id="fc-card" onclick="flipFc()">
+    <div id="fc-front"></div>
+    <div id="fc-back" style="display:none"></div>
+    <div id="fc-hint">👆 Click to flip</div>
+  </div>
+</div>
+<div id="fc-controls">
+  <button onclick="markFc('review')" id="fc-btn-review">🔄 Review</button>
+  <button onclick="prevFc()">← Prev</button>
+  <button onclick="nextFc()">Next →</button>
+  <button onclick="markFc('known')" id="fc-btn-known">✓ Known</button>
+</div>
+<div id="fc-legend">
+  <span id="fc-known-count">✓ Known: 0</span>
+  <span id="fc-review-count">🔄 Review: 0</span>
+  <button onclick="shuffleFc()">🔀 Shuffle</button>
+  <button onclick="resetFcProgress()">Reset Progress</button>
+</div>
+</div>
+</div>
+
+<script>
+// ===== QUIZ DATA (20 scenarios) =====
+const quizData = [
+  {
+    scenario: "You're building a logging system that writes to files, databases, or cloud storage. The app decides which logger to use based on configuration. New logger types should be addable without changing existing code.",
+    options: ["Factory Method", "Singleton", "Strategy", "Builder"],
+    answer: 0,
+    explanation: "Factory Method: The factory creates the correct Logger subclass (FileLogger, DBLogger) without the caller knowing the concrete type. Each new logger type just extends the base factory."
+  },
+  {
+    scenario: "An e-commerce app has discount strategies: Percentage, Fixed Amount, Buy-One-Get-One. The strategy applied must be swappable at runtime based on user's coupon code.",
+    options: ["Template Method", "Strategy", "State", "Command"],
+    answer: 1,
+    explanation: "Strategy: Each discount type implements DiscountStrategy.apply(). The cart holds a reference and calls it. Swapping strategy at runtime is the core use case."
+  },
+  {
+    scenario: "A vending machine behaves differently based on its current state: Idle (waiting for coin), HasCoin (waiting for selection), Dispensing, OutOfStock. Behavior changes based on internal state transitions.",
+    options: ["Observer", "Command", "State", "Chain of Responsibility"],
+    answer: 2,
+    explanation: "State: Each state (IdleState, HasCoinState) encapsulates behavior for that state. The context (VendingMachine) delegates to current state. State transitions are internal."
+  },
+  {
+    scenario: "A notification system sends alerts via Email, SMS, and Push. When a stock price changes, all registered clients must be notified immediately. New notification channels should be addable easily.",
+    options: ["Mediator", "Observer", "Command", "Strategy"],
+    answer: 1,
+    explanation: "Observer: The stock (subject) maintains a list of observers (notification channels). When price changes, notifyAll() triggers each observer. Adding a new channel = implementing Observer interface."
+  },
+  {
+    scenario: "Building a complex SQL query builder where clauses (WHERE, ORDER BY, GROUP BY, HAVING) are optional and must be combined in specific order. The final query is immutable once built.",
+    options: ["Factory Method", "Builder", "Prototype", "Composite"],
+    answer: 1,
+    explanation: "Builder: SQLQueryBuilder.select().from().where().orderBy().build(). Each method returns 'this' for fluent chaining. build() creates the immutable Query object. Perfect for optional parameters in specific order."
+  },
+  {
+    scenario: "A UI component library must produce matching Button, TextField, and Checkbox widgets for Windows, macOS, and Web. All three widgets in a theme must look and feel consistent.",
+    options: ["Factory Method", "Abstract Factory", "Prototype", "Builder"],
+    answer: 1,
+    explanation: "Abstract Factory: Creates FAMILIES of related objects. WindowsFactory.createButton(), createTextField(), createCheckbox() all return Windows-themed widgets. Switching themes = switching factory."
+  },
+  {
+    scenario: "Adding features to a coffee order system: milk, sugar, vanilla, whip cream can be added in any combination. Subclassing would require 2^n classes for n add-ons.",
+    options: ["Adapter", "Decorator", "Composite", "Bridge"],
+    answer: 1,
+    explanation: "Decorator: Wrap the base coffee with add-on decorators. new VanillaDecorator(new SugarDecorator(new SimpleCoffee())). Each decorator adds cost/description. Combinatorial without subclass explosion."
+  },
+  {
+    scenario: "A legacy XML payment gateway needs to be used with a new system expecting JSON. You can't modify either system's code.",
+    options: ["Facade", "Proxy", "Adapter", "Bridge"],
+    answer: 2,
+    explanation: "Adapter: XMLToJSONAdapter wraps the XML gateway and implements the JSON interface. Translates calls between incompatible interfaces. Like a power plug adapter."
+  },
+  {
+    scenario: "A database connection pool initializes once and provides connections to all parts of the application. Multiple initializations would waste resources.",
+    options: ["Factory Method", "Prototype", "Singleton", "Flyweight"],
+    answer: 2,
+    explanation: "Singleton: Only one connection pool instance should exist. Use Enum singleton or Static Holder for thread safety. Avoids multiple pools competing for DB connections."
+  },
+  {
+    scenario: "A text editor needs Undo/Redo for all operations: insert, delete, format. Operations should also be queueable for a macro recorder.",
+    options: ["Memento", "Command", "Strategy", "Chain of Responsibility"],
+    answer: 1,
+    explanation: "Command: Each operation (InsertCmd, DeleteCmd, FormatCmd) implements execute() and undo(). A stack stores executed commands. Pop and call undo() to undo. Deque supports undo/redo."
+  },
+  {
+    scenario: "A home automation system: when motion is detected, multiple devices react — lights turn on, camera starts recording, alarm arms. Adding new devices should not change the motion sensor code.",
+    options: ["Mediator", "Observer", "Strategy", "Template Method"],
+    answer: 1,
+    explanation: "Observer: MotionSensor is the subject. Light, Camera, Alarm are observers. When motion detected, notifyAll() is called. New device = implement Observer, register — no sensor code changes."
+  },
+  {
+    scenario: "A game has many bullets on screen. Each bullet type (fire, ice, explosive) has shared properties (image, speed, damage) but unique position. Memory optimization is critical.",
+    options: ["Prototype", "Flyweight", "Composite", "Singleton"],
+    answer: 1,
+    explanation: "Flyweight: Share intrinsic state (image, damage, speed) across all bullets of the same type. Only extrinsic state (position, direction) is per-bullet. Reduces memory from O(n) to O(1) for shared state."
+  },
+  {
+    scenario: "A microservices client library needs to add logging, circuit-breaking, and retry logic around HTTP calls, without the caller knowing about these cross-cutting concerns.",
+    options: ["Decorator", "Proxy", "Adapter", "Chain of Responsibility"],
+    answer: 1,
+    explanation: "Proxy: The proxy implements the same interface as the real HTTP client. The caller is unaware it's talking to a proxy that adds logging/circuit-breaking/retry transparently. Spring AOP uses this."
+  },
+  {
+    scenario: "A file system where directories can contain files or other directories. A unified interface should allow treating individual files and groups of files identically (e.g., getSize() on a directory sums all contents).",
+    options: ["Decorator", "Flyweight", "Composite", "Bridge"],
+    answer: 2,
+    explanation: "Composite: File and Directory implement the same FileSystemNode interface. Directory.getSize() recursively sums children. Client calls getSize() uniformly on files and directories."
+  },
+  {
+    scenario: "An order processing pipeline: validation, fraud check, inventory check, payment processing. Each step may reject the order or pass it to the next handler. Steps should be configurable.",
+    options: ["Strategy", "Template Method", "Chain of Responsibility", "Observer"],
+    answer: 2,
+    explanation: "Chain of Responsibility: Each handler (Validator, FraudChecker, InventoryChecker, PaymentProcessor) has a next handler. On rejection, it stops. On success, it calls next.handle(order). Steps are composable and reorderable."
+  },
+  {
+    scenario: "An object's state needs to be saved before a risky operation and restored if the operation fails. The object's internal state should not be exposed.",
+    options: ["Command", "Memento", "Prototype", "State"],
+    answer: 1,
+    explanation: "Memento: Originator creates a Memento (snapshot of state). Caretaker stores it. On failure, caretaker gives memento back to originator to restore. State is not exposed — Memento is opaque to caretaker."
+  },
+  {
+    scenario: "A complex subsystem with 20+ classes for media processing (decode, filter, encode, stream). The client just wants to call processVideo(file). The internal complexity should be hidden.",
+    options: ["Adapter", "Proxy", "Facade", "Mediator"],
+    answer: 2,
+    explanation: "Facade: VideoProcessingFacade provides a simple processVideo() method that orchestrates all 20+ internal classes. Client only sees the facade. Reduces coupling to the complex subsystem."
+  },
+  {
+    scenario: "A chat application where users (Alice, Bob, Charlie) all need to communicate. Allowing direct references between all users creates O(n²) dependencies. Communication should go through a central hub.",
+    options: ["Observer", "Mediator", "Chain of Responsibility", "Command"],
+    answer: 1,
+    explanation: "Mediator: ChatRoom is the mediator. Alice, Bob, Charlie only reference the ChatRoom. chatRoom.send(alice, 'hello') routes to all other users. Adding a new user requires no changes to existing users."
+  },
+  {
+    scenario: "A report generator that has a fixed series of steps: load data, validate, format, and generate report. Steps 2 and 3 vary by report type (PDF vs Excel), but the overall sequence is always the same.",
+    options: ["Strategy", "Template Method", "Builder", "Factory Method"],
+    answer: 1,
+    explanation: "Template Method: Abstract ReportGenerator defines the template: loadData() → validate() → format() → generate(). Subclasses (PDFReport, ExcelReport) override only format() and generate() — the invariant steps stay in the parent."
+  },
+  {
+    scenario: "You need to traverse a custom tree structure (BST, AVL, filesystem) without exposing internal representation. The traversal order might change (in-order, pre-order, level-order).",
+    options: ["Visitor", "Composite", "Iterator", "Strategy"],
+    answer: 2,
+    explanation: "Iterator: Each traversal strategy implements Iterator with hasNext()/next(). The client iterates uniformly without knowing the tree's internals. Strategy handles *how to traverse*; Iterator provides *the traversal protocol*."
+  }
+];
+
+let quizState = { current: 0, score: 0, answered: false, shuffled: [] };
+
+function openQuiz() {
+  quizState = { current: 0, score: 0, answered: false, shuffled: [...quizData].sort(() => Math.random()-0.5) };
+  document.getElementById('quiz-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  renderQuestion();
+}
+function closeQuiz() {
+  document.getElementById('quiz-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function renderQuestion() {
+  const q = quizState.shuffled[quizState.current];
+  document.getElementById('quiz-body').style.display = 'block';
+  document.getElementById('quiz-result').style.display = 'none';
+  document.getElementById('quiz-progress-text').textContent = `Question ${quizState.current+1} of ${quizState.shuffled.length}`;
+  const fill = (quizState.score / quizState.shuffled.length * 100);
+  document.getElementById('quiz-score-fill').style.width = fill + '%';
+  document.getElementById('quiz-scenario').innerHTML = `<div class="quiz-scenario-text">${q.scenario}</div>`;
+  const optDiv = document.getElementById('quiz-options');
+  optDiv.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt;
+    btn.onclick = () => answerQuiz(i);
+    optDiv.appendChild(btn);
+  });
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('quiz-next').style.display = 'none';
+  quizState.answered = false;
+}
+function answerQuiz(chosen) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = quizState.shuffled[quizState.current];
+  const correct = chosen === q.answer;
+  if (correct) quizState.score++;
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.answer) btn.classList.add('quiz-correct');
+    else if (i === chosen && !correct) btn.classList.add('quiz-wrong');
+  });
+  const fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'block';
+  fb.innerHTML = `<span class="fb-icon">${correct ? '✅' : '❌'}</span> <strong>${correct ? 'Correct!' : 'Not quite.'}</strong><br>${q.explanation}`;
+  fb.className = correct ? 'quiz-feedback-correct' : 'quiz-feedback-wrong';
+  document.getElementById('quiz-next').style.display = 'block';
+}
+function nextQuestion() {
+  quizState.current++;
+  if (quizState.current >= quizState.shuffled.length) {
+    showQuizResult();
+  } else {
+    renderQuestion();
+  }
+}
+function showQuizResult() {
+  document.getElementById('quiz-body').style.display = 'none';
+  const res = document.getElementById('quiz-result');
+  res.style.display = 'block';
+  const pct = Math.round(quizState.score / quizState.shuffled.length * 100);
+  const icons = ['😅','😐','🙂','😊','🔥'];
+  const icon = icons[Math.floor(pct/25)] || '🏆';
+  document.getElementById('quiz-result-icon').textContent = icon;
+  document.getElementById('quiz-result-score').textContent = `${quizState.score}/${quizState.shuffled.length} (${pct}%)`;
+  let msg = pct >= 80 ? 'Excellent! Pattern recognition mastered.' : pct >= 60 ? 'Good! Review the ones you missed.' : 'Keep practicing — focus on Pattern Comparisons section.';
+  document.getElementById('quiz-result-msg').textContent = msg;
+}
+function restartQuiz() {
+  quizState.shuffled = [...quizData].sort(() => Math.random()-0.5);
+  quizState.current = 0; quizState.score = 0;
+  document.getElementById('quiz-body').style.display = 'block';
+  document.getElementById('quiz-result').style.display = 'none';
+  renderQuestion();
+}
+
+// ===== FLASHCARD DATA (50 cards) =====
+const flashcards = [
+  // OOP (10)
+  { cat:'oop', q:'What is Encapsulation?', a:'Bundling data + methods; hiding internal state via private fields + public getters/setters. Guards object against invalid state.' },
+  { cat:'oop', q:'What is Abstraction?', a:'Exposing WHAT, hiding HOW. Achieved via interfaces/abstract classes. e.g., Collection API hides ArrayList vs LinkedList internals.' },
+  { cat:'oop', q:'What is Polymorphism?', a:'One interface, many forms. Runtime dispatch — calling the same method on different types executes different code. @Override in Java.' },
+  { cat:'oop', q:'Composition vs Inheritance — which to prefer and why?', a:'Prefer COMPOSITION (HAS-A). Avoids fragile base class problem. Behavior can change at runtime. E.g., Duck has FlyBehavior instead of extending FlyingDuck.' },
+  { cat:'oop', q:'What is the Law of Demeter?', a:'Talk only to direct friends. a.b.c() violates it; a.getResult() is fine. Reduces coupling — method only knows its immediate collaborators.' },
+  { cat:'oop', q:'What is "Tell, Don\'t Ask"?', a:'Tell objects to do things rather than asking state then acting. Bad: if (order.getStatus() == PAID) ship(order). Good: order.ship() — object encapsulates its own logic.' },
+  { cat:'oop', q:'What is a Value Object?', a:'Immutable object with equality by value, not identity. Examples: Money, Email, Point, DateRange. No setters; constructor validates invariants.' },
+  { cat:'oop', q:'What is cohesion?', a:'How related the responsibilities of a class/module are. High cohesion = focused, single-purpose. Low cohesion = God class doing unrelated things.' },
+  { cat:'oop', q:'What is coupling?', a:'How much classes depend on each other. Low coupling = easier to change/test. Depend on abstractions (interfaces), not concretions.' },
+  { cat:'oop', q:'What is the difference between overloading and overriding?', a:'Overloading: same method name, different params, resolved at compile time (static polymorphism). Overriding: subclass redefines parent method, resolved at runtime (dynamic polymorphism).' },
+  // SOLID (5)
+  { cat:'solid', q:'SRP — give an example violation and fix', a:'Violation: UserService handles auth + email + billing. Fix: AuthService, EmailService, BillingService each with ONE reason to change.' },
+  { cat:'solid', q:'OCP — how do you apply it in code?', a:'Use polymorphism/Strategy. Add PayPalPayment, CryptoPayment by implementing PaymentStrategy — zero changes to existing code. Closed for modification, open for extension.' },
+  { cat:'solid', q:'LSP — why does Square extend Rectangle violate it?', a:'Rectangle allows setWidth/setHeight independently. Square must keep sides equal, breaking this contract. Code expecting Rectangle behavior fails with Square substituted.' },
+  { cat:'solid', q:'ISP — fat interface example', a:'Worker interface with work() + eat(). Robot implements Worker but doesn\'t eat → empty implementation. Fix: Workable + Feedable. Classes implement only what they need.' },
+  { cat:'solid', q:'DIP — how does it enable testability?', a:'Inject dependencies via constructor (or DI framework). class OrderService(Repository repo). Test: new OrderService(new InMemoryRepo()). Prod: new OrderService(new MySQLRepo()). No new inside.' },
+  // Creational (6)
+  { cat:'creational', q:'Best Singleton implementation and why?', a:'Enum Singleton: enum Config { INSTANCE; }. JVM guarantees single instance; serialization-safe; reflection-safe. No additional synchronization needed.' },
+  { cat:'creational', q:'Factory Method vs Abstract Factory', a:'Factory Method = ONE product, subclass decides type. Abstract Factory = FAMILY of related products. Signal: "theme", "kit", "family" → Abstract Factory.' },
+  { cat:'creational', q:'When to use Builder pattern?', a:'4+ parameters; many optional params; params of same type (easy to mix up); building immutable objects. new Pizza.Builder("large").cheese(true).pepperoni(true).build()' },
+  { cat:'creational', q:'Prototype pattern — implementation', a:'Clone existing objects. Implement Cloneable + override clone(), or use copy constructor. Good for expensive initialization when similar objects needed.' },
+  { cat:'creational', q:'Double-Checked Locking Singleton', a:'Must use volatile: private static volatile DB instance; Then synchronized(DB.class) with null check inside to avoid overhead on every call.' },
+  { cat:'creational', q:'Static Holder Singleton', a:'Inner static class loaded by JVM lazily: private static class Holder { static final DB INSTANCE = new DB(); } public static DB get() { return Holder.INSTANCE; }' },
+  // Structural (7)
+  { cat:'structural', q:'Decorator vs Inheritance — why prefer Decorator?', a:'Avoids 2^n subclass explosion for n add-ons. Stack decorators at runtime. Coffee + Milk + Sugar = 3 decorators vs MilkSugarCoffee subclass for each combo.' },
+  { cat:'structural', q:'Proxy types', a:'Virtual (lazy init), Protection (access control), Caching (cache results), Remote (local proxy for remote obj), Logging/AOP. Same interface as real object; client unaware.' },
+  { cat:'structural', q:'Adapter — explain with example', a:'Adapts incompatible interfaces. XMLtoJSONAdapter wraps XMLDataSource, implements JSONDataSource. Like power adapter — no modification to either system.' },
+  { cat:'structural', q:'Composite pattern use case', a:'Part-whole hierarchies: File System (File + Directory both are FileNode), UI components (Button + Panel both are UIComponent). Uniform interface; recursive operations.' },
+  { cat:'structural', q:'Facade pattern purpose', a:'Single, simple entry point to a complex subsystem. VideoFacade.processVideo() hides 20 internal classes. Reduces coupling; doesn\'t add functionality.' },
+  { cat:'structural', q:'Flyweight pattern', a:'Share intrinsic state (type, color, texture) across many objects. Keep extrinsic state (position, id) per-object. Used in game engines, text rendering (character shapes shared).' },
+  { cat:'structural', q:'Bridge vs Adapter', a:'Adapter: fixes existing incompatible interfaces (post-hoc). Bridge: designed upfront to allow abstraction and implementation to vary independently. Two separate hierarchies.' },
+  // Behavioral (11)
+  { cat:'behavioral', q:'Observer — key components', a:'Subject (maintains observers list, notifyAll()), Observer interface (update()), ConcreteObserver. Publishers don\'t know observer details — just the Observer interface.' },
+  { cat:'behavioral', q:'Command pattern — what enables undo/redo?', a:'Command has execute() + undo(). Executed commands go on a stack. Pop + undo() to undo. Re-execute for redo. Also enables queuing, logging, macros.' },
+  { cat:'behavioral', q:'Strategy vs State — key difference', a:'Strategy: CLIENT controls algorithm switch. State: INTERNAL transitions (states know each other). Strategy = stateless replaceable algo; State = context-dependent behavior.' },
+  { cat:'behavioral', q:'Template Method — when to use vs Strategy?', a:'Template Method: inheritance; fixed steps with hooks. Strategy: composition; full algorithm replaced. Prefer Strategy — more flexible, no subclassing needed.' },
+  { cat:'behavioral', q:'Chain of Responsibility vs Decorator', a:'CoR: request may STOP at any handler; handlers are independent. Decorator: ALL decorators process; same interface; additive. CoR = pipeline with potential early stop.' },
+  { cat:'behavioral', q:'Mediator pattern use case', a:'Chat room, air traffic control, event bus. N objects → O(n²) deps without mediator; O(n) with it. Objects don\'t reference each other; all go through hub.' },
+  { cat:'behavioral', q:'Memento — three participants', a:'Originator (creates + restores memento), Memento (holds state snapshot; opaque to others), Caretaker (stores mementos but never inspects them). Use for undo, version history.' },
+  { cat:'behavioral', q:'Visitor pattern', a:'Add operations to object hierarchy without modifying classes. Double dispatch: accept(Visitor v) calls v.visit(this). Add new operations by adding new Visitor implementations.' },
+  { cat:'behavioral', q:'Iterator pattern', a:'Sequential access without exposing structure. hasNext()/next() interface. Java Iterable + Iterator. Different traversal strategies (in-order, BFS) = different iterators.' },
+  { cat:'behavioral', q:'Observer vs Mediator — when to choose each?', a:'Observer: simple 1:N broadcast; subject knows observer interface only. Mediator: complex many-to-many; central coordinator has logic. Mediator = smarter Observer hub.' },
+  { cat:'behavioral', q:'Interpreter pattern', a:'Grammar for a language; parse and evaluate expressions. AST of nodes each implementing interpret(). Used in SQL parsers, calculators, regex engines. Rarely needed in interviews.' },
+  // Java (6)
+  { cat:'java', q:'equals/hashCode contract', a:'1) a.equals(b) → a.hashCode() == b.hashCode() (must!). 2) Use SAME fields in both. 3) a.equals(a) true; a.equals(b)→b.equals(a); transitive. Violation breaks HashMap/HashSet.' },
+  { cat:'java', q:'Comparable vs Comparator', a:'Comparable: natural ordering IN the class (implements Comparable<T>, compareTo). Comparator: external custom ordering. Comparator.comparing(User::getName).thenComparing(User::getAge).' },
+  { cat:'java', q:'PECS — what does it mean?', a:'Producer Extends, Consumer Super. List<? extends T>: read T from it (producer). List<? super T>: write T to it (consumer). Collections.copy uses both: copy(List<? super T> dest, List<? extends T> src).' },
+  { cat:'java', q:'Optional — best practices', a:'Use map/flatMap/orElse/orElseThrow. Avoid isPresent()/get() (same as null check). Don\'t use Optional as field or parameter. Use as return type for "may be absent" methods.' },
+  { cat:'java', q:'Stream API — key operations', a:'Intermediate (lazy): filter, map, flatMap, sorted, distinct, limit. Terminal (triggers): collect, forEach, reduce, count, findFirst, anyMatch. Never reuse a consumed stream.' },
+  { cat:'java', q:'When to use TreeMap vs HashMap?', a:'HashMap: O(1) get/put; no order. TreeMap: O(log n); sorted by key (natural or Comparator). Use TreeMap for range queries, floor/ceiling operations, sorted iteration.' },
+  // Concurrency (5)
+  { cat:'concurrency', q:'volatile vs synchronized', a:'volatile: visibility only — all threads see latest value. No atomicity for compound ops (count++). synchronized: visibility + atomicity — only one thread at a time. volatile = cheaper.' },
+  { cat:'concurrency', q:'AtomicInteger vs synchronized', a:'AtomicInteger: CAS-based; lock-free; great for counters and single-variable ops. incrementAndGet() is atomic. synchronized: broader; use for multi-step compound operations on shared state.' },
+  { cat:'concurrency', q:'ReentrantLock advantages over synchronized', a:'tryLock(timeout), lockInterruptibly(), separate read/write locks (ReadWriteLock), fairness policy. synchronized is simpler; use Lock when you need these features.' },
+  { cat:'concurrency', q:'Deadlock — conditions and prevention', a:'4 conditions: mutual exclusion, hold+wait, no preemption, circular wait. Prevention: always lock in same order; use tryLock with timeout; avoid nested locks; use lock hierarchy.' },
+  { cat:'concurrency', q:'CountDownLatch vs CyclicBarrier', a:'CountDownLatch: one-time; N threads count down; others wait for 0. CyclicBarrier: reusable; all N threads wait for each other, then proceed together. Barrier resets; Latch doesn\'t.' },
+  // Cases (5)
+  { cat:'cases', q:'LRU Cache — data structure and complexity', a:'HashMap + Doubly Linked List. Map: O(1) lookup. DLL: O(1) move-to-front on access, O(1) remove LRU tail. Overall: O(1) get and put. Java: LinkedHashMap(capacity, 0.75f, true) + removeEldestEntry.' },
+  { cat:'cases', q:'Parking Lot — key design patterns', a:'Singleton (ParkingLot), Strategy (FeeCalculator: hourly/flat/daily), Factory (slot allocation by vehicle type), Observer (display board), State (slot: AVAILABLE/OCCUPIED/RESERVED). Enum for VehicleType, SlotStatus.' },
+  { cat:'cases', q:'BookMyShow — concurrent seat booking solution', a:'DB-level: SELECT FOR UPDATE (pessimistic lock). App-level: synchronized block or ReentrantLock per seatId. Temporary lock: lock seat for 5 min during checkout. Optimistic: version field + retry.' },
+  { cat:'cases', q:'Splitwise debt simplification algorithm', a:'Compute net balance per person (+owed, -owes). Greedy: sort by balance. Match max debtor with max payer. transaction(debtor→payer, min(|debtor|, payer)). Minimizes transaction count. O(n log n).' },
+  { cat:'cases', q:'Elevator — scheduling algorithm', a:'SCAN (disk-like): serve all requests in current direction, then reverse. Assign request to elevator with min |currentFloor - requestFloor| going same direction or idle. State: IDLE, MOVING_UP, MOVING_DOWN.' }
+];
+
+// ===== FLASHCARD LOGIC =====
+let fcState = {
+  cat: 'all',
+  deck: [],
+  idx: 0,
+  flipped: false,
+  known: {},
+  review: {}
+};
+
+function loadFcProgress() {
+  try {
+    const k = localStorage.getItem('fc_known');
+    const r = localStorage.getItem('fc_review');
+    if (k) fcState.known = JSON.parse(k);
+    if (r) fcState.review = JSON.parse(r);
+  } catch(e) {}
+}
+
+function saveFcProgress() {
+  try {
+    localStorage.setItem('fc_known', JSON.stringify(fcState.known));
+    localStorage.setItem('fc_review', JSON.stringify(fcState.review));
+  } catch(e) {}
+}
+
+function getFcDeck() {
+  if (fcState.cat === 'all') return [...flashcards];
+  return flashcards.filter(c => c.cat === fcState.cat);
+}
+
+function openFlashcards() {
+  loadFcProgress();
+  fcState.deck = getFcDeck();
+  fcState.idx = 0;
+  fcState.flipped = false;
+  document.getElementById('fc-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  renderFc();
+}
+
+function closeFc() {
+  document.getElementById('fc-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function setFcCat(cat) {
+  fcState.cat = cat;
+  fcState.deck = getFcDeck();
+  fcState.idx = 0;
+  fcState.flipped = false;
+  document.querySelectorAll('.fc-cat').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderFc();
+}
+
+function renderFc() {
+  const card = fcState.deck[fcState.idx];
+  if (!card) return;
+  const id = flashcards.indexOf(card);
+  document.getElementById('fc-idx').textContent = fcState.idx + 1;
+  document.getElementById('fc-total').textContent = fcState.deck.length;
+  const front = document.getElementById('fc-front');
+  const back = document.getElementById('fc-back');
+  const hint = document.getElementById('fc-hint');
+  front.innerHTML = `<span class="fc-cat-tag">${card.cat.toUpperCase()}</span><p>${card.q}</p>`;
+  back.innerHTML = `<span class="fc-cat-tag">${card.cat.toUpperCase()}</span><p>${card.a}</p>`;
+  if (fcState.flipped) {
+    front.style.display = 'none';
+    back.style.display = 'block';
+    hint.textContent = '';
+  } else {
+    front.style.display = 'block';
+    back.style.display = 'none';
+    hint.textContent = '👆 Click to reveal answer';
+  }
+  // Update card border color
+  const cardEl = document.getElementById('fc-card');
+  cardEl.className = '';
+  if (fcState.known[id]) cardEl.classList.add('fc-known');
+  else if (fcState.review[id]) cardEl.classList.add('fc-review');
+  // Progress bar
+  const pct = ((fcState.idx + 1) / fcState.deck.length * 100);
+  document.getElementById('fc-progress-fill').style.width = pct + '%';
+  // Counts
+  updateFcCounts();
+}
+
+function updateFcCounts() {
+  const k = Object.keys(fcState.known).filter(i => fcState.known[i]).length;
+  const r = Object.keys(fcState.review).filter(i => fcState.review[i]).length;
+  document.getElementById('fc-known-count').textContent = `✓ Known: ${k}`;
+  document.getElementById('fc-review-count').textContent = `🔄 Review: ${r}`;
+}
+
+function flipFc() {
+  fcState.flipped = !fcState.flipped;
+  renderFc();
+}
+
+function nextFc() {
+  if (fcState.idx < fcState.deck.length - 1) {
+    fcState.idx++;
+    fcState.flipped = false;
+    renderFc();
+  }
+}
+
+function prevFc() {
+  if (fcState.idx > 0) {
+    fcState.idx--;
+    fcState.flipped = false;
+    renderFc();
+  }
+}
+
+function markFc(status) {
+  const card = fcState.deck[fcState.idx];
+  const id = flashcards.indexOf(card);
+  if (status === 'known') {
+    fcState.known[id] = true;
+    delete fcState.review[id];
+  } else {
+    fcState.review[id] = true;
+    delete fcState.known[id];
+  }
+  saveFcProgress();
+  renderFc();
+  // Auto-advance
+  setTimeout(() => {
+    if (fcState.idx < fcState.deck.length - 1) nextFc();
+  }, 400);
+}
+
+function shuffleFc() {
+  fcState.deck = [...fcState.deck].sort(() => Math.random() - 0.5);
+  fcState.idx = 0;
+  fcState.flipped = false;
+  renderFc();
+}
+
+function resetFcProgress() {
+  if (confirm('Reset all Known/Review marks?')) {
+    fcState.known = {};
+    fcState.review = {};
+    saveFcProgress();
+    renderFc();
+  }
+}
+
+// ===== NAVIGATION =====
+function nav(id) {
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) { el.style.display = 'block'; el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+  const link = document.querySelector(`[onclick="nav('${id}')"]`);
+  if (link) link.classList.add('active');
+}
+
+function showMode(mode) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`[onclick="showMode('${mode}')"]`);
+  if (btn) btn.classList.add('active');
+  if (mode === 'all') {
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'block');
+  } else {
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    const modeMap = {
+      patterns: ['sec-creational','sec-structural','sec-behavioral','sec-comparison'],
+      java: ['sec-java','sec-concurrency'],
+      cases: ['sec-cases','sec-grasp'],
+      revision: ['sec-decisions','sec-traps','sec-top50','sec-qbank','sec-revision']
+    };
+    (modeMap[mode] || []).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'block';
+    });
+  }
+}
+
+function doSearch() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  if (!q) { showMode('all'); return; }
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'block');
+  const all = document.querySelectorAll('.pattern-card, details, .qa-list > *');
+  all.forEach(el => {
+    const text = el.textContent.toLowerCase();
+    el.style.backgroundColor = text.includes(q) ? 'rgba(100,255,100,0.05)' : '';
+    el.style.outline = text.includes(q) ? '2px solid var(--green)' : '';
+  });
+  const first = document.querySelector('.pattern-card[style*="outline"], details[style*="outline"]');
+  if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  // Show first section by default
+  nav('sec-oop');
+  
+  // Init Mermaid
+  if (typeof mermaid !== 'undefined') {
+    mermaid.initialize({ 
+      startOnLoad: true, 
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#1a3a5c',
+        primaryTextColor: '#e8ecef',
+        primaryBorderColor: '#4a9eff',
+        lineColor: '#4a9eff',
+        secondaryColor: '#1e2a3a',
+        tertiaryColor: '#0d1117'
+      }
+    });
+  }
+  
+  // Sidebar highlight on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`[onclick="nav('${id}')"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.section').forEach(s => observer.observe(s));
+  
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (document.getElementById('quiz-overlay').style.display === 'flex') {
+      if (e.key === 'Escape') closeQuiz();
+      if (e.key === 'Enter' && document.getElementById('quiz-next').style.display === 'block') nextQuestion();
+    }
+    if (document.getElementById('fc-overlay').style.display === 'flex') {
+      if (e.key === 'Escape') closeFc();
+      if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); flipFc(); }
+      if (e.key === 'ArrowRight') nextFc();
+      if (e.key === 'ArrowLeft') prevFc();
+      if (e.key === 'k' || e.key === 'K') markFc('known');
+      if (e.key === 'r' || e.key === 'R') markFc('review');
+    }
+  });
+  
+  // Close overlays on background click
+  document.getElementById('quiz-overlay').addEventListener('click', (e) => {
+    if (e.target.id === 'quiz-overlay') closeQuiz();
+  });
+  document.getElementById('fc-overlay').addEventListener('click', (e) => {
+    if (e.target.id === 'fc-overlay') closeFc();
+  });
+  
+  // Search on Enter
+  document.getElementById('search-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') doSearch();
+  });
+});
+</script>
+
+</body>
+</html>

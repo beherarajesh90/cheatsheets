@@ -1,0 +1,353 @@
+<!--
+THESIS: an index page as a real drawing sheet — a title block and six numbered
+sheets on cyanotype blueprint blue, not another glass-card dashboard grid.
+OWN-WORLD: deep cyanotype blue field, fine graph-paper linework, stencilled
+display type, IBM Plex Mono metadata, amber grease-pencil accent for marks.
+STORY: an engineer scans DRAWN BY / DATE / REV, then six sheets by discipline
+and picks the one they need — every sheet is a real drawing, not a card.
+FIRST VIEWPORT: title block bar top, sheet grid below, sheet one fully legible
+with number, discipline, icon and title before any scroll.
+FORM: blueprint drawing-index, chosen directly for a six-item personal
+reference site (see chat disclosure — full concept-seed round skipped as
+disproportionate to scope).
+FINISH: unreviewed and undocumented is unfinished; this build ends with the
+finish review, the verdict, DESIGN.md, and every shipping raster carrying
+its provenance.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheatsheets — Rajesh Neyyala</title>
+<meta name="description" content="Engineering reference sheets: AWS, system design, concurrency, algorithms and microservices.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%230b3358'/%3E%3Cpath d='M4 4h16v16H4z' fill='none' stroke='%23ffb020' stroke-width='1.5'/%3E%3Cpath d='M4 9h16M9 4v16' stroke='%23ffb020' stroke-width='1'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Text:wght@600;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue-deep:#0a2c4d;
+    --blue:#0d3660;
+    --blue-line:rgba(196,222,248,0.14);
+    --blue-line-strong:rgba(196,222,248,0.26);
+    --paper:#eaf3fb;
+    --muted:#a9c6e2;
+    --amber:#ffb020;
+    --amber-dim:rgba(255,176,32,0.4);
+    --radius:2px;
+  }
+
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+
+  body{
+    margin:0;
+    background-color:var(--blue-deep);
+    background-image:
+      repeating-linear-gradient(0deg, var(--blue-line) 0 1px, transparent 1px 80px),
+      repeating-linear-gradient(90deg, var(--blue-line) 0 1px, transparent 1px 80px),
+      repeating-linear-gradient(0deg, rgba(196,222,248,0.055) 0 1px, transparent 1px 16px),
+      repeating-linear-gradient(90deg, rgba(196,222,248,0.055) 0 1px, transparent 1px 16px);
+    color:var(--paper);
+    font-family:'IBM Plex Mono', ui-monospace, monospace;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  ::selection{ background:var(--amber); color:#1a1200; }
+
+  *:focus-visible{
+    outline:2px solid var(--amber);
+    outline-offset:3px;
+  }
+
+  ::-webkit-scrollbar{ width:12px; height:12px; }
+  ::-webkit-scrollbar-track{ background:var(--blue-deep); }
+  ::-webkit-scrollbar-thumb{ background:var(--blue-line-strong); border:3px solid var(--blue-deep); border-radius:6px; }
+  ::-webkit-scrollbar-thumb:hover{ background:var(--amber-dim); }
+
+  .stencil{
+    font-family:'Big Shoulders Stencil Text', 'Big Shoulders Stencil Display', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+  }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 20px 60px;
+  }
+
+  /* ---------- title block ---------- */
+  .titleblock{
+    border:1.5px solid var(--blue-line-strong);
+    margin-bottom:34px;
+  }
+  .titleblock-top{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:20px;
+    padding:22px 22px 18px;
+    border-bottom:1.5px solid var(--blue-line-strong);
+  }
+  .titleblock-mark{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:0.18em;
+  }
+  .titleblock-mark svg{ width:22px; height:22px; flex:none; }
+  h1{
+    margin:2px 0 0;
+    font-size:clamp(2.4rem, 6vw, 4.4rem);
+    line-height:0.95;
+    font-weight:800;
+    color:var(--paper);
+  }
+  .titleblock-sub{
+    margin:10px 0 0;
+    font-size:13px;
+    color:var(--muted);
+    letter-spacing:0.04em;
+  }
+  .titleblock-fields{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+  }
+  .field{
+    padding:10px 16px;
+    border-right:1px solid var(--blue-line);
+    font-size:10.5px;
+    letter-spacing:0.12em;
+    color:var(--muted);
+  }
+  .field:last-child{ border-right:none; }
+  .field b{
+    display:block;
+    margin-top:3px;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    color:var(--paper);
+    font-weight:600;
+  }
+
+  /* ---------- sheet grid ---------- */
+  .index-label{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin:0 0 16px;
+    font-size:11px;
+    letter-spacing:0.22em;
+    color:var(--muted);
+  }
+  .index-label::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--blue-line-strong);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:18px;
+  }
+
+  .sheet{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    min-height:230px;
+    padding:20px;
+    border:1.5px solid var(--blue-line-strong);
+    background:linear-gradient(180deg, rgba(234,243,251,0.03), transparent 40%);
+    color:inherit;
+    text-decoration:none;
+    opacity:0;
+    transform:translateY(10px);
+    animation:reveal 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+    transition:background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .sheet:hover, .sheet:focus-visible{
+    transform:translateY(-4px);
+    background:linear-gradient(180deg, rgba(255,176,32,0.06), transparent 55%);
+    box-shadow:0 18px 30px -18px rgba(0,0,0,0.55);
+  }
+
+  .sheet::before, .sheet::after{
+    content:"";
+    position:absolute;
+    width:14px; height:14px;
+    border-color:var(--blue-line-strong);
+    transition:border-color 0.25s ease;
+  }
+  .sheet::before{ top:-1.5px; left:-1.5px; border-top:1.5px solid; border-left:1.5px solid; }
+  .sheet::after{ bottom:-1.5px; right:-1.5px; border-bottom:1.5px solid; border-right:1.5px solid; }
+  .sheet:hover::before, .sheet:hover::after,
+  .sheet:focus-visible::before, .sheet:focus-visible::after{
+    border-color:var(--amber);
+  }
+
+  .sheet-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    color:var(--muted);
+    margin-bottom:18px;
+  }
+  .sheet-head .num{ color:var(--paper); font-weight:600; }
+  .sheet-head .tag{ color:var(--amber); text-align:right; }
+
+  .sheet-icon{ width:34px; height:34px; color:var(--muted); margin-bottom:14px; transition:color 0.25s ease; }
+  .sheet:hover .sheet-icon, .sheet:focus-visible .sheet-icon{ color:var(--amber); }
+
+  .sheet h2{
+    margin:0 0 8px;
+    font-size:1.5rem;
+    line-height:1.05;
+    font-weight:700;
+    color:var(--paper);
+    font-family:'Big Shoulders Stencil Text', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+  }
+  .sheet p{
+    margin:0;
+    font-size:12.5px;
+    line-height:1.55;
+    color:var(--muted);
+    max-width:38ch;
+  }
+  .sheet-foot{
+    margin-top:auto;
+    padding-top:16px;
+    display:flex;
+    justify-content:space-between;
+    font-size:10px;
+    letter-spacing:0.1em;
+    color:rgba(169,198,226,0.55);
+  }
+
+  @keyframes reveal{ to{ opacity:1; transform:translateY(0); } }
+  @media (prefers-reduced-motion:reduce){
+    .sheet{ animation:none; opacity:1; transform:none; }
+  }
+
+  footer{
+    margin-top:44px;
+    padding-top:18px;
+    border-top:1.5px solid var(--blue-line-strong);
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:space-between;
+    font-size:11px;
+    letter-spacing:0.06em;
+    color:var(--muted);
+  }
+  footer a{ color:var(--paper); }
+
+  @media (max-width:980px){
+    .grid{ grid-template-columns:repeat(2, 1fr); }
+    .titleblock-fields{ grid-template-columns:repeat(3, 1fr); }
+    .field:nth-child(3){ border-right:none; }
+  }
+  @media (max-width:640px){
+    .grid{ grid-template-columns:1fr; }
+    .titleblock-top{ flex-direction:column; align-items:flex-start; }
+    .titleblock-fields{ grid-template-columns:repeat(2, 1fr); }
+    .field{ border-right:1px solid var(--blue-line); border-bottom:1px solid var(--blue-line); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="titleblock">
+    <div class="titleblock-top">
+      <div>
+        <div class="titleblock-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M9 3v18"/></svg>
+          DWG INDEX · CHEATSHEETS
+        </div>
+        <h1 class="stencil">Field&nbsp;Reference&nbsp;Sheets</h1>
+        <p class="titleblock-sub">Six drawings. AWS, system design, concurrency, algorithms, microservices.</p>
+      </div>
+    </div>
+    <div class="titleblock-fields">
+      <div class="field">DRAWN BY<b>R. Neyyala</b></div>
+      <div class="field">DATE<b id="issue-date">—</b></div>
+      <div class="field">REV<b>A</b></div>
+      <div class="field">SCALE<b>N.T.S.</b></div>
+      <div class="field">SHEET<b>1 OF 1</b></div>
+    </div>
+  </div>
+
+  <div class="index-label">SHEETS 01–06</div>
+
+  <div class="grid">
+
+    <a class="sheet" href="aws-cheatsheet.html" style="animation-delay:0.02s">
+      <div class="sheet-head"><span class="num">DWG-01</span><span class="tag">CLOUD / AWS</span></div>
+      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.5 4.5 4.5 0 0 1 17.5 17H7z"/></svg>
+      <h2>AWS for Java &amp; AI Engineers</h2>
+      <p>Core services, patterns and gotchas for Java and AI workloads on AWS.</p>
+      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
+    </a>
+
+    <a class="sheet" href="HLD-Cheat-Sheet.html" style="animation-delay:0.08s">      <div class="sheet-head"><span class="num">DWG-02</span><span class="tag">SYSTEM DESIGN</span></div>
+      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="4.5"/><rect x="4" y="10" width="16" height="4.5"/><rect x="4" y="16" width="16" height="4.5"/></svg>
+      <h2>HLD Interview Cheat Sheet</h2>
+      <p>High-level design primitives, trade-offs and interview patterns.</p>
+      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
+    </a>
+
+    <a class="sheet" href="lld-cheatsheet.html" style="animation-delay:0.14s">      <div class="sheet-head"><span class="num">DWG-03</span><span class="tag">SYSTEM DESIGN</span></div>
+      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16"/><path d="M4 11h16M12 11v9"/></svg>
+      <h2>LLD Knowledge Base</h2>
+      <p>Low-level design, OOP patterns and SDE2 backend fundamentals.</p>
+      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
+    </a>
+
+    <a class="sheet" href="java-concurrency-cheatsheet.html" style="animation-delay:0.20s">      <div class="sheet-head"><span class="num">DWG-04</span><span class="tag">CONCURRENCY</span></div>
+      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8c4 0 4 8 8 8s4-8 8-8"/><path d="M4 16c4 0 4-8 8-8s4 8 8 8"/></svg>
+      <h2>Java Concurrency</h2>
+      <p>Threads, locks, executors and the Java memory model, distilled.</p>
+      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
+    </a>
+
+    <a class="sheet" href="dsa-cheatsheet.html" style="animation-delay:0.26s">      <div class="sheet-head"><span class="num">DWG-05</span><span class="tag">ALGORITHMS</span></div>
+      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="4.5" r="2"/><circle cx="6" cy="14" r="2"/><circle cx="18" cy="14" r="2"/><circle cx="12" cy="19.5" r="1.6"/><path d="M12 6.5 6 12M12 6.5l6 5.5M6 16l4.5 2M18 16l-4.5 2"/></svg>
+      <h2>DSA Pattern Map</h2>
+      <p>Core data structure and algorithm patterns for interviews.</p>
+      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
+    </a>
+
+    <a class="sheet" href="microservices-cheatsheet.html" style="animation-delay:0.32s">      <div class="sheet-head"><span class="num">DWG-06</span><span class="tag">DISTRIBUTED SYS</span></div>
+      <svg class="sheet-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z"/><path d="M12 3v18M4 7.5l8 4.5 8-4.5"/></svg>
+      <h2>Microservices Java Cheat Sheet</h2>
+      <p>Service boundaries, resilience and Java microservice patterns.</p>
+      <div class="sheet-foot"><span>FORMAT: HTML</span><span>OPEN →</span></div>
+    </a>
+
+  </div>
+
+  <footer>
+    <span>© <span id="year">2026</span> Rajesh Neyyala · compiled reference set</span>
+    <span>cheatsheets.rajeshneyyala.dev</span>
+  </footer>
+
+</div>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('issue-date').textContent = new Date().toISOString().slice(0,10);
+</script>
+</body>
+</html>

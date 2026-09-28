@@ -1,0 +1,1826 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>AWS for Java & AI Engineers</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F3F5F9;
+  --surface:#FFFFFF;
+  --surface-2:#EBEEF5;
+  --ink:#14171F;
+  --ink-soft:#4A5063;
+  --ink-faint:#7A8096;
+  --line:#DBDFE8;
+  --line-strong:#C3C9D8;
+  --gold:#A6701C;
+  --gold-soft:#F1E4CD;
+  --blue:#2E5AAC;
+  --blue-soft:#DEE7F7;
+  --violet:#6E4FC9;
+  --violet-soft:#E7E1F9;
+  --code-bg:#101321;
+  --code-ink:#DCE1F0;
+  --shadow: 0 1px 2px rgba(20,23,31,.04), 0 8px 24px -12px rgba(20,23,31,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12141C;
+    --surface:#181B26;
+    --surface-2:#1F2330;
+    --ink:#EDEFF5;
+    --ink-soft:#AEB4C7;
+    --ink-faint:#7E8499;
+    --line:#2B2F3F;
+    --line-strong:#3A3F53;
+    --gold:#E3AE5C;
+    --gold-soft:#3A2E17;
+    --blue:#8FB0F0;
+    --blue-soft:#1E2C4C;
+    --violet:#B6A0F2;
+    --violet-soft:#2C2246;
+    --code-bg:#0B0D15;
+    --code-ink:#DCE1F0;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12141C;
+  --surface:#181B26;
+  --surface-2:#1F2330;
+  --ink:#EDEFF5;
+  --ink-soft:#AEB4C7;
+  --ink-faint:#7E8499;
+  --line:#2B2F3F;
+  --line-strong:#3A3F53;
+  --gold:#E3AE5C;
+  --gold-soft:#3A2E17;
+  --blue:#8FB0F0;
+  --blue-soft:#1E2C4C;
+  --violet:#B6A0F2;
+  --violet-soft:#2C2246;
+  --code-bg:#0B0D15;
+  --code-ink:#DCE1F0;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"IBM Plex Sans", system-ui, sans-serif;
+  padding:0 16px;
+}
+h1,h2,h3,h4{
+  font-family:"IBM Plex Serif", Georgia, serif;
+  font-weight:700;
+  text-wrap:balance;
+  color:var(--ink);
+  line-height:1.2;
+}
+p{ line-height:1.65; color:var(--ink-soft); max-width:66ch; }
+ul,ol{ line-height:1.65; color:var(--ink-soft); max-width:66ch; padding-left:1.25em; }
+li{ margin-bottom:.35em; }
+li::marker{ color:var(--ink-faint); }
+a{ color:var(--blue); }
+code, .mono{ font-family:"IBM Plex Mono", ui-monospace, monospace; }
+code{
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:.1em .4em;
+  font-size:.88em;
+  color:var(--ink);
+}
+pre{
+  background:var(--code-bg);
+  color:var(--code-ink);
+  border-radius:10px;
+  padding:14px 16px;
+  overflow-x:auto;
+  font-family:"IBM Plex Mono", ui-monospace, monospace;
+  font-size:12.5px;
+  line-height:1.6;
+  box-shadow:var(--shadow);
+}
+pre code{ background:none; border:none; padding:0; color:inherit; }
+
+.shell{ max-width:1180px; margin:0 auto; display:flex; gap:36px; align-items:flex-start; }
+
+/* ---------- Sidebar ---------- */
+.sidebar{
+  position:sticky; top:0;
+  width:236px; flex:none;
+  padding:28px 0 40px;
+  max-height:100vh; overflow-y:auto;
+}
+.brand{ display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+.brand-mark{
+  width:30px; height:30px; border-radius:7px;
+  background:linear-gradient(135deg, var(--gold), var(--blue));
+  flex:none;
+}
+.brand-name{ font-family:"IBM Plex Mono"; font-size:12.5px; letter-spacing:.06em; color:var(--ink-faint); text-transform:uppercase; }
+.sidebar nav{ margin-top:18px; display:flex; flex-direction:column; gap:2px; }
+.sidebar nav a{
+  text-decoration:none; color:var(--ink-soft); font-size:13.5px;
+  padding:6px 10px; border-radius:7px; border-left:2px solid transparent;
+}
+.sidebar nav a:hover{ background:var(--surface-2); color:var(--ink); }
+.sidebar nav a .n{ color:var(--ink-faint); font-family:"IBM Plex Mono"; font-size:11px; margin-right:7px; }
+
+.legend{ margin-top:22px; padding-top:18px; border-top:1px solid var(--line); }
+.legend h4{ font-family:"IBM Plex Mono"; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint); margin:0 0 10px; font-weight:600; }
+.filters{ display:flex; flex-direction:column; gap:6px; }
+.chip{
+  display:flex; align-items:center; gap:8px;
+  font-family:"IBM Plex Mono"; font-size:12px;
+  padding:6px 9px; border-radius:7px; border:1px solid var(--line);
+  background:var(--surface); cursor:pointer; color:var(--ink-soft);
+  text-align:left; width:100%;
+}
+.chip .dot{ width:8px; height:8px; border-radius:50%; flex:none; }
+.chip[aria-pressed="true"]{ border-color:var(--line-strong); background:var(--surface-2); color:var(--ink); font-weight:600; }
+.chip.all .dot{ background:linear-gradient(135deg,var(--gold),var(--blue),var(--violet)); }
+.chip.core .dot{ background:var(--gold); }
+.chip.java .dot{ background:var(--blue); }
+.chip.ai .dot{ background:var(--violet); }
+
+/* ---------- Main ---------- */
+main{ flex:1; min-width:0; padding:28px 0 90px; }
+
+header.hero{
+  padding:6px 0 30px; border-bottom:1px solid var(--line); margin-bottom:34px;
+}
+.eyebrow{
+  font-family:"IBM Plex Mono"; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--gold); margin:0 0 10px;
+}
+h1.title{ font-size:clamp(28px,4vw,40px); margin:0 0 10px; }
+.sub{ font-size:16px; margin:0; }
+.roles-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+.role-pill{
+  font-family:"IBM Plex Mono"; font-size:11.5px; padding:5px 10px; border-radius:20px;
+  border:1px solid var(--line-strong); color:var(--ink-soft);
+}
+
+section.block{ margin-bottom:56px; scroll-margin-top:20px; }
+.block-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+.block-num{ font-family:"IBM Plex Mono"; color:var(--ink-faint); font-size:13px; }
+h2.block-title{ font-size:24px; margin:0; }
+.block-dek{ margin-top:2px; margin-bottom:22px; }
+
+.pillrow{ display:flex; gap:8px; flex-wrap:wrap; margin:4px 0 18px; }
+.tag{
+  font-family:"IBM Plex Mono"; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em;
+  padding:3px 8px; border-radius:5px; font-weight:600;
+}
+.tag.core{ background:var(--gold-soft); color:var(--gold); }
+.tag.java{ background:var(--blue-soft); color:var(--blue); }
+.tag.ai{ background:var(--violet-soft); color:var(--violet); }
+
+figure{ margin:22px 0; }
+.diagram-wrap{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:18px; overflow-x:auto; box-shadow:var(--shadow);
+}
+svg{ display:block; max-width:100%; height:auto; }
+figcaption{ font-size:12.5px; color:var(--ink-faint); margin-top:9px; max-width:70ch; }
+svg text{ fill:var(--ink); font-family:"IBM Plex Mono", monospace; }
+svg .soft{ fill:var(--ink-faint); }
+svg .line{ stroke:var(--line-strong); fill:none; }
+svg .arrow{ stroke:var(--ink-faint); fill:none; }
+
+/* table */
+.table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:10px; margin:18px 0; }
+table{ border-collapse:collapse; width:100%; min-width:560px; font-size:13.5px; }
+th,td{ text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th{ font-family:"IBM Plex Mono"; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); background:var(--surface-2); font-weight:600; }
+tr:last-child td{ border-bottom:none; }
+td.svc{ font-family:"IBM Plex Mono"; font-weight:600; white-space:nowrap; color:var(--ink); }
+
+/* cards */
+.cardgrid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin:18px 0; }
+.pcard{ background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px; box-shadow:var(--shadow); }
+.pcard h4{ font-size:13.5px; margin:0 0 6px; }
+.pcard p{ font-size:12.5px; margin:0; }
+
+/* interview checkpoint */
+.checkpoint{
+  margin-top:26px; background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:6px 18px; box-shadow:var(--shadow);
+}
+.checkpoint > h3{
+  font-family:"IBM Plex Mono"; font-size:12px; text-transform:uppercase; letter-spacing:.07em;
+  color:var(--ink-faint); font-weight:600; padding:14px 0 6px; margin:0; display:flex; align-items:center; gap:8px;
+}
+.checkpoint > h3::before{ content:"◆"; color:var(--gold); font-size:10px; }
+details.qa{ border-top:1px solid var(--line); padding:12px 0; }
+details.qa:last-child{ padding-bottom:16px; }
+details.qa summary{
+  cursor:pointer; font-weight:600; font-size:14.5px; color:var(--ink);
+  list-style:none; display:flex; gap:10px; align-items:flex-start;
+}
+details.qa summary::-webkit-details-marker{ display:none; }
+details.qa summary::before{ content:"+"; font-family:"IBM Plex Mono"; color:var(--gold); flex:none; width:1em; }
+details.qa[open] summary::before{ content:"–"; }
+details.qa .a{ margin:10px 0 2px 1.6em; font-size:13.8px; }
+details.qa .a p{ margin:0 0 8px; max-width:68ch; }
+details.qa .a ul{ margin:6px 0 0; }
+.qtag{ font-family:"IBM Plex Mono"; font-size:9.5px; text-transform:uppercase; padding:2px 6px; border-radius:4px; flex:none; margin-top:2px; }
+.qtag.core{ background:var(--gold-soft); color:var(--gold); }
+.qtag.java{ background:var(--blue-soft); color:var(--blue); }
+.qtag.ai{ background:var(--violet-soft); color:var(--violet); }
+
+footer{ border-top:1px solid var(--line); padding:26px 0 10px; color:var(--ink-faint); font-size:12.5px; }
+
+/* filter visibility */
+body[data-filter="java"] [data-role="ai-fde"]{ display:none; }
+body[data-filter="ai-fde"] [data-role="java"]{ display:none; }
+body[data-filter="core"] [data-role="java"],
+body[data-filter="core"] [data-role="ai-fde"]{ display:none; }
+
+/* reveal animation */
+@media (prefers-reduced-motion: no-preference){
+  .reveal{ opacity:0; transform:translateY(10px); transition:opacity .5s ease, transform .5s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+}
+
+@media (max-width:860px){
+  .shell{ flex-direction:column; gap:0; }
+  .sidebar{ position:relative; width:100%; max-height:none; padding:18px 0; }
+  .sidebar nav{ flex-direction:row; flex-wrap:wrap; }
+  .legend{ display:none; }
+}
+</style>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div class="brand-name">Study Reference</div>
+    </div>
+    <nav>
+      <a href="#roadmap"><span class="n">00</span>Roadmap</a>
+      <a href="#foundations"><span class="n">01</span>Foundations</a>
+      <a href="#compute"><span class="n">02</span>Compute</a>
+      <a href="#storage"><span class="n">03</span>Storage &amp; DB</a>
+      <a href="#network"><span class="n">04</span>Network &amp; Security</a>
+      <a href="#serverless"><span class="n">05</span>Serverless &amp; Messaging</a>
+      <a href="#devops"><span class="n">06</span>DevOps &amp; Observability</a>
+      <a href="#ai-core"><span class="n">07</span>AI/ML Core</a>
+      <a href="#rag"><span class="n">08</span>RAG &amp; Agents</a>
+      <a href="#fde"><span class="n">09</span>FDE Patterns</a>
+      <a href="#cost"><span class="n">10</span>Cost &amp; W-A Framework</a>
+      <a href="#resilience"><span class="n">11</span>Resilience, Scaling &amp; Auth</a>
+      <a href="#llmops"><span class="n">12</span>LLMOps &amp; Evaluation</a>
+      <a href="#deploydepth"><span class="n">13</span>Advanced Model Deployment</a>
+      <a href="#sysdesign"><span class="n">14</span>System Design &amp; Behavioral</a>
+      <a href="#deepcuts-java"><span class="n">15</span>Java/AWS Deep Cuts</a>
+      <a href="#deepcuts-ai"><span class="n">16</span>AI/FDE Deep Cuts</a>
+      <a href="#cheat"><span class="n">17</span>Cheat Sheet</a>
+    </nav>
+    <div class="legend">
+      <h4>Filter by track</h4>
+      <div class="filters" role="group" aria-label="Filter content by role">
+        <button class="chip all" aria-pressed="true" data-set="all"><span class="dot"></span>All content</button>
+        <button class="chip core" aria-pressed="false" data-set="core"><span class="dot"></span>Core AWS only</button>
+        <button class="chip java" aria-pressed="false" data-set="java"><span class="dot"></span>Java Developer</button>
+        <button class="chip ai" aria-pressed="false" data-set="ai-fde"><span class="dot"></span>AI Engineer / FDE</button>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <p class="eyebrow">AWS Interview Preparation</p>
+      <h1 class="title">AWS for Java Backend &amp; AI/FDE Engineers</h1>
+      <p class="sub">A working reference for two interview tracks: <strong>Java Developer</strong> roles building services on AWS, and <strong>AI Engineer / Forward-Deployed Engineer</strong> roles shipping Bedrock- and SageMaker-based systems inside customer environments. Every section pairs the concept with a diagram of how it actually moves, plus an interview checkpoint tagged by track.</p>
+      <div class="roles-row">
+        <span class="role-pill">🟡 Core — both tracks</span>
+        <span class="role-pill">🔵 Java Developer</span>
+        <span class="role-pill">🟣 AI Engineer / FDE</span>
+      </div>
+    </header>
+
+    <!-- 00 ROADMAP -->
+    <section class="block reveal" id="roadmap">
+      <div class="block-head"><span class="block-num">00</span><h2 class="block-title">Learning roadmap</h2></div>
+      <p class="block-dek">Seven stages, in the order interviewers tend to build on. Foundations and compute are shared by both tracks; AI/ML forks off after networking &amp; security, since Bedrock and SageMaker workloads still live inside a VPC and behind IAM.</p>
+
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 980 190" role="img" aria-label="Roadmap: Foundations, then Compute, then Storage and Database, then Network and Security, then a fork into Serverless and Messaging for the Java track and AI/ML Core for the AI/FDE track, converging at Cost and Well-Architected.">
+            <defs>
+              <marker id="arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <!-- spine -->
+            <line x1="70" y1="46" x2="560" y2="46" class="arrow" marker-end="url(#arw)"></line>
+            <g class="mono">
+              <!-- node 1 -->
+              <rect x="20" y="24" width="100" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="70" y="40" text-anchor="middle" font-size="10.5" font-weight="600">FOUNDATIONS</text>
+              <text x="70" y="55" text-anchor="middle" font-size="9" class="soft">IAM · regions</text>
+
+              <rect x="150" y="24" width="100" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="200" y="40" text-anchor="middle" font-size="10.5" font-weight="600">COMPUTE</text>
+              <text x="200" y="55" text-anchor="middle" font-size="9" class="soft">EC2 · Lambda</text>
+
+              <rect x="280" y="24" width="110" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="335" y="40" text-anchor="middle" font-size="10.5" font-weight="600">STORAGE / DB</text>
+              <text x="335" y="55" text-anchor="middle" font-size="9" class="soft">S3 · RDS · DynamoDB</text>
+
+              <rect x="420" y="24" width="130" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="485" y="40" text-anchor="middle" font-size="10.5" font-weight="600">NETWORK / SECURITY</text>
+              <text x="485" y="55" text-anchor="middle" font-size="9" class="soft">VPC · KMS</text>
+            </g>
+
+            <!-- fork -->
+            <path d="M560,46 C 610,46 610,100 660,100" class="arrow" marker-end="url(#arw)"></path>
+            <path d="M560,46 C 610,46 610,150 660,150" class="arrow" marker-end="url(#arw)"></path>
+
+            <rect x="660" y="78" width="140" height="44" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+            <text x="730" y="94" text-anchor="middle" font-size="10.5" font-weight="600" class="mono">SERVERLESS &amp; MSG</text>
+            <text x="730" y="109" text-anchor="middle" font-size="9" class="soft mono">Java track</text>
+
+            <rect x="660" y="128" width="140" height="44" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+            <text x="730" y="144" text-anchor="middle" font-size="10.5" font-weight="600" class="mono">AI/ML CORE</text>
+            <text x="730" y="159" text-anchor="middle" font-size="9" class="soft mono">AI / FDE track</text>
+
+            <!-- converge -->
+            <path d="M800,100 C 850,100 850,125 890,125" class="arrow" marker-end="url(#arw)"></path>
+            <path d="M800,150 C 850,150 850,125 890,125" class="arrow" marker-end="url(#arw)"></path>
+
+            <rect x="890" y="103" width="80" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+            <text x="930" y="121" text-anchor="middle" font-size="10" font-weight="600" class="mono">COST /</text>
+            <text x="930" y="134" text-anchor="middle" font-size="10" font-weight="600" class="mono">W-A</text>
+          </svg>
+        </div>
+        <figcaption>Fig. 1 — Both tracks share foundations through networking, then fork: Java-focused interviews lean on serverless &amp; messaging, AI/FDE interviews lean on Bedrock/SageMaker, and both converge on cost and the Well-Architected Framework.</figcaption>
+      </figure>
+    </section>
+
+    <!-- 01 FOUNDATIONS -->
+    <section class="block reveal" id="foundations">
+      <div class="block-head"><span class="block-num">01</span><h2 class="block-title">Foundations</h2></div>
+      <p class="block-dek">Regions, accounts, and IAM. Almost every technical interview opens here because every later answer — "who can call this, from where" — depends on it.</p>
+      <div class="pillrow"><span class="tag core">Core</span></div>
+
+      <h3>Global infrastructure</h3>
+      <ul>
+        <li><strong>Region</strong> — an independent geographic area (e.g. <code>us-east-1</code>). Resources don't cross regions by default; most services are region-scoped.</li>
+        <li><strong>Availability Zone (AZ)</strong> — one or more discrete data centers with independent power/network, low-latency links to other AZs in the region. Design for at least 2 AZs to survive one AZ failure.</li>
+        <li><strong>Edge location / PoP</strong> — CloudFront and Route 53 caching/DNS points, far more numerous than regions, used for latency-sensitive delivery.</li>
+        <li><strong>Availability</strong> is bought with redundancy across AZs, not by making one instance bigger.</li>
+      </ul>
+
+      <h3>Shared responsibility model</h3>
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 760 240" role="img" aria-label="Shared responsibility model: AWS owns security of the cloud, the lower layer covering hardware, global network, and facilities; the customer owns security in the cloud, the upper layer covering data, identity, OS patching, and network configuration.">
+            <g class="mono">
+              <rect x="20" y="20" width="720" height="90" rx="10" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="40" y="42" font-size="11" font-weight="700" fill="var(--blue)">CUSTOMER — security IN the cloud</text>
+              <text x="40" y="64" font-size="10" class="soft">Data encryption &amp; classification · IAM users/roles/policies</text>
+              <text x="40" y="80" font-size="10" class="soft">Guest OS patching · security group / NACL rules · app-layer security</text>
+
+              <rect x="20" y="128" width="720" height="90" rx="10" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="40" y="150" font-size="11" font-weight="700" fill="var(--gold)">AWS — security OF the cloud</text>
+              <text x="40" y="172" font-size="10" class="soft">Physical data centers · host hardware · global network backbone</text>
+              <text x="40" y="188" font-size="10" class="soft">Hypervisor · managed-service infrastructure (e.g. RDS host OS)</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 2 — The split moves with the service: for EC2 you patch the guest OS; for a fully managed service like DynamoDB, AWS absorbs more of the upper band too.</figcaption>
+      </figure>
+
+      <h3>IAM: the mental model</h3>
+      <ul>
+        <li><strong>Principal</strong> (user, role, or service) makes a request → IAM evaluates every attached identity-based and resource-based policy.</li>
+        <li>Default is <strong>implicit deny</strong>. An explicit <code>"Effect": "Deny"</code> anywhere always wins over any <code>"Allow"</code>.</li>
+        <li>Prefer <strong>roles</strong> over long-lived access keys. EC2 instance profiles, Lambda execution roles, and ECS task roles hand out short-lived credentials via STS automatically.</li>
+        <li><strong>AssumeRole</strong> via STS is how cross-account and cross-service access works — a Lambda function doesn't get "AWS credentials," it gets temporary ones scoped to its execution role.</li>
+      </ul>
+
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 700 300" role="img" aria-label="IAM policy evaluation flow: request comes in, explicit deny anywhere means deny, otherwise check for an explicit allow from identity or resource policy, otherwise default deny.">
+            <defs>
+              <marker id="arw2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="11">
+              <rect x="270" y="10" width="160" height="40" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="350" y="35" text-anchor="middle" font-weight="600">Request arrives</text>
+
+              <line x1="350" y1="50" x2="350" y2="78" class="arrow" marker-end="url(#arw2)"></line>
+              <rect x="250" y="80" width="200" height="46" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="350" y="100" text-anchor="middle" font-weight="600">Explicit DENY</text>
+              <text x="350" y="115" text-anchor="middle" font-size="9" class="soft">in any applicable policy?</text>
+
+              <line x1="450" y1="103" x2="560" y2="103" class="arrow" marker-end="url(#arw2)"></line>
+              <text x="500" y="97" text-anchor="middle" font-size="9.5" class="soft">yes</text>
+              <rect x="560" y="80" width="120" height="46" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="620" y="108" text-anchor="middle" font-weight="700" fill="var(--gold)">DENY</text>
+
+              <line x1="350" y1="126" x2="350" y2="154" class="arrow" marker-end="url(#arw2)"></line>
+              <text x="368" y="145" font-size="9.5" class="soft">no</text>
+              <rect x="240" y="156" width="220" height="46" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="350" y="176" text-anchor="middle" font-weight="600">Explicit ALLOW</text>
+              <text x="350" y="191" text-anchor="middle" font-size="9" class="soft">identity or resource policy?</text>
+
+              <line x1="460" y1="179" x2="560" y2="179" class="arrow" marker-end="url(#arw2)"></line>
+              <text x="500" y="173" text-anchor="middle" font-size="9.5" class="soft">yes</text>
+              <rect x="560" y="156" width="120" height="46" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="620" y="184" text-anchor="middle" font-weight="700" fill="var(--blue)">ALLOW</text>
+
+              <line x1="350" y1="202" x2="350" y2="230" class="arrow" marker-end="url(#arw2)"></line>
+              <text x="368" y="221" font-size="9.5" class="soft">no</text>
+              <rect x="270" y="232" width="160" height="46" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="350" y="252" text-anchor="middle" font-weight="700">DENY</text>
+              <text x="350" y="267" text-anchor="middle" font-size="9" class="soft">(default — nothing matched)</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 3 — IAM's actual evaluation order: an explicit deny always short-circuits; otherwise you need an explicit allow, or the implicit default deny applies.</figcaption>
+      </figure>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>A user has an Allow policy for S3 full access and an explicit Deny on <code>s3:DeleteObject</code>. Can they delete an object?</summary>
+          <div class="a"><p>No. Explicit deny always overrides any allow, regardless of how the allow was granted (identity policy, group policy, or resource policy). Evaluate deny first — it's the one rule that never loses.</p></div>
+        </details>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>Why prefer IAM roles over access keys for an EC2-hosted service?</summary>
+          <div class="a"><p>Roles issue temporary credentials via STS, rotated automatically, scoped to an instance profile — nothing long-lived to leak in a config file or commit. Access keys are static secrets you must rotate and store yourself; use them only for cases with no AWS-native identity (e.g. a workload outside AWS, mitigated by IAM Roles Anywhere).</p></div>
+        </details>
+        <details class="qa" data-role="java"><summary><span class="qtag java">Java</span>Your Spring Boot app on EC2 needs to read from S3. How do you get credentials into the AWS SDK without hardcoding them?</summary>
+          <div class="a"><p>Attach an IAM role to the EC2 instance profile with an <code>s3:GetObject</code> policy scoped to the bucket/prefix. The AWS SDK for Java's default credential provider chain picks up instance metadata credentials automatically (or the container/task role under ECS) — no keys in application.properties.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>You're deploying an agent into a customer's AWS account. What IAM approach minimizes blast radius?</summary>
+          <div class="a"><p>Cross-account role with a tightly scoped trust policy (only your vendor account/role as principal, ideally with an <code>sts:ExternalId</code> condition to prevent the confused-deputy problem), least-privilege permissions limited to the exact resources the agent touches, and no standing keys — everything through <code>AssumeRole</code> with a short session duration.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 02 COMPUTE -->
+    <section class="block reveal" id="compute">
+      <div class="block-head"><span class="block-num">02</span><h2 class="block-title">Compute</h2></div>
+      <p class="block-dek">The real question behind every compute choice: how much operational control do you want, versus how much undifferentiated ops do you want AWS to absorb?</p>
+      <div class="pillrow"><span class="tag core">Core</span><span class="tag java">Java</span></div>
+
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 760 170" role="img" aria-label="Compute spectrum from EC2, full control and full operational burden, through ECS or EKS on Fargate, to Lambda, least control and least operational burden.">
+            <g class="mono" font-size="10.5">
+              <line x1="60" y1="60" x2="700" y2="60" class="line" stroke-width="2"></line>
+              <circle cx="90" cy="60" r="7" fill="var(--blue)"></circle>
+              <text x="90" y="86" text-anchor="middle" font-weight="600">EC2</text>
+              <text x="90" y="100" text-anchor="middle" class="soft" font-size="9">you patch the OS</text>
+
+              <circle cx="330" cy="60" r="7" fill="var(--blue)"></circle>
+              <text x="330" y="86" text-anchor="middle" font-weight="600">ECS / EKS</text>
+              <text x="330" y="100" text-anchor="middle" class="soft" font-size="9">you own the scheduler</text>
+
+              <circle cx="490" cy="60" r="7" fill="var(--blue)"></circle>
+              <text x="490" y="86" text-anchor="middle" font-weight="600">Fargate</text>
+              <text x="490" y="100" text-anchor="middle" class="soft" font-size="9">no node management</text>
+
+              <circle cx="670" cy="60" r="7" fill="var(--blue)"></circle>
+              <text x="670" y="86" text-anchor="middle" font-weight="600">Lambda</text>
+              <text x="670" y="100" text-anchor="middle" class="soft" font-size="9">no server at all</text>
+
+              <text x="90" y="35" text-anchor="middle" class="soft" font-size="9.5">MORE CONTROL</text>
+              <text x="670" y="35" text-anchor="middle" class="soft" font-size="9.5">LESS OPS BURDEN</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 4 — Moving right trades infrastructure control for reduced operational surface; scaling, patching, and capacity planning increasingly become AWS's job.</figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Service</th><th>Unit</th><th>Scaling</th><th>Best fit</th><th>Java-specific note</th></tr></thead>
+          <tbody>
+            <tr><td class="svc">EC2</td><td>Virtual machine</td><td>Auto Scaling Groups</td><td>Long-running, custom OS/runtime needs</td><td>Run any JVM version; full control over GC flags, JVM tuning</td></tr>
+            <tr><td class="svc">ECS (Fargate)</td><td>Container task</td><td>Service auto scaling</td><td>Containerized services, no node management</td><td>Ship a Spring Boot fat jar in a Docker image; task role = app identity</td></tr>
+            <tr><td class="svc">EKS</td><td>Kubernetes pod</td><td>HPA / Cluster Autoscaler</td><td>Teams already standardized on K8s</td><td>Same JVM container, now behind K8s primitives (Deployments, Services)</td></tr>
+            <tr><td class="svc">Lambda</td><td>Function invocation</td><td>Automatic, per-request</td><td>Event-driven, bursty, short (&le;15 min)</td><td>JVM cold start is real — use SnapStart, or a lighter runtime (native image via GraalVM) for latency-sensitive paths</td></tr>
+            <tr><td class="svc">Elastic Beanstalk</td><td>Managed app env</td><td>Managed ASG under the hood</td><td>Fast deploy of a standard web app without wiring infra by hand</td><td>Has a Java/Tomcat platform out of the box — upload a WAR/JAR and go</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="java"><summary><span class="qtag java">Java</span>Your Lambda-hosted Java service has unacceptable cold-start latency. What are your options?</summary>
+          <div class="a"><p>In order of effort: increase memory (which also raises allocated CPU, speeding JVM init); enable <strong>SnapStart</strong> (restores from a pre-initialized, cached Firecracker snapshot — biggest single win for JVM Lambdas); trim dependencies and avoid heavy DI framework startup; use Provisioned Concurrency to keep warm execution environments; or compile to a native image with GraalVM to cut JVM startup entirely. For steady, latency-sensitive traffic, reconsider whether Fargate is a better fit than Lambda.</p></div>
+        </details>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>When would you choose ECS over EKS?</summary>
+          <div class="a"><p>ECS when you want AWS-native simplicity — task definitions, no cluster control plane to reason about, tight IAM-per-task integration, and the team has no existing Kubernetes investment. EKS when you need Kubernetes-specific tooling/portability, multi-cloud consistency, or the org already runs K8s elsewhere and wants one operational model.</p></div>
+        </details>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>How does Fargate change the security boundary compared to EC2-backed ECS?</summary>
+          <div class="a"><p>With Fargate, AWS manages the underlying host — no shared kernel with other customers' tasks to reason about, no OS patching. You're responsible for the container image, IAM task role, and network placement (subnets/security groups); AWS owns the node.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 03 STORAGE & DB -->
+    <section class="block reveal" id="storage">
+      <div class="block-head"><span class="block-num">03</span><h2 class="block-title">Storage &amp; databases</h2></div>
+      <p class="block-dek">Block, file, and object storage solve different problems; relational vs. key-value databases trade flexible queries for predictable scale.</p>
+      <div class="pillrow"><span class="tag core">Core</span><span class="tag java">Java</span></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Service</th><th>Model</th><th>Durability / consistency</th><th>Use it for</th></tr></thead>
+          <tbody>
+            <tr><td class="svc">S3</td><td>Object</td><td>11 nines durability; strong read-after-write since Dec 2020</td><td>Static assets, data lake, backups, RAG document source</td></tr>
+            <tr><td class="svc">EBS</td><td>Block (single AZ)</td><td>Replicated within its AZ</td><td>EC2 root/data volumes needing low-latency block I/O</td></tr>
+            <tr><td class="svc">EFS</td><td>File (NFS, multi-AZ)</td><td>Regional, multi-AZ</td><td>Shared POSIX filesystem across many EC2/containers</td></tr>
+            <tr><td class="svc">RDS</td><td>Relational (managed)</td><td>Multi-AZ sync replica for HA; read replicas for scale</td><td>Transactional data, joins, existing SQL schema — Postgres/MySQL/Aurora</td></tr>
+            <tr><td class="svc">DynamoDB</td><td>Key-value / wide-column</td><td>Single-digit ms at any scale; strong or eventual reads</td><td>High-throughput, predictable-access-pattern workloads</td></tr>
+            <tr><td class="svc">ElastiCache</td><td>In-memory (Redis/Memcached)</td><td>Volatile, sub-ms</td><td>Session store, hot-path cache in front of RDS/DynamoDB</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Three-tier Java web application</h3>
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 820 400" role="img" aria-label="Three tier architecture: client through Route 53 and CloudFront to an Application Load Balancer in the public subnet, which routes to Spring Boot services on ECS Fargate in a private subnet, which read and write RDS Multi-AZ Postgres, read through ElastiCache Redis, and store objects in S3.">
+            <defs>
+              <marker id="arw3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10.5">
+              <rect x="20" y="16" width="110" height="40" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="75" y="41" text-anchor="middle" font-weight="600">Client</text>
+
+              <line x1="130" y1="36" x2="180" y2="36" class="arrow" marker-end="url(#arw3)"></line>
+              <rect x="180" y="16" width="130" height="40" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="245" y="36" text-anchor="middle" font-weight="600" font-size="10">Route 53 /</text>
+              <text x="245" y="49" text-anchor="middle" font-weight="600" font-size="10">CloudFront</text>
+
+              <!-- VPC box -->
+              <rect x="20" y="90" width="770" height="290" rx="12" fill="none" stroke="var(--line-strong)" stroke-dasharray="4 3"></rect>
+              <text x="36" y="108" font-size="9.5" class="soft">VPC</text>
+
+              <!-- public subnet -->
+              <rect x="40" y="118" width="220" height="70" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="150" y="140" text-anchor="middle" font-size="9.5" class="soft">PUBLIC SUBNET</text>
+              <text x="150" y="160" text-anchor="middle" font-weight="600">Application Load Balancer</text>
+
+              <line x1="245" y1="56" x2="150" y2="118" class="arrow" marker-end="url(#arw3)"></line>
+
+              <!-- private subnet app -->
+              <rect x="40" y="212" width="220" height="80" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="150" y="232" text-anchor="middle" font-size="9.5" class="soft">PRIVATE SUBNET</text>
+              <text x="150" y="252" text-anchor="middle" font-weight="600">Spring Boot</text>
+              <text x="150" y="266" text-anchor="middle" font-weight="600">on ECS Fargate</text>
+              <line x1="150" y1="188" x2="150" y2="212" class="arrow" marker-end="url(#arw3)"></line>
+
+              <!-- data tier -->
+              <rect x="330" y="212" width="200" height="70" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="430" y="234" text-anchor="middle" font-size="9.5" class="soft">PRIVATE SUBNET</text>
+              <text x="430" y="253" text-anchor="middle" font-weight="600">RDS Postgres</text>
+              <text x="430" y="267" text-anchor="middle" font-size="9" class="soft">Multi-AZ</text>
+              <line x1="260" y1="252" x2="330" y2="252" class="arrow" marker-end="url(#arw3)"></line>
+              <text x="295" y="245" text-anchor="middle" font-size="9">SQL</text>
+
+              <rect x="330" y="300" width="200" height="60" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="430" y="325" text-anchor="middle" font-weight="600">ElastiCache Redis</text>
+              <text x="430" y="340" text-anchor="middle" font-size="9" class="soft">session / hot cache</text>
+              <line x1="200" y1="292" x2="380" y2="300" class="arrow" marker-end="url(#arw3)"></line>
+              <text x="270" y="308" text-anchor="middle" font-size="9">GET/SET</text>
+
+              <rect x="580" y="256" width="180" height="60" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="670" y="281" text-anchor="middle" font-weight="600">S3</text>
+              <text x="670" y="296" text-anchor="middle" font-size="9" class="soft">objects / attachments</text>
+              <line x1="260" y1="252" x2="580" y2="280" class="arrow" marker-end="url(#arw3)"></line>
+              <text x="480" y="255" text-anchor="middle" font-size="9">GetObject</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 5 — A typical Spring Boot deployment: only the load balancer sits in the public subnet; the app, database, and cache stay private and reachable only from inside the VPC.</figcaption>
+      </figure>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>DynamoDB or RDS for a new service — how do you decide?</summary>
+          <div class="a"><p>DynamoDB when access patterns are known up front, you need predictable low-latency at high scale, and you can design around a partition key (+ optional sort key / GSIs) instead of ad-hoc joins. RDS when you need multi-table joins, ad-hoc queries, strong relational integrity, or the team's existing tooling (JPA/Hibernate) assumes SQL. Many systems use both — RDS for the system of record, DynamoDB for a specific high-throughput path.</p></div>
+        </details>
+        <details class="qa" data-role="java"><summary><span class="qtag java">Java</span>How do you keep RDS credentials out of your Spring config?</summary>
+          <div class="a"><p>Store them in Secrets Manager (with automatic rotation) and fetch at startup via the AWS SDK, or use RDS IAM database authentication so the app assumes a role and gets a short-lived auth token instead of a static password — no secret to rotate or leak at all.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>Where does S3 fit in a RAG pipeline?</summary>
+          <div class="a"><p>It's usually the source of truth for raw documents — the ingestion Lambda reads new/updated objects (often via an S3 event trigger), chunks and embeds them, and writes vectors to the retrieval store. S3 versioning also gives you a natural audit trail for what content the model was allowed to retrieve at a given time.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 04 NETWORK & SECURITY -->
+    <section class="block reveal" id="network">
+      <div class="block-head"><span class="block-num">04</span><h2 class="block-title">Network &amp; security</h2></div>
+      <p class="block-dek">VPCs are the boundary every other answer refers back to — "is it in a private subnet," "does it have a route to the internet," "what security group is attached."</p>
+      <div class="pillrow"><span class="tag core">Core</span></div>
+
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 800 380" role="img" aria-label="VPC diagram: internet gateway connects to a public subnet holding a NAT gateway, which provides outbound internet access to a private subnet holding application and database instances that have no direct inbound route from the internet.">
+            <defs>
+              <marker id="arw4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10.5">
+              <text x="30" y="26" font-size="10" class="soft">Internet</text>
+              <rect x="20" y="34" width="90" height="36" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="65" y="57" text-anchor="middle" font-weight="600" font-size="9.5">IGW</text>
+
+              <rect x="20" y="90" width="760" height="270" rx="12" fill="none" stroke="var(--line-strong)" stroke-dasharray="4 3"></rect>
+              <text x="36" y="106" font-size="9.5" class="soft">VPC 10.0.0.0/16</text>
+
+              <line x1="65" y1="70" x2="65" y2="130" class="arrow" marker-end="url(#arw4)"></line>
+
+              <rect x="40" y="132" width="230" height="80" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="155" y="150" text-anchor="middle" font-size="9.5" class="soft">PUBLIC SUBNET 10.0.1.0/24</text>
+              <text x="155" y="172" text-anchor="middle" font-weight="600">NAT Gateway</text>
+              <text x="155" y="188" text-anchor="middle" font-weight="600">+ ALB</text>
+
+              <line x1="155" y1="212" x2="155" y2="242" class="arrow" marker-end="url(#arw4)"></line>
+              <text x="180" y="230" font-size="9" class="soft">outbound only</text>
+
+              <rect x="40" y="244" width="230" height="90" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="155" y="262" text-anchor="middle" font-size="9.5" class="soft">PRIVATE SUBNET 10.0.2.0/24</text>
+              <text x="155" y="284" text-anchor="middle" font-weight="600">App instances</text>
+              <text x="155" y="300" text-anchor="middle" font-size="9" class="soft">sec. group: 443 from ALB SG only</text>
+              <text x="155" y="316" text-anchor="middle" font-size="9" class="soft">no public IP, no inbound route</text>
+
+              <line x1="270" y1="289" x2="330" y2="289" class="arrow" marker-end="url(#arw4)"></line>
+              <rect x="330" y="244" width="220" height="90" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="440" y="262" text-anchor="middle" font-size="9.5" class="soft">PRIVATE SUBNET 10.0.3.0/24</text>
+              <text x="440" y="284" text-anchor="middle" font-weight="600">RDS database</text>
+              <text x="440" y="300" text-anchor="middle" font-size="9" class="soft">sec. group: 5432 from app SG only</text>
+              <text x="440" y="316" text-anchor="middle" font-size="9" class="soft">not internet-routable</text>
+
+              <rect x="590" y="132" width="190" height="70" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="685" y="152" text-anchor="middle" font-weight="600" font-size="9.5">VPC Endpoint</text>
+              <text x="685" y="168" text-anchor="middle" font-size="9" class="soft">S3 / DynamoDB / Bedrock</text>
+              <text x="685" y="183" text-anchor="middle" font-size="9" class="soft">traffic never leaves AWS network</text>
+              <line x1="270" y1="270" x2="590" y2="167" class="arrow" marker-end="url(#arw4)"></line>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 6 — Only the public subnet has a route to the Internet Gateway. Private-subnet instances reach the internet outbound only via NAT, and reach AWS services like S3 or Bedrock privately through a VPC endpoint — no NAT hop, no public exposure.</figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Security Group</th><th>Network ACL</th></tr></thead>
+          <tbody>
+            <tr><td class="svc">Scope</td><td>Attached to ENI/instance</td><td>Attached to subnet</td></tr>
+            <tr><td class="svc">State</td><td>Stateful — return traffic auto-allowed</td><td>Stateless — must allow both directions explicitly</td></tr>
+            <tr><td class="svc">Rules</td><td>Allow rules only</td><td>Allow and Deny rules, evaluated in order</td></tr>
+            <tr><td class="svc">Typical use</td><td>Primary access control, day to day</td><td>Coarse subnet-level guardrail / explicit blocklist</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>Why does a private-subnet EC2 instance still need a NAT gateway to install OS updates?</summary>
+          <div class="a"><p>A private subnet's route table has no route to an Internet Gateway, so instances there have no way to reach the public internet directly. A NAT Gateway in a public subnet has an Elastic IP and a route to the IGW; the private route table sends 0.0.0.0/0 traffic to the NAT, which performs outbound-only address translation — the instance can call out, but nothing can initiate a connection in.</p></div>
+        </details>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>What's a VPC endpoint and why use one for S3?</summary>
+          <div class="a"><p>It lets private resources reach an AWS service without traversing the public internet or a NAT gateway — cheaper (no NAT data processing charge) and more secure (traffic stays on the AWS backbone). Gateway endpoints (S3, DynamoDB) attach to route tables; interface endpoints (most other services, including Bedrock) use an ENI with a private IP in your subnet.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>A customer requires that no traffic to Bedrock ever traverses the public internet. How do you satisfy that?</summary>
+          <div class="a"><p>Create an interface VPC endpoint for Bedrock (and Bedrock Runtime) in the customer's VPC, with a security group scoping which resources can reach it. Application calls resolve to a private IP inside the VPC; the request stays on AWS's private network end to end. Combine with VPC endpoint policies to restrict which specific models/actions are callable.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 05 SERVERLESS & MESSAGING -->
+    <section class="block reveal" id="serverless">
+      <div class="block-head"><span class="block-num">05</span><h2 class="block-title">Serverless &amp; messaging</h2></div>
+      <p class="block-dek">The glue between services. Knowing when to reach for a queue versus a topic versus an event bus is one of the most common whiteboard prompts.</p>
+      <div class="pillrow"><span class="tag core">Core</span><span class="tag java">Java</span></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Service</th><th>Pattern</th><th>Delivery</th><th>Use it for</th></tr></thead>
+          <tbody>
+            <tr><td class="svc">SQS</td><td>Point-to-point queue</td><td>At-least-once; FIFO option for ordering/exactly-once</td><td>Decoupling producer from consumer, buffering bursts, retry via DLQ</td></tr>
+            <tr><td class="svc">SNS</td><td>Pub/sub fan-out</td><td>At-least-once to every subscriber</td><td>One event, many independent consumers (email, SQS, Lambda)</td></tr>
+            <tr><td class="svc">EventBridge</td><td>Event bus with content-based routing</td><td>At-least-once, rule-matched</td><td>Decoupled microservices, SaaS-to-AWS integration, scheduled rules</td></tr>
+            <tr><td class="svc">Kinesis Data Streams</td><td>Ordered, replayable stream</td><td>Consumers track their own position (shard iterator)</td><td>High-throughput real-time ingestion, multiple independent readers replaying history</td></tr>
+            <tr><td class="svc">Step Functions</td><td>State machine orchestration</td><td>Exactly the states you define, incl. retries/catch</td><td>Multi-step workflows — the sequencing itself is the point</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 840 300" role="img" aria-label="Event driven pipeline: API Gateway invokes a Lambda, which writes to an SQS queue; a second Lambda polls the queue and writes to DynamoDB; on success it also publishes to an EventBridge bus which fans out to SNS for notifications and a Step Functions workflow for downstream processing.">
+            <defs>
+              <marker id="arw5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10">
+              <rect x="20" y="110" width="120" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="80" y="136" text-anchor="middle" font-weight="600">API Gateway</text>
+
+              <line x1="140" y1="132" x2="180" y2="132" class="arrow" marker-end="url(#arw5)"></line>
+              <rect x="180" y="110" width="110" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="235" y="136" text-anchor="middle" font-weight="600">Lambda</text>
+
+              <line x1="290" y1="132" x2="330" y2="132" class="arrow" marker-end="url(#arw5)"></line>
+              <rect x="330" y="110" width="110" height="44" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="385" y="132" text-anchor="middle" font-weight="600">SQS</text>
+              <text x="385" y="146" text-anchor="middle" font-size="8.5" class="soft">buffer + DLQ</text>
+
+              <line x1="440" y1="132" x2="480" y2="132" class="arrow" marker-end="url(#arw5)"></line>
+              <rect x="480" y="110" width="110" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="535" y="136" text-anchor="middle" font-weight="600">Lambda</text>
+
+              <line x1="590" y1="132" x2="630" y2="132" class="arrow" marker-end="url(#arw5)"></line>
+              <rect x="630" y="110" width="120" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="690" y="136" text-anchor="middle" font-weight="600">DynamoDB</text>
+
+              <line x1="535" y1="154" x2="535" y2="200" class="arrow" marker-end="url(#arw5)"></line>
+              <text x="558" y="182" font-size="8.5" class="soft">on success</text>
+              <rect x="440" y="202" width="190" height="44" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="535" y="228" text-anchor="middle" font-weight="600">EventBridge bus</text>
+
+              <line x1="470" y1="246" x2="440" y2="270" class="arrow" marker-end="url(#arw5)"></line>
+              <rect x="330" y="272" width="130" height="40" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="395" y="296" text-anchor="middle" font-weight="600" font-size="9.5">SNS → alerts</text>
+
+              <line x1="600" y1="246" x2="630" y2="270" class="arrow" marker-end="url(#arw5)"></line>
+              <rect x="630" y="272" width="150" height="40" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="705" y="296" text-anchor="middle" font-weight="600" font-size="9.5">Step Functions</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 7 — SQS decouples the ingest Lambda from the processing Lambda so a slow downstream doesn't back-pressure the API; EventBridge then fans the result out to independent consumers.</figcaption>
+      </figure>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>SQS vs. SNS vs. EventBridge — one-line rule of thumb?</summary>
+          <div class="a"><p>SQS: one message, one consumer, buffered. SNS: one message, many dumb consumers, immediate fan-out. EventBridge: one event, routed by content/pattern to many targets, with schema registry and third-party SaaS sources built in — reach for it when routing logic itself is non-trivial.</p></div>
+        </details>
+        <details class="qa" data-role="java"><summary><span class="qtag java">Java</span>Your SQS consumer occasionally fails to process a message. How do you stop it from being retried forever?</summary>
+          <div class="a"><p>Configure a redrive policy pointing to a Dead-Letter Queue with a <code>maxReceiveCount</code>; after that many failed receives (visibility timeout expiring without deletion), SQS moves the message to the DLQ automatically. Set the consumer's visibility timeout comfortably above your Lambda/worker's typical processing time to avoid duplicate concurrent processing.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>Why put Step Functions in front of a multi-step Bedrock agent pipeline instead of one big Lambda?</summary>
+          <div class="a"><p>Long-running/multi-call LLM workflows (retrieve → augment → generate → validate → maybe retry) benefit from Step Functions' built-in retry/catch per state, visual execution history for debugging a bad run, and freedom from Lambda's 15-minute timeout — each state can call out independently and the orchestration survives across calls.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 06 DEVOPS -->
+    <section class="block reveal" id="devops">
+      <div class="block-head"><span class="block-num">06</span><h2 class="block-title">DevOps &amp; observability</h2></div>
+      <p class="block-dek">Infrastructure as code, CI/CD, and the telemetry that tells you whether the last deploy actually worked.</p>
+      <div class="pillrow"><span class="tag core">Core</span><span class="tag java">Java</span></div>
+
+      <div class="cardgrid">
+        <div class="pcard"><h4>CloudFormation</h4><p>Declarative JSON/YAML templates; AWS-native, no state file to manage yourself.</p></div>
+        <div class="pcard"><h4>CDK</h4><p>Define infra in Java/TypeScript/Python; synthesizes to CloudFormation. Popular for Java shops wanting type-safe infra.</p></div>
+        <div class="pcard"><h4>CodePipeline</h4><p>Orchestrates source → build → test → deploy stages across other CodeX tools or GitHub.</p></div>
+        <div class="pcard"><h4>CodeBuild</h4><p>Managed build runner — <code>mvn package</code>, Docker build/push, all defined in <code>buildspec.yml</code>.</p></div>
+        <div class="pcard"><h4>CodeDeploy</h4><p>Blue/green and canary rollout to EC2, ECS, or Lambda with automatic rollback on alarm.</p></div>
+        <div class="pcard"><h4>CloudWatch</h4><p>Metrics, Logs, Alarms, and Dashboards — the default place a Java app's stdout ends up.</p></div>
+        <div class="pcard"><h4>X-Ray</h4><p>Distributed tracing across service calls — essential once you're past a single monolith.</p></div>
+        <div class="pcard"><h4>Systems Manager</h4><p>Parameter Store for config, Session Manager for shell access without opening SSH.</p></div>
+      </div>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>Blue/green vs. canary deployment — what's the actual difference?</summary>
+          <div class="a"><p>Blue/green stands up a full parallel environment and cuts traffic over all at once (or on a defined schedule), with instant rollback by cutting back. Canary shifts a small percentage of traffic to the new version first, watches metrics, then ramps up gradually — catches regressions on real traffic before full exposure, at the cost of a longer rollout window.</p></div>
+        </details>
+        <details class="qa" data-role="java"><summary><span class="qtag java">Java</span>How would you structure a CI pipeline for a Spring Boot service deploying to ECS?</summary>
+          <div class="a"><p>CodeBuild stage runs <code>mvn verify</code> (unit + integration tests), builds a Docker image, pushes to ECR; CodePipeline then triggers CodeDeploy with a blue/green ECS deployment, shifting traffic via the ALB's target groups with a CloudWatch alarm configured to auto-rollback on elevated 5xx rate.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 07 AI CORE -->
+    <section class="block reveal" id="ai-core">
+      <div class="block-head"><span class="block-num">07</span><h2 class="block-title">AI/ML core: Bedrock &amp; SageMaker</h2></div>
+      <p class="block-dek">The two services that anchor almost every AI Engineer / FDE interview. Know the boundary: Bedrock is "call a foundation model as an API," SageMaker is "own the full ML lifecycle."</p>
+      <div class="pillrow"><span class="tag ai">AI / FDE</span></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Amazon Bedrock</th><th>Amazon SageMaker</th></tr></thead>
+          <tbody>
+            <tr><td class="svc">What it is</td><td>Managed API access to foundation models (Claude, Nova, Llama, Titan, etc.)</td><td>Full platform to build, train, tune, and host your own models</td></tr>
+            <tr><td class="svc">You manage</td><td>Prompts, orchestration, guardrails, retrieval</td><td>Data prep, training code, hyperparameters, infra sizing</td></tr>
+            <tr><td class="svc">Typical FDE use</td><td>RAG / agents on top of a hosted LLM, fast to stand up in a customer VPC</td><td>Fine-tuning a domain model, custom embeddings, batch scoring at scale</td></tr>
+            <tr><td class="svc">Pricing shape</td><td>On-demand per-token, or Provisioned Throughput for guaranteed capacity</td><td>Pay for training compute-hours + hosting instance-hours (or Serverless Inference)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Bedrock building blocks</h3>
+      <ul>
+        <li><strong>Model access</strong> — request access per model per account/region; call via <code>InvokeModel</code> / <code>Converse</code> API, streaming or not.</li>
+        <li><strong>Knowledge Bases</strong> — managed RAG: point it at an S3 source, it handles chunking, embedding (via a Titan/Cohere embedding model), and vector storage (in OpenSearch Serverless, Aurora pgvector, Pinecone, or Redis) for you.</li>
+        <li><strong>Agents</strong> — model plans and calls tools (Lambda-backed "action groups") in a loop to complete a multi-step task, optionally grounded by a Knowledge Base.</li>
+        <li><strong>Guardrails</strong> — configurable content filters (denied topics, PII redaction, word filters, grounding checks) applied to prompts and responses independent of the model itself.</li>
+        <li><strong>Provisioned Throughput</strong> — reserved model capacity for predictable latency/cost at volume, vs. on-demand's pay-per-token with noisier latency under load.</li>
+      </ul>
+
+      <h3>SageMaker pipeline</h3>
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 860 300" role="img" aria-label="SageMaker MLOps pipeline: raw data in S3 goes through a Processing job for feature engineering, then a Training job produces a model artifact registered in the Model Registry, which deploys to a real-time Endpoint or a Batch Transform job, both monitored by CloudWatch and Model Monitor which can trigger retraining.">
+            <defs>
+              <marker id="arw6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10">
+              <rect x="20" y="120" width="100" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="70" y="146" text-anchor="middle" font-weight="600">S3 (raw)</text>
+
+              <line x1="120" y1="142" x2="158" y2="142" class="arrow" marker-end="url(#arw6)"></line>
+              <rect x="158" y="120" width="120" height="44" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="218" y="140" text-anchor="middle" font-weight="600" font-size="9.5">Processing</text>
+              <text x="218" y="154" text-anchor="middle" font-size="8.5" class="soft">feature eng.</text>
+
+              <line x1="278" y1="142" x2="316" y2="142" class="arrow" marker-end="url(#arw6)"></line>
+              <rect x="316" y="120" width="120" height="44" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="376" y="140" text-anchor="middle" font-weight="600" font-size="9.5">Training job</text>
+              <text x="376" y="154" text-anchor="middle" font-size="8.5" class="soft">managed compute</text>
+
+              <line x1="436" y1="142" x2="474" y2="142" class="arrow" marker-end="url(#arw6)"></line>
+              <rect x="474" y="120" width="130" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="539" y="140" text-anchor="middle" font-weight="600" font-size="9.5">Model Registry</text>
+              <text x="539" y="154" text-anchor="middle" font-size="8.5" class="soft">versioned artifact</text>
+
+              <line x1="539" y1="164" x2="539" y2="192" class="arrow" marker-end="url(#arw6)"></line>
+              <path d="M539,192 C 539,210 430,210 430,228" class="arrow" marker-end="url(#arw6)"></path>
+              <path d="M539,192 C 539,210 660,210 660,228" class="arrow" marker-end="url(#arw6)"></path>
+
+              <rect x="330" y="230" width="180" height="44" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="420" y="250" text-anchor="middle" font-weight="600" font-size="9.5">Real-time Endpoint</text>
+              <text x="420" y="264" text-anchor="middle" font-size="8.5" class="soft">low-latency inference</text>
+
+              <rect x="580" y="230" width="180" height="44" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="670" y="250" text-anchor="middle" font-weight="600" font-size="9.5">Batch Transform</text>
+              <text x="670" y="264" text-anchor="middle" font-size="8.5" class="soft">offline bulk scoring</text>
+
+              <path d="M420,230 C 420,190 620,60 780,90" class="arrow" marker-end="url(#arw6)" fill="none"></path>
+              <rect x="700" y="60" width="140" height="40" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="770" y="84" text-anchor="middle" font-weight="600" font-size="9">CloudWatch +</text>
+              <text x="770" y="96" text-anchor="middle" font-weight="600" font-size="9">Model Monitor</text>
+              <path d="M770,60 C 770,20 220,20 218,120" class="arrow" marker-end="url(#arw6)" fill="none"></path>
+              <text x="480" y="26" text-anchor="middle" font-size="8.5" class="soft">drift detected → retrain</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 8 — Model Monitor watches live endpoint traffic for data/quality drift and can trigger the pipeline to re-run from processing — the loop that turns a one-off training job into MLOps.</figcaption>
+      </figure>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>A customer wants a chatbot answering from their internal docs. Bedrock alone, or Bedrock + SageMaker?</summary>
+          <div class="a"><p>Start with Bedrock alone: Knowledge Base for retrieval, a hosted foundation model for generation, Guardrails for safety — no training required, days not weeks to a working prototype. Reach for SageMaker only if you need a custom embedding model tuned to their domain vocabulary, or the foundation models genuinely underperform on their task after prompt/retrieval tuning — that's a much higher bar to justify.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>On-demand vs. Provisioned Throughput for Bedrock — how do you decide for a customer?</summary>
+          <div class="a"><p>On-demand for unpredictable or low/medium volume — you pay per token, no commitment, but latency can vary under shared load. Provisioned Throughput for predictable high-volume production traffic needing consistent latency — you commit to reserved model units, typically with a term discount, which only pays off once utilization is high enough to beat on-demand's per-token cost.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>What's SageMaker Model Monitor actually watching for, and why does it matter post-deployment?</summary>
+          <div class="a"><p>Statistical drift between the data distribution the model was trained on and the data it's currently scoring — feature drift, and (with ground truth) quality/accuracy drift. It matters because a model's offline accuracy says nothing about tomorrow, once the customer's real-world input distribution shifts; Model Monitor is what turns "we shipped a model" into "we know when to retrain it."</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 08 RAG & AGENTS -->
+    <section class="block reveal" id="rag">
+      <div class="block-head"><span class="block-num">08</span><h2 class="block-title">RAG &amp; agent architecture</h2></div>
+      <p class="block-dek">The single most-asked system-design prompt in AI Engineer/FDE interviews: "design a retrieval-augmented system on AWS." Know the two separate flows — ingestion and query.</p>
+      <div class="pillrow"><span class="tag ai">AI / FDE</span></div>
+
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 880 460" role="img" aria-label="RAG architecture with two flows. Ingestion: documents land in S3, trigger a Lambda that chunks and embeds text via a Bedrock embedding model, writing vectors to an OpenSearch Serverless index. Query: a user asks the app, which embeds the query, retrieves top matching chunks from OpenSearch, augments a prompt, sends it to a Bedrock foundation model, and returns a grounded answer with citations.">
+            <defs>
+              <marker id="arw7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10">
+              <text x="20" y="24" font-size="10.5" font-weight="700" fill="var(--violet)">INGESTION (offline, on document change)</text>
+              <rect x="20" y="36" width="110" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="75" y="56" text-anchor="middle" font-weight="600">S3 documents</text>
+              <text x="75" y="70" text-anchor="middle" font-size="8.5" class="soft">PDF / HTML / MD</text>
+
+              <line x1="130" y1="58" x2="168" y2="58" class="arrow" marker-end="url(#arw7)"></line>
+              <text x="149" y="50" text-anchor="middle" font-size="8">event</text>
+              <rect x="168" y="36" width="130" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="233" y="56" text-anchor="middle" font-weight="600" font-size="9.5">Lambda</text>
+              <text x="233" y="70" text-anchor="middle" font-size="8.5" class="soft">chunk + clean</text>
+
+              <line x1="298" y1="58" x2="336" y2="58" class="arrow" marker-end="url(#arw7)"></line>
+              <rect x="336" y="36" width="160" height="44" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="416" y="56" text-anchor="middle" font-weight="600" font-size="9.5">Bedrock Titan</text>
+              <text x="416" y="70" text-anchor="middle" font-size="8.5" class="soft">Embeddings model</text>
+
+              <line x1="496" y1="58" x2="534" y2="58" class="arrow" marker-end="url(#arw7)"></line>
+              <rect x="534" y="36" width="170" height="44" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="619" y="56" text-anchor="middle" font-weight="600" font-size="9.5">OpenSearch</text>
+              <text x="619" y="70" text-anchor="middle" font-size="8.5" class="soft">Serverless vector index</text>
+
+              <line x1="20" y1="100" x2="860" y2="100" class="line" stroke-dasharray="3 3"></line>
+              <text x="20" y="122" font-size="10.5" font-weight="700" fill="var(--blue)">QUERY (online, per user request)</text>
+
+              <rect x="20" y="134" width="100" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="70" y="160" text-anchor="middle" font-weight="600">User</text>
+
+              <line x1="120" y1="156" x2="158" y2="156" class="arrow" marker-end="url(#arw7)"></line>
+              <rect x="158" y="134" width="130" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="223" y="154" text-anchor="middle" font-weight="600" font-size="9.5">App / API</text>
+              <text x="223" y="168" text-anchor="middle" font-size="8.5" class="soft">embeds query</text>
+
+              <line x1="223" y1="178" x2="223" y2="220" class="arrow" marker-end="url(#arw7)"></line>
+              <path d="M223,220 C 223,240 619,240 619,90" class="arrow" marker-end="url(#arw7)" fill="none"></path>
+              <text x="420" y="234" text-anchor="middle" font-size="8.5" class="soft">k-NN search → top chunks</text>
+
+              <line x1="288" y1="156" x2="326" y2="156" class="arrow" marker-end="url(#arw7)"></line>
+              <rect x="326" y="134" width="180" height="44" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="416" y="154" text-anchor="middle" font-weight="600" font-size="9.5">Augmented prompt</text>
+              <text x="416" y="168" text-anchor="middle" font-size="8.5" class="soft">retrieved chunks + query</text>
+
+              <line x1="506" y1="156" x2="544" y2="156" class="arrow" marker-end="url(#arw7)"></line>
+              <rect x="544" y="134" width="170" height="44" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="629" y="154" text-anchor="middle" font-weight="600" font-size="9.5">Bedrock Claude</text>
+              <text x="629" y="168" text-anchor="middle" font-size="8.5" class="soft">grounded generation</text>
+
+              <line x1="629" y1="178" x2="629" y2="300" class="arrow" marker-end="url(#arw7)"></line>
+              <path d="M629,300 C 629,320 70,320 70,178" class="arrow" marker-end="url(#arw7)" fill="none"></path>
+              <text x="350" y="332" text-anchor="middle" font-size="8.5" class="soft">answer + citations back to user</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 9 — Ingestion (top) runs whenever documents change; query (bottom) runs on every user request. Both share the same embedding model so query vectors and document vectors live in the same space.</figcaption>
+      </figure>
+
+      <h3>Agents vs. plain RAG</h3>
+      <p>Plain RAG is retrieve-then-generate — one retrieval pass, one generation call. An <strong>agent</strong> adds a reasoning loop: the model decides which tool to call (retrieval, a database query, an internal API), inspects the result, and decides whether to call another tool or answer — useful when the task needs multiple steps or the retrieval query itself depends on intermediate results.</p>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>Walk through what happens when a document is updated — how does the retrieval index stay fresh?</summary>
+          <div class="a"><p>The updated object lands in S3, an S3 event (or Bedrock Knowledge Base's built-in sync) fires the ingestion Lambda, which re-chunks and re-embeds just that document and upserts its vectors — old chunk IDs for that source get deleted first so stale content doesn't linger in results. Bedrock Knowledge Bases handles this sync natively if you're using the managed path instead of hand-rolling it.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>How do you stop the model from hallucinating an answer when retrieval finds nothing relevant?</summary>
+          <div class="a"><p>Score retrieved chunks by similarity and set a relevance threshold — below it, don't pass any context and instruct the model (in the system prompt) to say it doesn't know rather than guess. Bedrock Guardrails' grounding check can also flag ungrounded claims in the output; combine with citations so a low-confidence answer is visibly unsupported rather than silently wrong.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>Why choose OpenSearch Serverless over Aurora pgvector for the vector store?</summary>
+          <div class="a"><p>OpenSearch Serverless when retrieval is the primary workload, you want managed scaling and don't want to run/size a cluster, and you may want hybrid (keyword + vector) search. Aurora pgvector when the team already runs Postgres and wants vectors alongside existing relational data in one engine, at typically lower cost for smaller datasets, trading off some of OpenSearch's purpose-built vector-search scaling.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 09 FDE PATTERNS -->
+    <section class="block reveal" id="fde">
+      <div class="block-head"><span class="block-num">09</span><h2 class="block-title">Forward-deployed engineering patterns</h2></div>
+      <p class="block-dek">What makes an FDE interview different from a pure AI Engineer one: you're not just building the system, you're shipping it inside someone else's account, someone else's security posture, someone else's compliance obligations.</p>
+      <div class="pillrow"><span class="tag ai">AI / FDE</span></div>
+
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 840 380" role="img" aria-label="FDE deployment pattern: vendor account holds a cross-account IAM role assumed by the customer's AWS account, which contains the deployed application inside a VPC using a PrivateLink endpoint, connected via Direct Connect or VPN to the customer's on-premises systems.">
+            <defs>
+              <marker id="arw8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10">
+              <rect x="20" y="20" width="220" height="100" rx="10" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="130" y="42" text-anchor="middle" font-weight="700" fill="var(--gold)">VENDOR ACCOUNT</text>
+              <text x="130" y="66" text-anchor="middle" font-size="9.5">Deployment role</text>
+              <text x="130" y="82" text-anchor="middle" font-size="8.5" class="soft">assumed w/ ExternalId</text>
+              <text x="130" y="98" text-anchor="middle" font-size="8.5" class="soft">CI/CD pipeline, artifact registry</text>
+
+              <line x1="240" y1="70" x2="300" y2="70" class="arrow" marker-end="url(#arw8)"></line>
+              <text x="270" y="62" text-anchor="middle" font-size="8">sts:AssumeRole</text>
+
+              <rect x="300" y="20" width="520" height="340" rx="12" fill="none" stroke="var(--line-strong)" stroke-dasharray="4 3"></rect>
+              <text x="320" y="40" font-size="10.5" font-weight="700" fill="var(--blue)">CUSTOMER AWS ACCOUNT</text>
+
+              <rect x="330" y="56" width="200" height="70" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="430" y="78" text-anchor="middle" font-weight="600" font-size="9.5">Scoped IAM role</text>
+              <text x="430" y="94" text-anchor="middle" font-size="8.5" class="soft">least-privilege, time-boxed</text>
+              <text x="430" y="110" text-anchor="middle" font-size="8.5" class="soft">org SCP guardrails apply</text>
+
+              <line x1="430" y1="126" x2="430" y2="156" class="arrow" marker-end="url(#arw8)"></line>
+              <rect x="330" y="158" width="200" height="80" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="430" y="180" text-anchor="middle" font-weight="600" font-size="9.5">App (VPC)</text>
+              <text x="430" y="196" text-anchor="middle" font-size="8.5" class="soft">RAG / agent service</text>
+              <text x="430" y="212" text-anchor="middle" font-size="8.5" class="soft">customer data never leaves</text>
+              <text x="430" y="226" text-anchor="middle" font-size="8.5" class="soft">this VPC</text>
+
+              <line x1="530" y1="198" x2="580" y2="198" class="arrow" marker-end="url(#arw8)"></line>
+              <rect x="580" y="176" width="200" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="680" y="196" text-anchor="middle" font-weight="600" font-size="9.5">PrivateLink → Bedrock</text>
+              <text x="680" y="210" text-anchor="middle" font-size="8.5" class="soft">no public internet hop</text>
+
+              <line x1="430" y1="238" x2="430" y2="268" class="arrow" marker-end="url(#arw8)"></line>
+              <rect x="330" y="270" width="200" height="60" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="430" y="292" text-anchor="middle" font-weight="600" font-size="9.5">Direct Connect / VPN</text>
+              <text x="430" y="308" text-anchor="middle" font-size="8.5" class="soft">to on-prem systems</text>
+
+              <line x1="330" y1="300" x2="260" y2="300" class="arrow" marker-end="url(#arw8)"></line>
+              <rect x="30" y="272" width="220" height="56" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="140" y="296" text-anchor="middle" font-weight="600" font-size="9.5">Customer on-prem</text>
+              <text x="140" y="312" text-anchor="middle" font-size="8.5" class="soft">legacy DB / document store</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 10 — The vendor never holds customer data outside the customer's own account; deployment happens through a scoped, time-boxed cross-account role, and the running application stays inside the customer's VPC and network boundary.</figcaption>
+      </figure>
+
+      <ul>
+        <li><strong>AWS Organizations + SCPs</strong> — the customer's org almost certainly has service control policies restricting what any role, including yours, can do — expect denies that aren't in the IAM policy you were handed, and know to check SCPs, not just identity policy, when access "should work" but doesn't.</li>
+        <li><strong>PrivateLink</strong> — the standard way to expose a service (yours, or AWS's) to a VPC without a public endpoint or VPC peering's broader network exposure.</li>
+        <li><strong>Direct Connect vs. Site-to-Site VPN</strong> — Direct Connect is a dedicated physical link (higher throughput, consistent latency, costlier, slower to provision); VPN is IPsec over the public internet (fast to stand up, variable latency) — often used as DX's automatic failover path.</li>
+        <li><strong>Data residency</strong> — confirm which region(s) the customer requires, and that any managed AI service (Bedrock model, Knowledge Base storage) is provisioned in-region — some foundation models aren't available in every region.</li>
+        <li><strong>The FDE trade-off</strong> — you're optimizing for this one customer's constraints while a product team optimizes for the general case; the job is knowing which customizations should become platform features and which should stay a one-off.</li>
+      </ul>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>A customer's security team asks: "does any of our data ever leave our AWS account?" How do you answer, concretely?</summary>
+          <div class="a"><p>Walk the data path: documents stay in their S3 bucket; embeddings are computed by Bedrock via a VPC interface endpoint (PrivateLink) inside their VPC, so the request never touches the public internet and Bedrock, per AWS's data handling terms, doesn't use it to train models; the vector store and app run in their account behind their own IAM. The only thing that leaves is the model inference call itself, and it stays on AWS's private network.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>How would you scope the IAM role you request from a customer for a first deployment?</summary>
+          <div class="a"><p>List the exact actions and resource ARNs needed — <code>bedrock:InvokeModel</code> on specific model ARNs, <code>s3:GetObject</code>/<code>PutObject</code> scoped to one prefix, not the account's whole S3 estate — and propose it as a time-boxed role for initial setup, separate from the narrower runtime role the deployed app actually uses day to day. Asking for less up front is what gets you unblocked faster with a security team, not slower.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 10 COST & W-A -->
+    <section class="block reveal" id="cost">
+      <div class="block-head"><span class="block-num">10</span><h2 class="block-title">Cost &amp; the Well-Architected Framework</h2></div>
+      <p class="block-dek">Six pillars interviewers use as a checklist when they ask "how would you design this" — even if they never say the framework's name.</p>
+      <div class="pillrow"><span class="tag core">Core</span></div>
+
+      <div class="cardgrid">
+        <div class="pcard"><h4>Operational Excellence</h4><p>Run and monitor systems to deliver value; automate changes, respond to events, refine procedures.</p></div>
+        <div class="pcard"><h4>Security</h4><p>Protect data, systems, and assets — identity, detective controls, infra protection, incident response.</p></div>
+        <div class="pcard"><h4>Reliability</h4><p>Recover from failure, scale horizontally, test recovery procedures — no single AZ as a single point of failure.</p></div>
+        <div class="pcard"><h4>Performance Efficiency</h4><p>Use compute resources efficiently as demand and technology evolve — right service, right size.</p></div>
+        <div class="pcard"><h4>Cost Optimization</h4><p>Avoid unneeded cost — right-sizing, spot/reserved capacity, eliminating idle resources.</p></div>
+        <div class="pcard"><h4>Sustainability</h4><p>Minimize environmental impact — managed/serverless services generally carry a lower footprint than self-managed idle capacity.</p></div>
+      </div>
+
+      <h3>Cost levers specific to AI workloads</h3>
+      <ul>
+        <li><strong>Model selection</strong> — a smaller/faster model (e.g. Claude Haiku) for simple classification or extraction tasks is often both cheaper and lower-latency than routing everything through the largest model available.</li>
+        <li><strong>Prompt caching</strong> — Bedrock supports caching repeated prompt prefixes (e.g. a long system prompt or retrieved context reused across turns), cutting cost and latency on multi-turn or repeated-context calls.</li>
+        <li><strong>Batch vs. real-time inference</strong> — SageMaker Batch Transform / Bedrock batch inference cost meaningfully less than real-time endpoints when latency isn't the constraint.</li>
+        <li><strong>Right-size compute</strong> — for SageMaker training, use Spot instances for fault-tolerant jobs (with checkpointing); for endpoints, autoscale down during off-hours instead of sizing for peak permanently.</li>
+      </ul>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>Give an example of trading a Well-Architected pillar against another.</summary>
+          <div class="a"><p>Multi-AZ RDS doubles database cost (Cost Optimization) to buy automatic failover (Reliability). Whether that trade is right depends entirely on the workload's actual availability requirement — the answer isn't "always pick reliability," it's showing you can name the trade-off explicitly.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>A customer's Bedrock bill spiked. What's your triage process?</summary>
+          <div class="a"><p>Break down spend by model and by caller (CloudWatch metrics / usage logs) to find which workload grew; check for an obvious cause — a prompt regression sending far more context tokens than intended, a retry loop double-invoking on transient errors, or a new feature routing to a larger model than necessary. Then decide the fix: cheaper model for that path, prompt caching, or moving to Provisioned Throughput if volume justifies it.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 11 RESILIENCE, SCALING & AUTH -->
+    <section class="block reveal" id="resilience">
+      <div class="block-head"><span class="block-num">11</span><h2 class="block-title">Resilience, scaling &amp; auth</h2></div>
+      <p class="block-dek">The follow-up questions after "it works" — does it survive an AZ loss, a region loss, a traffic spike, and does the wrong caller get turned away.</p>
+      <div class="pillrow"><span class="tag core">Core</span><span class="tag java">Java</span></div>
+
+      <h3>Auto Scaling &amp; load balancer health</h3>
+      <ul>
+        <li><strong>Target tracking</strong> — pick a metric (e.g. average CPU 50%) and Auto Scaling adds/removes instances to hold it there; the default, lowest-effort policy.</li>
+        <li><strong>Step scaling</strong> — define scaling steps per alarm breach size (e.g. +1 instance at 60% CPU, +3 at 85%) — more control when load spikes non-linearly.</li>
+        <li><strong>Scheduled scaling</strong> — pre-scale for known traffic patterns (business hours, a marketing push) instead of reacting after the fact.</li>
+        <li><strong>ALB health checks</strong> — periodic HTTP request to a path (e.g. <code>/actuator/health</code>); after N consecutive failures the target is pulled from rotation, and traffic stops routing there before the instance is even terminated.</li>
+        <li><strong>ALB (L7)</strong> routes on host/path/header — one load balancer, many backend services. <strong>NLB (L4)</strong> passes raw TCP/UDP, preserves client source IP, and handles millions of requests per second at lower, more consistent latency — reach for it for non-HTTP protocols or extreme throughput.</li>
+      </ul>
+
+      <h3>Disaster recovery strategies</h3>
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 800 190" role="img" aria-label="Disaster recovery spectrum from Backup and Restore, cheapest with hours of RTO and RPO, through Pilot Light and Warm Standby, to Multi-site Active-Active, most expensive with near-zero RTO and RPO.">
+            <g class="mono" font-size="10.5">
+              <line x1="60" y1="60" x2="700" y2="60" class="line" stroke-width="2"></line>
+              <circle cx="90" cy="60" r="7" fill="var(--gold)"></circle>
+              <text x="90" y="86" text-anchor="middle" font-weight="600">Backup &amp;</text>
+              <text x="90" y="99" text-anchor="middle" font-weight="600">Restore</text>
+              <text x="90" y="115" text-anchor="middle" class="soft" font-size="9">RTO/RPO: hours</text>
+
+              <circle cx="290" cy="60" r="7" fill="var(--gold)"></circle>
+              <text x="290" y="86" text-anchor="middle" font-weight="600">Pilot Light</text>
+              <text x="290" y="115" text-anchor="middle" class="soft" font-size="9">core infra idles, scale up on failover</text>
+
+              <circle cx="500" cy="60" r="7" fill="var(--gold)"></circle>
+              <text x="500" y="86" text-anchor="middle" font-weight="600">Warm Standby</text>
+              <text x="500" y="115" text-anchor="middle" class="soft" font-size="9">scaled-down full stack, always running</text>
+
+              <circle cx="680" cy="60" r="7" fill="var(--gold)"></circle>
+              <text x="680" y="86" text-anchor="middle" font-weight="600">Active-Active</text>
+              <text x="680" y="115" text-anchor="middle" class="soft" font-size="9">RTO/RPO: near zero</text>
+
+              <text x="90" y="35" text-anchor="middle" class="soft" font-size="9.5">CHEAPEST</text>
+              <text x="680" y="35" text-anchor="middle" class="soft" font-size="9.5">COSTLIEST</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 11 — Every step right cuts recovery time and data loss further, and adds standing infrastructure cost — pick the point the business's actual RTO/RPO requirement justifies, not the most resilient option by default.</figcaption>
+      </figure>
+
+      <h3>Auth: Cognito</h3>
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 800 220" role="img" aria-label="Cognito auth flow: client signs in against a Cognito User Pool and receives a JWT, then calls API Gateway with the token in the Authorization header, API Gateway's Cognito authorizer validates the token before forwarding the request to the backend Lambda or service.">
+            <defs>
+              <marker id="arw9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10">
+              <rect x="20" y="90" width="100" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="70" y="116" text-anchor="middle" font-weight="600">Client</text>
+
+              <path d="M120,100 C 160,60 200,60 240,90" class="arrow" marker-end="url(#arw9)" fill="none"></path>
+              <text x="180" y="58" text-anchor="middle" font-size="9">1. sign in</text>
+              <rect x="240" y="70" width="150" height="44" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="315" y="90" text-anchor="middle" font-weight="600" font-size="9.5">Cognito</text>
+              <text x="315" y="104" text-anchor="middle" font-weight="600" font-size="9.5">User Pool</text>
+
+              <path d="M240,104 C 200,140 160,140 120,124" class="arrow" marker-end="url(#arw9)" fill="none"></path>
+              <text x="180" y="152" text-anchor="middle" font-size="9">2. JWT (ID/access token)</text>
+
+              <line x1="120" y1="112" x2="470" y2="112" class="arrow" marker-end="url(#arw9)" opacity="0"></line>
+              <path d="M70,134 C 70,180 450,180 470,140" class="arrow" marker-end="url(#arw9)" fill="none"></path>
+              <text x="270" y="196" text-anchor="middle" font-size="9">3. call API + Authorization: Bearer &lt;JWT&gt;</text>
+
+              <rect x="470" y="90" width="140" height="44" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="540" y="110" text-anchor="middle" font-weight="600" font-size="9.5">API Gateway</text>
+              <text x="540" y="124" text-anchor="middle" font-size="8.5" class="soft">Cognito authorizer</text>
+
+              <line x1="610" y1="112" x2="650" y2="112" class="arrow" marker-end="url(#arw9)"></line>
+              <text x="628" y="104" text-anchor="middle" font-size="8">4. valid</text>
+              <rect x="650" y="90" width="120" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="710" y="116" text-anchor="middle" font-weight="600" font-size="9.5">Backend</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 12 — User Pools authenticate and issue JWTs; API Gateway's built-in Cognito authorizer verifies the token's signature and claims before the request ever reaches your code. Identity Pools are a separate piece — they exchange a token for temporary AWS credentials when the client needs to call AWS services directly.</figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Amazon MSK (Kafka)</th><th>Kinesis Data Streams</th></tr></thead>
+          <tbody>
+            <tr><td class="svc">Operational model</td><td>Managed Kafka cluster — you still size brokers/partitions</td><td>Fully serverless (On-Demand mode) or provisioned shards</td></tr>
+            <tr><td class="svc">Ecosystem</td><td>Kafka Connect/Streams compatible, portable off AWS</td><td>Tight native integration — Firehose, Lambda triggers, Data Streams for Iceberg</td></tr>
+            <tr><td class="svc">Pick when</td><td>Already run Kafka, need its ecosystem, or want cloud portability</td><td>Want the simplest path to a managed stream inside AWS</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ul>
+        <li><strong>DMS</strong> (Database Migration Service) — homogeneous or heterogeneous DB migration with ongoing change-data-capture replication for near-zero-downtime cutover.</li>
+        <li><strong>Flyway / Liquibase</strong> — version-controlled schema migrations run as part of the Java app's own CI/CD, independent of the data-move itself.</li>
+        <li><strong>WAF</strong> — L7 rules (SQLi/XSS managed rule groups, rate-based rules) attached to CloudFront or ALB. <strong>Shield Standard</strong> is free and automatic for all customers; <strong>Shield Advanced</strong> adds a 24/7 DDoS response team and cost protection for larger, targeted attacks.</li>
+      </ul>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>Target tracking vs. step scaling — when would step scaling actually win?</summary>
+          <div class="a"><p>Target tracking assumes a roughly linear relationship between the metric and needed capacity, and reacts smoothly. Step scaling wins when load spikes are sudden and non-linear — e.g. a flash-sale traffic jump — where you want a much larger capacity jump for a big alarm breach than a small one, which target tracking's single formula doesn't express as directly.</p></div>
+        </details>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>When does multi-region active-active justify its cost over Multi-AZ?</summary>
+          <div class="a"><p>When the business's RTO/RPO requirement is near-zero and a full region outage (not just an AZ) is a risk the org must survive — global-scale consumer platforms, financial systems with regulatory continuity requirements. Multi-AZ already gives strong availability within a region at far lower cost; jumping to active-active roughly doubles operational complexity (data replication, conflict resolution, region-aware routing), so it needs a concrete requirement behind it, not just "more resilience is always better."</p></div>
+        </details>
+        <details class="qa" data-role="java"><summary><span class="qtag java">Java</span>Your Spring Boot API needs per-user rate limits tighter than API Gateway's default throttling. How do you add that?</summary>
+          <div class="a"><p>A custom Lambda authorizer or a filter in the app itself backed by a fast counter — DynamoDB with an atomic <code>UpdateItem</code> increment and a TTL attribute for the rolling window, or ElastiCache Redis with <code>INCR</code> + <code>EXPIRE</code> for lower latency at higher request volume. API Gateway's usage plans handle coarse per-API-key throttling; anything per-user or business-rule-specific needs this extra layer.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 12 LLMOPS & EVALUATION -->
+    <section class="block reveal" id="llmops">
+      <div class="block-head"><span class="block-num">12</span><h2 class="block-title">LLMOps &amp; evaluation</h2></div>
+      <p class="block-dek">Building the RAG pipeline is the easy half. Knowing it's good enough to ship, and staying able to prove that six months later, is the part interviewers probe for.</p>
+      <div class="pillrow"><span class="tag ai">AI / FDE</span></div>
+
+      <h3>Prompt engineering, RAG, or fine-tuning?</h3>
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 800 300" role="img" aria-label="Decision tree: if the base prompt already performs well, ship prompt only. If not, and the task needs external or current knowledge, add retrieval augmented generation. If performance is still short and there is labeled data and budget to change the model's underlying style or domain behavior, fine tune. Otherwise, keep iterating on the prompt and retrieval.">
+            <defs>
+              <marker id="arw10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10">
+              <rect x="300" y="10" width="200" height="42" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="400" y="36" text-anchor="middle" font-weight="600" font-size="9.5">Base prompt performs well?</text>
+
+              <line x1="400" y1="52" x2="400" y2="72" class="arrow" marker-end="url(#arw10)"></line>
+              <text x="330" y="66" font-size="9" class="soft">no</text>
+              <path d="M400,30 C 620,30 620,30 620,30" opacity="0"></path>
+              <path d="M500,26 C 640,20 700,60 700,84" class="arrow" marker-end="url(#arw10)" fill="none"></path>
+              <text x="640" y="45" font-size="9" class="soft">yes</text>
+              <rect x="640" y="86" width="140" height="40" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="710" y="110" text-anchor="middle" font-weight="700" fill="var(--gold)" font-size="10">Ship prompt-only</text>
+
+              <rect x="300" y="74" width="200" height="46" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="400" y="94" text-anchor="middle" font-weight="600" font-size="9.5">Needs external or</text>
+              <text x="400" y="108" text-anchor="middle" font-weight="600" font-size="9.5">current knowledge?</text>
+
+              <line x1="400" y1="120" x2="400" y2="148" class="arrow" marker-end="url(#arw10)"></line>
+              <text x="330" y="140" font-size="9" class="soft">yes</text>
+              <rect x="300" y="150" width="200" height="40" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="400" y="174" text-anchor="middle" font-weight="700" fill="var(--violet)" font-size="10">Add RAG</text>
+
+              <path d="M500,97 C 560,97 560,220 500,220" class="arrow" marker-end="url(#arw10)" fill="none"></path>
+              <text x="545" y="160" font-size="9" class="soft">no</text>
+
+              <rect x="220" y="200" width="280" height="56" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="360" y="220" text-anchor="middle" font-weight="600" font-size="9.5">Still short — need to change model's</text>
+              <text x="360" y="234" text-anchor="middle" font-weight="600" font-size="9.5">style/format/jargon, have labeled data?</text>
+
+              <line x1="220" y1="228" x2="150" y2="228" class="arrow" marker-end="url(#arw10)"></line>
+              <text x="185" y="220" font-size="9" class="soft">no</text>
+              <rect x="20" y="206" width="130" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="85" y="226" text-anchor="middle" font-weight="600" font-size="9">Iterate prompt</text>
+              <text x="85" y="240" text-anchor="middle" font-weight="600" font-size="9">&amp; retrieval further</text>
+
+              <line x1="360" y1="256" x2="360" y2="276" class="arrow" marker-end="url(#arw10)"></line>
+              <text x="380" y="270" font-size="9" class="soft">yes</text>
+              <rect x="260" y="278" width="200" height="20" rx="8" fill="none"></rect>
+              <text x="360" y="292" text-anchor="middle" font-weight="700" fill="var(--blue)" font-size="10">→ Fine-tune</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 13 — Fine-tuning is the last resort, not the first idea: it needs labeled data and retraining discipline, and doesn't solve stale-knowledge problems the way retrieval does.</figcaption>
+      </figure>
+
+      <h3>Evaluating a model or RAG pipeline</h3>
+      <ul>
+        <li><strong>Offline, golden-dataset eval</strong> — a fixed set of representative queries with expected answers/behavior, scored automatically (exact-match, ROUGE for summarization) wherever the task allows a mechanical check.</li>
+        <li><strong>LLM-as-judge</strong> — use a strong model to score outputs on rubric dimensions: faithfulness (is the answer supported by retrieved context), answer relevance, context precision/recall — the RAGAS-style metric set, useful where no single correct string exists.</li>
+        <li><strong>Human eval</strong> — spot-check for tone, safety, and edge cases automated scoring misses; keep it small and targeted, not a replacement for the automated suite.</li>
+        <li><strong>Online eval</strong> — real-traffic A/B tests, thumbs up/down feedback captured in the product, regression-tested against the golden set before every prompt or model change ships.</li>
+      </ul>
+
+      <h3>Observability &amp; safety</h3>
+      <ul>
+        <li><strong>Bedrock model invocation logging</strong> — send prompts and completions to CloudWatch Logs / S3 for audit; essential for "what did the model tell this customer" questions months later.</li>
+        <li><strong>Tracing multi-step agents</strong> — X-Ray or a purpose-built LLM trace tool captures each tool call and intermediate reasoning step, not just the final response — critical for debugging why an agent took a wrong path.</li>
+        <li><strong>Prompt injection defense</strong> — treat retrieved/external content as untrusted data, never instructions; delimit it clearly in the prompt; instruct the model explicitly to ignore instructions found inside retrieved text; keep agent tool permissions least-privilege so even a successful injection can't take a destructive action; validate/allowlist tool-call arguments before execution.</li>
+        <li><strong>PII handling</strong> — Amazon Comprehend detects/redacts PII before ingestion; Macie classifies sensitive data at rest in S3; Bedrock Guardrails filters PII in both input and output at inference time.</li>
+      </ul>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>When do you actually reach for fine-tuning instead of better prompting or RAG?</summary>
+          <div class="a"><p>When the task needs a systematic change to the model's behavior that prompting can't reliably encode — a consistent output format/style at scale, deep domain jargon prompting keeps missing, or latency/cost gains from a smaller fine-tuned model matching a larger base model's quality — and you have enough labeled examples and the operational budget to retrain and re-evaluate. It never solves a stale- or missing-knowledge problem; that's what RAG is for.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>How do you evaluate a RAG system before it ships to a customer?</summary>
+          <div class="a"><p>Build a golden dataset from real or realistic customer questions with known-correct answers, run it through offline eval scoring faithfulness/relevance/retrieval precision, and human-review a sample for tone and safety. Set a numeric bar (e.g. faithfulness score threshold) as a CI gate so a prompt or retrieval change can't regress silently before the next release.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>An agent has a tool that can delete records. How do you stop a prompt injection from triggering it?</summary>
+          <div class="a"><p>Scope the tool's IAM permissions to the narrowest possible action/resource; require a separate confirmation step (human-in-the-loop, or a second model check) before any destructive call executes; and treat all retrieved/tool-output content as untrusted data the model should never follow as instructions — that boundary lives in the system prompt and in what the tool is even capable of doing, not just in hoping the model resists the injected text.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 13 ADVANCED MODEL DEPLOYMENT -->
+    <section class="block reveal" id="deploydepth">
+      <div class="block-head"><span class="block-num">13</span><h2 class="block-title">Advanced model deployment</h2></div>
+      <p class="block-dek">Past the first working endpoint: how do you host many models efficiently, roll out a new version safely, and answer a compliance team's questions.</p>
+      <div class="pillrow"><span class="tag ai">AI / FDE</span></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pattern</th><th>How it works</th><th>Use it for</th></tr></thead>
+          <tbody>
+            <tr><td class="svc">Multi-model endpoint</td><td>Many models share one endpoint's instances, loaded into memory on demand</td><td>Many low-traffic models where a dedicated endpoint each would sit mostly idle</td></tr>
+            <tr><td class="svc">Inference components</td><td>Fine-grained compute allocation per model on shared instances, independently scaled</td><td>Heterogeneous models (different sizes/traffic) needing individual right-sizing, not just co-location</td></tr>
+            <tr><td class="svc">Production variants (A/B)</td><td>Two model versions behind one endpoint, traffic split by weight</td><td>Validating a new version against real traffic before full cutover</td></tr>
+            <tr><td class="svc">Shadow deployment</td><td>Full traffic copied to the candidate variant; its response is logged, never returned to the user</td><td>Zero-risk comparison of a new model's real-world output before it can affect anyone</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 780 240" role="img" aria-label="Traffic splitting at a SageMaker endpoint: ninety percent of requests go to production Variant A whose response returns to the user; ten percent are mirrored to candidate Variant B in shadow mode, whose response is logged for comparison but never returned to the user.">
+            <defs>
+              <marker id="arw11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10">
+              <rect x="20" y="90" width="100" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="70" y="116" text-anchor="middle" font-weight="600">Requests</text>
+
+              <line x1="120" y1="112" x2="160" y2="112" class="arrow" marker-end="url(#arw11)"></line>
+              <rect x="160" y="70" width="140" height="84" rx="10" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="230" y="90" text-anchor="middle" font-size="9" class="soft">ENDPOINT</text>
+              <text x="230" y="106" text-anchor="middle" font-size="9" class="soft">splits + mirrors</text>
+
+              <path d="M300,95 C 340,95 340,95 380,95" class="arrow" marker-end="url(#arw11)" fill="none"></path>
+              <text x="340" y="87" text-anchor="middle" font-size="9">90%</text>
+              <rect x="380" y="72" width="180" height="46" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="470" y="92" text-anchor="middle" font-weight="600" font-size="9.5">Variant A (prod)</text>
+              <text x="470" y="106" text-anchor="middle" font-size="8.5" class="soft">response → user</text>
+
+              <line x1="560" y1="95" x2="600" y2="95" class="arrow" marker-end="url(#arw11)"></line>
+              <rect x="600" y="72" width="150" height="46" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="675" y="99" text-anchor="middle" font-weight="600" font-size="9.5">User</text>
+
+              <path d="M300,120 C 340,140 340,150 380,158" class="arrow" marker-end="url(#arw11)" fill="none" stroke-dasharray="4 3"></path>
+              <text x="345" y="144" text-anchor="middle" font-size="9">10% (mirrored)</text>
+              <rect x="380" y="150" width="180" height="46" rx="8" fill="var(--violet-soft)" stroke="var(--violet)" stroke-dasharray="4 3"></rect>
+              <text x="470" y="170" text-anchor="middle" font-weight="600" font-size="9.5">Variant B (shadow)</text>
+              <text x="470" y="184" text-anchor="middle" font-size="8.5" class="soft">response → logged only</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 14 — Shadow traffic (dashed) never reaches the user — it's purely for comparing the candidate model's real-world behavior against production before it's trusted with an actual response.</figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>HNSW</th><th>IVF</th></tr></thead>
+          <tbody>
+            <tr><td class="svc">Structure</td><td>Multi-layer proximity graph</td><td>Vectors partitioned into clusters (inverted file)</td></tr>
+            <tr><td class="svc">Speed/recall</td><td>Very fast, high recall, tunable via <code>ef_search</code></td><td>Tunable via <code>nprobe</code> (clusters searched) — trade recall for speed</td></tr>
+            <tr><td class="svc">Memory</td><td>Higher — graph edges cost RAM</td><td>Lower — better for very large, memory-constrained indexes</td></tr>
+            <tr><td class="svc">Pick when</td><td>Latency/recall matter most and memory budget allows</td><td>Index is huge and memory is the binding constraint</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Embedding dimensionality</strong> is a direct trade: higher dimensions capture finer semantic distinctions but cost more to store and search. Where the embedding model supports it (e.g. Matryoshka-style training), truncate to the smallest dimension that still clears your recall bar rather than defaulting to the maximum.</p>
+
+      <p><strong>Compliance:</strong> both Bedrock and SageMaker are HIPAA-eligible services — using them doesn't make a workload compliant by itself; you still need a signed BAA with AWS and correctly configured encryption, logging, and access controls on your side. For GDPR, data residency is controlled by which region you provision in, and "right to erasure" has to be designed in — deleting a source document should cascade to deleting its embeddings from the vector store, not just the S3 object.</p>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>You're hosting 40 small classification models with light, uneven traffic. One endpoint each, or something else?</summary>
+          <div class="a"><p>A multi-model endpoint — one set of instances, models loaded into memory on demand and evicted when idle. Forty dedicated endpoints would mean forty sets of always-on instances mostly sitting idle; a shared endpoint amortizes that cost, at the trade-off of a cold-load latency hit the first time a rarely-used model is invoked.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>What does shadow deployment actually protect you from that an A/B test doesn't?</summary>
+          <div class="a"><p>In an A/B test, the candidate's response is still shown to some real users — a bad candidate has real, if limited, blast radius. In shadow mode, the candidate sees full production traffic but its output is only logged, never returned — you get real-world signal on how it behaves at full volume with zero user-facing risk, before it earns any share of live traffic.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 14 SYSTEM DESIGN & BEHAVIORAL -->
+    <section class="block reveal" id="sysdesign">
+      <div class="block-head"><span class="block-num">14</span><h2 class="block-title">System design &amp; behavioral prompts</h2></div>
+      <p class="block-dek">Full worked prompts, the shape both tracks get asked to whiteboard, plus the behavioral questions specific to shipping inside a customer's environment.</p>
+      <div class="pillrow"><span class="tag core">Core</span><span class="tag java">Java</span><span class="tag ai">AI / FDE</span></div>
+
+      <h3>Prompt 1 — design a rate limiter for a public API</h3>
+      <p><strong>Requirements:</strong> per-API-key limit (e.g. 100 req/min), reject over-limit calls fast and cheaply, work across many concurrent Lambda/ECS instances (no in-memory-only counter).</p>
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 760 220" role="img" aria-label="Token bucket rate limiter: each incoming request checks a shared bucket of tokens for that API key stored in DynamoDB or Redis; if a token is available it is consumed and the request proceeds; the bucket refills at a fixed rate; if no token is available the request is rejected with 429.">
+            <defs>
+              <marker id="arw12" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10">
+              <rect x="20" y="80" width="110" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="75" y="106" text-anchor="middle" font-weight="600">Request (key X)</text>
+
+              <line x1="130" y1="102" x2="168" y2="102" class="arrow" marker-end="url(#arw12)"></line>
+              <rect x="168" y="60" width="200" height="86" rx="10" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="268" y="80" text-anchor="middle" font-size="9" class="soft">TOKEN BUCKET (per key X)</text>
+              <text x="268" y="100" text-anchor="middle" font-weight="600" font-size="10">DynamoDB / Redis</text>
+              <text x="268" y="116" text-anchor="middle" font-size="8.5" class="soft">capacity N, refill r/sec</text>
+              <text x="268" y="130" text-anchor="middle" font-size="8.5" class="soft">atomic decrement on read</text>
+
+              <line x1="368" y1="90" x2="408" y2="90" class="arrow" marker-end="url(#arw12)"></line>
+              <text x="388" y="82" text-anchor="middle" font-size="9">token?</text>
+              <rect x="408" y="66" width="140" height="40" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="478" y="90" text-anchor="middle" font-weight="700" fill="var(--blue)" font-size="10">200 → forward</text>
+
+              <line x1="368" y1="112" x2="408" y2="130" class="arrow" marker-end="url(#arw12)"></line>
+              <rect x="408" y="112" width="140" height="40" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="478" y="136" text-anchor="middle" font-weight="700" font-size="10">429 → reject</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 15 — API Gateway usage plans give this for free at coarse granularity; a custom token bucket in DynamoDB (atomic <code>UpdateItem</code> with a conditional expression) or Redis (<code>INCR</code>/<code>EXPIRE</code>) is what you build when limits need to be per-key, per-endpoint, or business-rule-driven.</figcaption>
+      </figure>
+      <p><strong>Trade-offs to name out loud:</strong> Redis gives lower-latency atomic ops but adds a stateful component to operate; DynamoDB is serverless and scales automatically but conditional-write contention needs care at very high per-key request rates. Fixed window counters are simpler than token bucket but allow bursts at window boundaries — worth mentioning even if you implement token bucket.</p>
+
+      <h3>Prompt 2 — design a high-fan-out notification service</h3>
+      <p><strong>Requirements:</strong> send email/SMS/push to millions of users for a single event, tolerate partial provider failures, avoid duplicate sends on retry.</p>
+      <ul>
+        <li>API accepts the notification request, validates, and drops it on <strong>SNS</strong> (fan-out) or directly into per-channel <strong>SQS</strong> queues.</li>
+        <li>Per-channel Lambda workers pull from their queue and call the channel provider (SES for email, SNS/Pinpoint for SMS/push).</li>
+        <li>An <strong>idempotency key</strong> (e.g. hash of user+event+channel) checked against a DynamoDB table before sending prevents duplicate delivery if a worker retries after a partial failure.</li>
+        <li>A <strong>DLQ</strong> per queue catches messages that fail repeatedly, for later inspection instead of blocking the queue or silently dropping them.</li>
+      </ul>
+
+      <h3>Prompt 3 — enterprise RAG for a customer, data must never leave their VPC</h3>
+      <p>This is the FDE version of the RAG design prompt, and the answer is really three figures already in this guide, connected: the retrieval pipeline (<a href="#rag">Fig. 9</a>) runs entirely inside the customer's VPC using an interface endpoint to Bedrock so no call crosses the public internet (<a href="#network">Fig. 6</a>), and your own access to that account is a scoped, time-boxed cross-account role, never a standing credential (<a href="#fde">Fig. 10</a>). The interview signal here isn't knowing RAG — it's naming, unprompted, that the deployment boundary is the hard part.</p>
+
+      <h3>Prompt 4 — real-time chat with presence, on API Gateway WebSockets</h3>
+      <p><strong>Requirements:</strong> many clients hold a long-lived connection, messages route to specific recipients, presence ("who's online") stays accurate as connections drop.</p>
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 800 260" role="img" aria-label="WebSocket chat architecture: clients hold a persistent connection to an API Gateway WebSocket API, which invokes a connect Lambda that stores the connection id in a DynamoDB connections table keyed by user, a message Lambda that looks up the recipient's connection id and posts back to it via the API Gateway management API, and a disconnect Lambda that removes the stale connection id.">
+            <defs>
+              <marker id="arw13" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10">
+              <rect x="20" y="90" width="110" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="75" y="116" text-anchor="middle" font-weight="600">Clients (WS)</text>
+
+              <line x1="130" y1="112" x2="168" y2="112" class="arrow" marker-end="url(#arw13)"></line>
+              <rect x="168" y="70" width="170" height="86" rx="10" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="253" y="90" text-anchor="middle" font-size="9" class="soft">API GATEWAY</text>
+              <text x="253" y="106" text-anchor="middle" font-weight="600" font-size="9.5">WebSocket API</text>
+              <text x="253" y="122" text-anchor="middle" font-size="8.5" class="soft">$connect / $default /</text>
+              <text x="253" y="136" text-anchor="middle" font-size="8.5" class="soft">$disconnect routes</text>
+
+              <line x1="338" y1="96" x2="378" y2="80" class="arrow" marker-end="url(#arw13)"></line>
+              <text x="358" y="72" text-anchor="middle" font-size="8">connect</text>
+              <rect x="378" y="60" width="160" height="34" rx="7" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="458" y="82" text-anchor="middle" font-weight="600" font-size="9">Connect Lambda</text>
+
+              <line x1="338" y1="112" x2="378" y2="112" class="arrow" marker-end="url(#arw13)"></line>
+              <rect x="378" y="96" width="160" height="34" rx="7" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="458" y="118" text-anchor="middle" font-weight="600" font-size="9">Message Lambda</text>
+
+              <line x1="338" y1="128" x2="378" y2="144" class="arrow" marker-end="url(#arw13)"></line>
+              <text x="358" y="150" text-anchor="middle" font-size="8">disconnect</text>
+              <rect x="378" y="132" width="160" height="34" rx="7" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="458" y="154" text-anchor="middle" font-weight="600" font-size="9">Disconnect Lambda</text>
+
+              <line x1="538" y1="77" x2="578" y2="112" class="arrow" marker-end="url(#arw13)"></line>
+              <line x1="538" y1="113" x2="578" y2="113" class="arrow" marker-end="url(#arw13)"></line>
+              <line x1="538" y1="149" x2="578" y2="120" class="arrow" marker-end="url(#arw13)"></line>
+              <rect x="578" y="90" width="180" height="46" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="668" y="110" text-anchor="middle" font-weight="600" font-size="9.5">DynamoDB</text>
+              <text x="668" y="124" text-anchor="middle" font-size="8.5" class="soft">connections (PK: userId)</text>
+
+              <path d="M458,130 C 458,190 250,190 130,150" class="arrow" marker-end="url(#arw13)" fill="none"></path>
+              <text x="300" y="204" text-anchor="middle" font-size="8.5" class="soft">management API: post to recipient's stored connection id</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 16 — Connections are stateless HTTP round-trips from Lambda's point of view; the DynamoDB table is what makes the routing "long-lived" — a message Lambda looks up the recipient's current connection id and pushes to it via the API Gateway Management API, not a direct socket handle.</figcaption>
+      </figure>
+      <p><strong>Presence:</strong> derive "online" from a row existing in the connections table, not a separate flag — the <code>$disconnect</code> route (which also fires on ungraceful drops, via a keep-alive ping/timeout) deletes the row, so presence and routing share one source of truth instead of drifting apart.</p>
+
+      <h3>Prompt 5 — multi-tenant SaaS RAG platform, hard isolation between customers</h3>
+      <p><strong>Requirements:</strong> one platform, many customers, one customer must never see another's retrieved content even under a bug — isolation has to be structural, not just a <code>WHERE tenant_id = ?</code> clause trusted to always be present.</p>
+      <ul>
+        <li>Strongest isolation: a <strong>separate vector index per tenant</strong> (own OpenSearch collection, or own Bedrock Knowledge Base) — a missing filter simply has nothing else to return, not a leaked row.</li>
+        <li>Cheaper at scale: one shared index with a <strong>mandatory tenant-id metadata filter</strong> enforced at the retrieval-service layer (never optional, never client-supplied) — cheaper to run, but a bug in that one enforcement point is now a cross-tenant data leak, so it earns the same scrutiny as an authz check.</li>
+        <li>Either way, pair it with per-tenant IAM scoping on the S3 prefix documents land in, so ingestion itself can't cross-contaminate tenants upstream of the vector store.</li>
+        <li>The interview answer worth stating explicitly: pick isolation strength by the compliance bar (a healthcare or finance customer usually forces per-tenant indices), not by what's cheapest to operate.</li>
+      </ul>
+
+      <h3>Behavioral question bank — FDE-specific</h3>
+      <p>These probe judgment under the specific tension of the role: you represent the product, but you're standing in front of one customer's very real, very immediate problem. Structure answers as Situation → Task → Action → Result, and make the judgment call itself the point of the story, not just the technical fix.</p>
+      <ul>
+        <li>"Tell me about a time a customer asked for something the product genuinely shouldn't support." — what you listened for underneath the ask, what you actually said no to, and what you offered instead.</li>
+        <li>"Describe a project where the requirements were ambiguous or kept changing." — how you found ground truth (a workshop, a working prototype shown early) instead of waiting for a spec that wasn't coming.</li>
+        <li>"How do you decide whether a customer-specific fix belongs in your fork, or should go back to the platform team as a feature request?" — the actual decision criteria you use, not just "it depends."</li>
+        <li>"Tell me about a time you had to say no to a customer's security or compliance team." — how you turned a blocked request into a scoped-down version that still shipped.</li>
+        <li>"Describe debugging something in a customer's environment you had limited visibility into." — what you did with restricted logs/access instead of the full toolkit you'd have in your own account.</li>
+      </ul>
+
+      <h3>Behavioral question bank — Java Developer</h3>
+      <p>Less about a customer relationship, more about engineering judgment under real constraints — ownership, trade-offs made under deadline pressure, and how a production incident actually got resolved.</p>
+      <ul>
+        <li>"Tell me about a production incident you diagnosed." — what the telemetry actually showed you first (a CloudWatch alarm, an elevated latency metric), and how you narrowed from symptom to root cause rather than guessing.</li>
+        <li>"Describe a time you chose a simpler design over a more 'correct' one." — the specific trade-off (e.g. a single RDS instance over a sharded design) and what made it the right call given the actual scale at the time.</li>
+        <li>"Tell me about a disagreement with a teammate over an architectural decision." — how it actually got resolved (data, a spike, a shared doc) rather than who outranked whom.</li>
+        <li>"Describe a piece of technical debt you decided to leave alone." — the reasoning for not fixing it now, and what would have changed that call.</li>
+        <li>"Walk me through the worst on-call page you've had." — the immediate mitigation versus the follow-up fix, and what changed afterward so it doesn't repeat.</li>
+      </ul>
+    </section>
+
+    <!-- 15 JAVA/AWS DEEP CUTS -->
+    <section class="block reveal" id="deepcuts-java">
+      <div class="block-head"><span class="block-num">15</span><h2 class="block-title">Java/AWS deep cuts</h2></div>
+      <p class="block-dek">Second-round questions — the ones that come after you've already shown you know the basics, and the interviewer wants to see where your knowledge actually stops.</p>
+      <div class="pillrow"><span class="tag core">Core</span><span class="tag java">Java</span></div>
+
+      <h3>KMS: envelope encryption</h3>
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 760 220" role="img" aria-label="Envelope encryption: the application asks KMS to generate a data key, KMS returns both a plaintext data key and that same key encrypted under the customer master key; the app encrypts its data with the plaintext data key, discards the plaintext copy, and stores only the encrypted data key alongside the encrypted data; to decrypt later the app sends the encrypted data key back to KMS to get the plaintext key again.">
+            <defs>
+              <marker id="arw14" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="9.5">
+              <rect x="20" y="90" width="110" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="75" y="116" text-anchor="middle" font-weight="600">Your app</text>
+
+              <line x1="130" y1="100" x2="168" y2="80" class="arrow" marker-end="url(#arw14)"></line>
+              <text x="150" y="72" text-anchor="middle" font-size="8.5">1. GenerateDataKey</text>
+              <rect x="168" y="60" width="150" height="40" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="243" y="84" text-anchor="middle" font-weight="600" font-size="9.5">KMS (CMK)</text>
+
+              <line x1="168" y1="94" x2="130" y2="122" class="arrow" marker-end="url(#arw14)"></line>
+              <text x="150" y="146" text-anchor="middle" font-size="8" class="soft">2. plaintext key +</text>
+              <text x="150" y="158" text-anchor="middle" font-size="8" class="soft">encrypted key</text>
+
+              <rect x="360" y="30" width="180" height="40" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="450" y="54" text-anchor="middle" font-weight="600" font-size="9.5">Encrypt data with</text>
+              <line x1="318" y1="80" x2="360" y2="50" class="arrow" marker-end="url(#arw14)"></line>
+              <text x="450" y="20" text-anchor="middle" font-size="8" class="soft">plaintext data key (used once, then discarded)</text>
+
+              <rect x="360" y="90" width="180" height="46" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="450" y="110" text-anchor="middle" font-weight="600" font-size="9.5">Stored together:</text>
+              <text x="450" y="124" text-anchor="middle" font-size="8.5" class="soft">ciphertext + encrypted data key</text>
+              <line x1="318" y1="94" x2="360" y2="105" class="arrow" marker-end="url(#arw14)"></line>
+
+              <path d="M450,136 C 450,180 168,180 168,100" class="arrow" marker-end="url(#arw14)" fill="none" stroke-dasharray="4 3"></path>
+              <text x="310" y="196" text-anchor="middle" font-size="8.5" class="soft">later: Decrypt(encrypted data key) → plaintext key → decrypt data</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 17 — The plaintext data key never touches disk or leaves the app's memory; only its encrypted form is persisted, so a stolen backup is useless without a call back to KMS (and the IAM permission to make it).</figcaption>
+      </figure>
+      <p>This is why it's called "envelope" encryption — the data key is the envelope around the data, and the CMK never directly touches the (potentially large) payload; KMS's API only ever encrypts/decrypts small key material, which is also why it stays fast at any data size.</p>
+
+      <h3>Lambda concurrency &amp; throttling</h3>
+      <ul>
+        <li><strong>Concurrency</strong> = number of in-flight invocations at once, not requests per second. Each concurrent invocation gets its own execution environment.</li>
+        <li><strong>Account/region concurrency limit</strong> is shared across every function unless you carve out <strong>reserved concurrency</strong> for one function (a ceiling that also guarantees that much capacity, taken out of the shared pool).</li>
+        <li><strong>Provisioned concurrency</strong> pre-initializes N execution environments so those invocations skip cold start entirely — pay for the reserved capacity whether it's invoked or not, unlike on-demand.</li>
+        <li>Past the limit, new invocations get throttled (<code>429 TooManyRequestsException</code> for sync calls); async invocations (S3, SNS) instead retry automatically and then land in a configured DLQ/on-failure destination.</li>
+      </ul>
+
+      <h3>CloudFront: caching &amp; invalidation</h3>
+      <ul>
+        <li><strong>Cache behavior</strong> per path pattern controls TTLs, which headers/cookies/query strings vary the cache key, and which origin serves it — a single distribution can route <code>/api/*</code> to an ALB with no caching and <code>/static/*</code> to S3 with a long TTL.</li>
+        <li><strong>Invalidation</strong> forces edge locations to refetch before TTL expiry — costs per path pattern past the free monthly allowance, so versioned asset filenames (a content hash in the path) are the usual way to avoid needing invalidation at all.</li>
+        <li>Origin Shield adds one more regional caching layer in front of the origin to reduce duplicate origin requests across edge locations during a cold cache.</li>
+      </ul>
+
+      <h3>EKS: IRSA / pod identity</h3>
+      <p>A pod doesn't get IAM permissions from the EC2 node's instance role by default (and shouldn't — that would hand every pod on the node the same broad access). <strong>IAM Roles for Service Accounts (IRSA)</strong> federates a Kubernetes service account to a specific IAM role via the cluster's OIDC provider: the pod gets a projected token, exchanges it with STS for temporary credentials scoped to just that role — one namespace's pods can have narrower AWS access than another's on the very same node. Pod Identity is AWS's newer, simpler successor to IRSA, removing the OIDC trust-policy boilerplate.</p>
+
+      <h3>ECR &amp; testing against AWS</h3>
+      <ul>
+        <li><strong>ECR image scanning</strong> (via Inspector) flags known CVEs in an image's OS packages and language dependencies on push and on a schedule — wire the pipeline to fail the build on a critical finding rather than discovering it in production.</li>
+        <li><strong>LocalStack</strong> emulates AWS services locally for fast integration tests without hitting real infrastructure or cost. <strong>Testcontainers</strong> (with its LocalStack module, or a real Dockerized Postgres/Redis) gives the same idea for services you'd rather test against the real engine. Reserve actual AWS-account integration tests for a smaller suite that validates IAM permissions and service quirks LocalStack doesn't fully emulate.</li>
+      </ul>
+
+      <h3>Account governance &amp; cost governance</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Service</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td class="svc">CloudTrail</td><td>Audit log of every API call in the account — who did what, when, from where</td></tr>
+            <tr><td class="svc">Config</td><td>Continuously records resource configuration and flags drift from defined compliance rules</td></tr>
+            <tr><td class="svc">GuardDuty</td><td>Managed threat detection — anomalous API calls, compromised credentials, malicious network activity</td></tr>
+            <tr><td class="svc">Security Hub</td><td>Aggregates findings from GuardDuty/Config/Inspector into one compliance dashboard</td></tr>
+            <tr><td class="svc">Control Tower</td><td>Sets up a multi-account landing zone with guardrails (SCPs) baked in from day one</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li><strong>Savings Plans</strong> — commit to a $/hour spend for 1-3 years across compute usage (flexible across instance family/region); usually the default recommendation over Reserved Instances, which lock to a specific instance type/region for a deeper but narrower discount.</li>
+        <li><strong>Spot interruption</strong> — AWS reclaims Spot capacity with a 2-minute warning (via an instance metadata notice or EventBridge event); design for it with checkpointing, stateless workers behind an ASG mixed-instance policy, or a Spot-to-On-Demand fallback.</li>
+        <li><strong>Cost anomaly detection + Budgets</strong> — anomaly detection learns your normal spend pattern and alerts on statistical deviation; Budgets alerts on a fixed threshold you set — use both, since a slow creep and a sudden spike need different tripwires.</li>
+        <li><strong>Tagging strategy</strong> — consistent cost-allocation tags (team, environment, project) are what makes any of the above actionable instead of just "AWS bill went up, no idea why."</li>
+      </ul>
+
+      <h3>DynamoDB single-table design, S3 lifecycle, and a few more</h3>
+      <ul>
+        <li><strong>Single-table design</strong> — model multiple entity types in one DynamoDB table using generic partition/sort key names (<code>PK</code>/<code>SK</code>) and overloaded prefixes (<code>USER#123</code>, <code>ORDER#456</code>) so related items can be fetched in one query instead of joining across tables (which DynamoDB can't do natively). The trade-off: access patterns must be known up front, since the key design is built around specific queries, not general-purpose flexibility.</li>
+        <li><strong>GSI vs. LSI</strong> — a Local Secondary Index shares the base table's partition key with a different sort key, must be created at table creation, and shares its throughput/size limits with the base table. A Global Secondary Index has its own partition (and optional sort) key, can be added anytime, and scales independently — GSIs cover the large majority of real-world secondary-access-pattern needs.</li>
+        <li><strong>S3 lifecycle rules</strong> transition objects to cheaper storage classes (Standard → IA → Glacier) or expire them by age automatically. <strong>Cross-Region Replication</strong> copies objects to a bucket in another region for DR or latency. <strong>Object Lock</strong> enforces WORM (write-once-read-many) retention — required for compliance workloads where even an admin shouldn't be able to delete a record early.</li>
+        <li><strong>Step Functions Standard vs. Express</strong> — Standard is durable and exactly-once, priced per state transition, fits long-running workflows (up to a year). Express is priced per execution and duration, built for high-volume, short-duration workloads (up to 5 minutes), at-least-once semantics.</li>
+        <li><strong>API versioning</strong> — URI versioning (<code>/v1/orders</code>) is the most visible and cache-friendly; header versioning keeps URLs stable but is harder to test/bookmark. Either way, the harder problem is a deprecation policy, not the mechanism itself.</li>
+        <li><strong>AppSync (GraphQL) vs. REST</strong> — GraphQL fits when clients need to fetch varied, nested shapes of data in one round trip (mobile apps with limited bandwidth); REST stays simpler to cache, secure per-endpoint, and reason about for straightforward CRUD.</li>
+        <li><strong>EventBridge Scheduler</strong> is the modern replacement for a cron-triggered Lambda — one-time or recurring schedules with built-in retry, timezone support, and a flexible time window, without needing a rule wired to a fixed cron expression.</li>
+      </ul>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="core"><summary><span class="qtag core">Core</span>Why does envelope encryption use a data key at all — why not just call KMS Encrypt directly on the data?</summary>
+          <div class="a"><p>KMS's direct Encrypt API caps payload size (4KB) and every call is a network round-trip to a shared service — fine for small secrets, unworkable for large objects or high-volume calls. Generating a local data key means the actual data encryption happens in-process at memory speed for any size, and KMS is only ever asked to wrap/unwrap the small key — one KMS call per object instead of one per byte.</p></div>
+        </details>
+        <details class="qa" data-role="java"><summary><span class="qtag java">Java</span>Your Lambda function is being throttled during a traffic spike even though your account-level concurrency limit isn't close to being hit. Why?</summary>
+          <div class="a"><p>Another function in the same account/region is likely consuming shared concurrency, or this function has a reserved-concurrency ceiling set lower than the incoming load. Reserved concurrency both guarantees and caps capacity for one function — check its specific limit, not just the account total, before assuming it's a global capacity problem.</p></div>
+        </details>
+        <details class="qa" data-role="java"><summary><span class="qtag java">Java</span>Design a DynamoDB table for an e-commerce order system — users, orders, and order items, with a "get all orders for a user" access pattern.</summary>
+          <div class="a"><p>Single table, <code>PK = USER#{userId}</code>, <code>SK = ORDER#{orderId}</code> for order items, and a user profile item at <code>SK = METADATA</code> under the same PK — one query on the partition key returns the user plus every order in one round trip. If you also need "get an order by ID directly" without knowing the user, add a GSI with <code>PK = ORDER#{orderId}</code>.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 16 AI/FDE DEEP CUTS -->
+    <section class="block reveal" id="deepcuts-ai">
+      <div class="block-head"><span class="block-num">16</span><h2 class="block-title">AI/FDE deep cuts</h2></div>
+      <p class="block-dek">Where the interview goes once you've shown you can stand up a basic RAG pipeline — the tuning knobs, the failure modes, and the quantitative reasoning FDE interviews specifically probe for.</p>
+      <div class="pillrow"><span class="tag ai">AI / FDE</span></div>
+
+      <h3>Back-of-envelope RAG cost &amp; latency</h3>
+      <p>A worked example, the kind an interviewer wants to see you reason through out loud: a customer support RAG system, 5 retrieved chunks of 500 tokens each, a 300-token system prompt, a 50-token user question, a 400-token answer, running Claude Sonnet-class pricing.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Component</th><th>Tokens</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td>System prompt + instructions</td><td class="mono">~300</td><td>Fixed per call — a candidate for prompt caching</td></tr>
+            <tr><td>Retrieved context (5 × 500)</td><td class="mono">~2,500</td><td>Scales linearly with top-k — the biggest lever on cost</td></tr>
+            <tr><td>User question</td><td class="mono">~50</td><td>Variable, usually small</td></tr>
+            <tr><td>Model output</td><td class="mono">~400</td><td>Output tokens typically priced several times higher than input</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Input ≈ 2,850 tokens, output ≈ 400 tokens per call. At volume, the two levers that actually move the bill are <strong>top-k</strong> (retrieved chunk count — cut from 5 to 3 chunks if recall holds, and you've cut ~30% of input cost) and <strong>prompt caching</strong> on the fixed system-prompt prefix if the same instructions repeat across thousands of calls. Latency follows a similar shape: retrieval (vector search, tens of ms) is nearly free next to generation time, which scales with output length — a system prompt asking for a shorter, more structured answer is a latency lever as much as a UX one.</p>
+
+      <h3>Bedrock tool use &amp; multi-agent collaboration</h3>
+      <ul>
+        <li><strong>Tool-use / function-calling schema</strong> — define each tool as a name, a description the model uses to decide when to call it, and a JSON Schema for its parameters. The model returns a structured tool-call request (not free text) which your code executes and feeds back as a tool result — description quality matters as much as the schema itself, since the model picks tools by reading it.</li>
+        <li><strong>Bedrock multi-agent collaboration</strong> — a supervisor agent decomposes a task and delegates sub-tasks to specialized collaborator agents (each with their own tools/knowledge base), then synthesizes their results — reach for it when one agent's tool set and system prompt would otherwise grow unmanageably broad across unrelated domains.</li>
+        <li><strong>Session/conversation memory</strong> — an agent's "memory" across turns is usually just the running message history replayed each call (Bedrock Agents session state, or your own DynamoDB-backed session table keyed by conversation id), not persistent model state — long conversations need explicit summarization/truncation once history approaches the context window.</li>
+      </ul>
+
+      <h3>Retrieval quality: chunking, hybrid search, reranking</h3>
+      <figure>
+        <div class="diagram-wrap">
+          <svg viewBox="0 0 820 220" role="img" aria-label="Hybrid retrieval pipeline: a query runs through both keyword search and vector search in parallel, results from each are merged, then a reranker cross-encoder scores the merged candidates against the query, and only the top few reranked results are passed to the model as context.">
+            <defs>
+              <marker id="arw15" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor" class="soft"></path>
+              </marker>
+            </defs>
+            <g class="mono" font-size="10">
+              <rect x="20" y="88" width="90" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="65" y="114" text-anchor="middle" font-weight="600">Query</text>
+
+              <line x1="110" y1="100" x2="150" y2="70" class="arrow" marker-end="url(#arw15)"></line>
+              <rect x="150" y="50" width="150" height="40" rx="8" fill="var(--gold-soft)" stroke="var(--gold)"></rect>
+              <text x="225" y="74" text-anchor="middle" font-weight="600" font-size="9.5">Keyword (BM25)</text>
+
+              <line x1="110" y1="120" x2="150" y2="150" class="arrow" marker-end="url(#arw15)"></line>
+              <rect x="150" y="130" width="150" height="40" rx="8" fill="var(--blue-soft)" stroke="var(--blue)"></rect>
+              <text x="225" y="154" text-anchor="middle" font-weight="600" font-size="9.5">Vector (k-NN)</text>
+
+              <line x1="300" y1="70" x2="340" y2="105" class="arrow" marker-end="url(#arw15)"></line>
+              <line x1="300" y1="150" x2="340" y2="115" class="arrow" marker-end="url(#arw15)"></line>
+              <rect x="340" y="90" width="120" height="40" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="400" y="114" text-anchor="middle" font-weight="600" font-size="9.5">Merge</text>
+
+              <line x1="460" y1="110" x2="500" y2="110" class="arrow" marker-end="url(#arw15)"></line>
+              <rect x="500" y="88" width="150" height="44" rx="8" fill="var(--violet-soft)" stroke="var(--violet)"></rect>
+              <text x="575" y="108" text-anchor="middle" font-weight="600" font-size="9.5">Rerank</text>
+              <text x="575" y="122" text-anchor="middle" font-size="8.5" class="soft">cross-encoder</text>
+
+              <line x1="650" y1="110" x2="690" y2="110" class="arrow" marker-end="url(#arw15)"></line>
+              <rect x="690" y="88" width="110" height="44" rx="8" fill="var(--surface-2)" stroke="var(--line-strong)"></rect>
+              <text x="745" y="108" text-anchor="middle" font-weight="600" font-size="9.5">Top-k →</text>
+              <text x="745" y="122" text-anchor="middle" font-size="8.5" class="soft">model context</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption>Fig. 18 — Keyword search catches exact terms (product codes, error strings) that embedding similarity can blur; reranking then re-scores the combined candidate pool with a model built specifically to judge query-document relevance, which is more accurate but far more expensive per-pair than the initial retrieval — so it only ever runs on the already-narrowed shortlist, never the whole index.</figcaption>
+      </figure>
+      <ul>
+        <li><strong>Chunk size/overlap</strong> — smaller chunks (100-300 tokens) give more precise retrieval but lose surrounding context; larger chunks (500-1000) preserve context but dilute relevance scoring. A 10-20% overlap between adjacent chunks prevents a fact from being cut exactly at a chunk boundary. Semantic chunking (splitting on topic shifts rather than a fixed token count) tends to beat fixed-size chunking on unstructured prose.</li>
+        <li><strong>Multi-tenant isolation</strong> and <strong>streaming responses</strong> are covered in <a href="#sysdesign">§14's Prompt 5</a> and below.</li>
+      </ul>
+
+      <h3>Model selection &amp; streaming</h3>
+      <ul>
+        <li><strong>Model tier by task</strong> — a fast, cheap model (Haiku-class) for classification, extraction, or routing; a mid-tier model (Sonnet-class) for most production RAG/agent work balancing quality and cost; the largest model (Opus-class) reserved for tasks genuinely needing the deepest reasoning, not as a default. Amazon Nova and Titan trade some general capability for tighter AWS-native pricing/latency on simpler tasks; Llama and other open-weight options via Bedrock matter when a customer needs a specific license or wants to self-host the same weights later.</li>
+        <li><strong>Streaming responses</strong> — Bedrock's <code>ConverseStream</code> / <code>InvokeModelWithResponseStream</code> return output as a token stream instead of waiting for the full completion; the app forwards that over Server-Sent Events or a WebSocket to the client so the user sees text appear incrementally — the perceived-latency win is usually bigger than any actual total-time reduction.</li>
+        <li><strong>Cross-region inference profiles</strong> route a single model invocation across multiple regions automatically for higher throughput/availability than any one region's quota alone — useful when a customer's volume would otherwise hit per-region rate limits.</li>
+      </ul>
+
+      <div class="checkpoint">
+        <h3>Interview checkpoint</h3>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>A customer asks you to estimate monthly Bedrock cost for 50,000 support tickets/day through your RAG system. How do you approach the estimate out loud?</summary>
+          <div class="a"><p>Break it into input and output tokens per call (retrieved context is usually the largest input component), multiply by daily call volume for daily token totals, apply the model's per-token input/output pricing, then multiply by 30. State the assumptions explicitly (top-k, chunk size, average output length) since the estimate is only as good as those — and note that prompt caching or a smaller model for simple tickets are the two biggest levers if the number comes back too high.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>Why rerank at all, if vector search already returns results sorted by similarity?</summary>
+          <div class="a"><p>Embedding similarity is a cheap, general-purpose proxy for relevance computed independently per document; a cross-encoder reranker scores the query and each candidate document together, capturing interactions between them that a fixed embedding can't — meaningfully more accurate, but too slow to run over an entire index, so it's the last narrowing step after retrieval, not a replacement for it.</p></div>
+        </details>
+        <details class="qa" data-role="ai-fde"><summary><span class="qtag ai">AI/FDE</span>When would you reach for Bedrock multi-agent collaboration instead of one agent with a big tool list?</summary>
+          <div class="a"><p>When the tool list and system prompt for a single agent would span genuinely unrelated domains (e.g. billing lookups and infrastructure diagnostics) — a supervisor/collaborator split keeps each agent's instructions focused and its tool set small, which measurably improves tool-selection accuracy versus one agent choosing correctly among twenty loosely related tools.</p></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 17 CHEAT SHEET -->
+    <section class="block reveal" id="cheat">
+      <div class="block-head"><span class="block-num">17</span><h2 class="block-title">Quick-reference cheat sheet</h2></div>
+      <p class="block-dek">"I need to ___" → the service that answers it. Good for a last five-minute scan before the interview.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>I need to…</th><th>Reach for</th></tr></thead>
+          <tbody>
+            <tr><td>Run a Java app without managing servers</td><td class="svc">Elastic Beanstalk / ECS Fargate</td></tr>
+            <tr><td>React to an event in under 15 minutes of compute</td><td class="svc">Lambda</td></tr>
+            <tr><td>Store files/objects durably and cheaply</td><td class="svc">S3</td></tr>
+            <tr><td>Run relational queries with joins</td><td class="svc">RDS / Aurora</td></tr>
+            <tr><td>Serve millions of reads at single-digit ms</td><td class="svc">DynamoDB (+ DAX for microsecond reads)</td></tr>
+            <tr><td>Cache hot data in front of a DB</td><td class="svc">ElastiCache (Redis)</td></tr>
+            <tr><td>Decouple a producer from a slow consumer</td><td class="svc">SQS</td></tr>
+            <tr><td>Broadcast one event to many subscribers</td><td class="svc">SNS</td></tr>
+            <tr><td>Route events by content across many services</td><td class="svc">EventBridge</td></tr>
+            <tr><td>Orchestrate a multi-step workflow with retries</td><td class="svc">Step Functions</td></tr>
+            <tr><td>Isolate network traffic per environment</td><td class="svc">VPC + subnets + security groups</td></tr>
+            <tr><td>Reach an AWS service without the public internet</td><td class="svc">VPC Endpoint (Gateway/Interface)</td></tr>
+            <tr><td>Store a secret with automatic rotation</td><td class="svc">Secrets Manager</td></tr>
+            <tr><td>Call a foundation model without hosting it</td><td class="svc">Bedrock (InvokeModel / Converse)</td></tr>
+            <tr><td>Build RAG without hand-rolling ingestion</td><td class="svc">Bedrock Knowledge Bases</td></tr>
+            <tr><td>Let a model call tools in a loop</td><td class="svc">Bedrock Agents</td></tr>
+            <tr><td>Filter unsafe prompts/responses</td><td class="svc">Bedrock Guardrails</td></tr>
+            <tr><td>Train or fine-tune a custom model</td><td class="svc">SageMaker Training</td></tr>
+            <tr><td>Host a model for real-time inference</td><td class="svc">SageMaker Endpoint / Serverless Inference</td></tr>
+            <tr><td>Score a large dataset offline, no latency need</td><td class="svc">SageMaker Batch Transform / Bedrock batch</td></tr>
+            <tr><td>Detect model quality drift in production</td><td class="svc">SageMaker Model Monitor</td></tr>
+            <tr><td>Run serverless ETL on S3 data</td><td class="svc">Glue</td></tr>
+            <tr><td>Query S3 data with SQL, no cluster to run</td><td class="svc">Athena</td></tr>
+            <tr><td>Trace a request across microservices</td><td class="svc">X-Ray</td></tr>
+            <tr><td>Authenticate users and issue JWTs</td><td class="svc">Cognito User Pools</td></tr>
+            <tr><td>Run a managed Kafka-compatible stream</td><td class="svc">MSK</td></tr>
+            <tr><td>Migrate a database with near-zero downtime</td><td class="svc">DMS</td></tr>
+            <tr><td>Block SQLi/XSS and DDoS at the edge</td><td class="svc">WAF / Shield</td></tr>
+            <tr><td>Detect and redact PII before it's stored</td><td class="svc">Comprehend / Macie</td></tr>
+            <tr><td>Roll out a new model version safely</td><td class="svc">SageMaker production variants (A/B or shadow)</td></tr>
+            <tr><td>Host many low-traffic models cheaply</td><td class="svc">SageMaker multi-model endpoint</td></tr>
+            <tr><td>Encrypt data of any size without KMS handling the payload</td><td class="svc">KMS envelope encryption</td></tr>
+            <tr><td>Keep a Lambda warm, no cold start</td><td class="svc">Provisioned Concurrency</td></tr>
+            <tr><td>Give one Kubernetes pod its own IAM scope</td><td class="svc">EKS IRSA / Pod Identity</td></tr>
+            <tr><td>Scan container images for known CVEs</td><td class="svc">ECR + Inspector</td></tr>
+            <tr><td>Audit every API call in an account</td><td class="svc">CloudTrail</td></tr>
+            <tr><td>Detect compromised credentials / anomalous activity</td><td class="svc">GuardDuty</td></tr>
+            <tr><td>Route a WebSocket message to one connected client</td><td class="svc">API Gateway WebSocket + DynamoDB connections table</td></tr>
+            <tr><td>Let a model call tools with structured arguments</td><td class="svc">Bedrock tool use / function calling</td></tr>
+            <tr><td>Split a task across specialized agents</td><td class="svc">Bedrock multi-agent collaboration</td></tr>
+            <tr><td>Re-score retrieved chunks for precision</td><td class="svc">Reranker (cross-encoder)</td></tr>
+            <tr><td>Stream a model's answer token by token</td><td class="svc">Bedrock ConverseStream / SSE to client</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      Prepared as a personal study reference — verify current pricing, quotas, and service availability against AWS documentation before an interview, as details shift between releases.
+    </footer>
+  </main>
+</div>
+
+<script>
+(function(){
+  var chips = document.querySelectorAll('.chip');
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.setAttribute('aria-pressed', 'false'); });
+      chip.setAttribute('aria-pressed', 'true');
+      var set = chip.getAttribute('data-set');
+      if (set === 'all') { document.body.removeAttribute('data-filter'); }
+      else { document.body.setAttribute('data-filter', set); }
+    });
+  });
+
+  if (window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+
+</body></html>
